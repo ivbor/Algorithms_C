@@ -27,7 +27,7 @@ jobs:
     - name: Find all C and header files
       id: find_files
       run: |
-        FILES=$(find Algorithms_C -type f \( -name '*.c' -o -name '*.h' \))
+        FILES=$(find Algorithms_C -type f \( -name '*.c' -o -name '*.h' \) | tr '\n' ' ')
         echo "FILES=$FILES" >> $GITHUB_ENV
 
     - name: Run Clang-Format
