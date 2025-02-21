@@ -21,13 +21,13 @@ jobs:
 
     - name: Verify Makefile exists
       run: |
-        ls -lah Algorithms/C_solutions
-        cat Algorithms/C_solutions/Makefile
+        ls -lah Algorithms_C
+        cat Algorithms_C/Makefile
 
     - name: Find all C and header files
       id: find_files
       run: |
-        FILES=$(find Algorithms/C_solutions -type f \( -name '*.c' -o -name '*.h' \))
+        FILES=$(find Algorithms_C -type f \( -name '*.c' -o -name '*.h' \))
         echo "FILES=$FILES" >> $GITHUB_ENV
 
     - name: Run Clang-Format
@@ -36,18 +36,18 @@ jobs:
   
     - name: Run Clang-Tidy
       run: |
-        cd Algorithms/C_solutions
-        clang-tidy $FILES -- -IAlgorithms/C_solutions/include -IAlgorithms/C_solutions/src/headers || true
+        cd Algorithms_C
+        clang-tidy $FILES -- -IAlgorithms_C/include -IAlgorithms_C/src/headers || true
 
     - name: Run GCC Debug Build with Valgrind
       run: |
-        cd Algorithms/C_solutions
+        cd Algorithms_C
         make
         valgrind --quiet --leak-check=full --error-exitcode=123 ./test/bin/all_tests || exit 1
   
     - name: Build and Run Tests
       run: |
-        cd Algorithms/C_solutions
+        cd Algorithms_C
         make
         if make | grep -q 'Tests Failed: 0'; then
           echo "All tests passed!"
