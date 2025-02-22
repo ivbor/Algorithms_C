@@ -37,7 +37,7 @@ jobs:
     - name: Run Clang-Tidy
       run: |
         cd Algorithms_C
-        clang-tidy $FILES -- -I$(pwd)/include -I$(pwd)/src/headers || true
+        clang-tidy $(find Algorithms_C -type f \( -name '*.c' -o -name '*.h' \)) -- -IAlgorithms_C/include -IAlgorithms_C/src/headers
 
     - name: Run GCC Debug Build with Valgrind
       run: |
