@@ -1,7 +1,6 @@
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "../headers/matrix_view.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifndef Mystrcat
 #include "../../include/mystrcat.c"
@@ -12,10 +11,10 @@
 #endif
 
 void printMatrix(int **matrix, int rows, int columns, int indexes) {
-    //2**14 = 16384  
+    // 2**14 = 16384
 
-    char* to_print = (char*)malloc(16384);
-    char* to_print_copy = to_print;
+    char *to_print = (char *)malloc(16384);
+    char *to_print_copy = to_print;
     to_print[0] = '\0';
     char one_element[32];
     // Printing column indexes
@@ -23,15 +22,18 @@ void printMatrix(int **matrix, int rows, int columns, int indexes) {
         for (int i = 0; i <= columns; i++) {
             int required_length = snprintf(NULL, 0, "%5d ", i);
             if (required_length - 32 < 0) {
-            snprintf(one_element, 32, "%5d ", i);
-            to_print = mystrcat(to_print, one_element); }
-            else { 
-                log_message(LOG_FATAL, 
+                snprintf(one_element, 32, "%5d ", i);
+                to_print = mystrcat(to_print, one_element);
+            } else {
+                log_message(
+                    LOG_FATAL,
                     "Allocated wrong amount of memory for one_element, \
-                    difference (required - allocated) = ");
+                    difference (required - allocated) = "
+                );
                 char char_length[(int)sizeof(int)];
-                snprintf(char_length, 3 * sizeof(int), "%d", 
-                    required_length - 32);
+                snprintf(
+                    char_length, 3 * sizeof(int), "%d", required_length - 32
+                );
                 log_message(LOG_FATAL, char_length);
                 exit(EXIT_FAILURE);
             }
@@ -54,6 +56,6 @@ void printMatrix(int **matrix, int rows, int columns, int indexes) {
         to_print = mystrcat(to_print, "\n\n");
     }
     to_print = mystrcat(to_print, "\n");
-    log_message(LOG_DEBUG, to_print_copy);   
+    log_message(LOG_DEBUG, to_print_copy);
     free(to_print_copy);
-} 
+}

@@ -1,30 +1,26 @@
-#include <stdio.h>
-#include <time.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-
 #include "logger.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <time.h>
 
 #define LOG_FILE "./logs/logfile.log"
 #define BACKUP_LOG_FILE "./logs/logfile_backup.log"
-#define MAX_LOG_SIZE 10485760 / 1024 // 10 KB in bytes
+#define MAX_LOG_SIZE 10485760 / 1024  // 10 KB in bytes
 
-const char* log_level_strings[] = {
-    "DEBUG",
-    "INFO",
-    "WARN",
-    "ERROR",
-    "FATAL"
-};
+const char *log_level_strings[] = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
 
 log_level_t current_log_level = LOG_DEBUG;
-FILE* log_fp = NULL;
+FILE *log_fp = NULL;
 
-int set_log_level(log_level_t level) { 
-    current_log_level = level; 
-    if (current_log_level == level) { return 0; }
-    else { return (int)current_log_level; }
+int set_log_level(log_level_t level) {
+    current_log_level = level;
+    if (current_log_level == level) {
+        return 0;
+    } else {
+        return (int)current_log_level;
+    }
 }
 
 void no_log_file(FILE *log_fp) {
@@ -32,13 +28,15 @@ void no_log_file(FILE *log_fp) {
     exit(EXIT_FAILURE);
 }
 
-
 void rotate_logs() {
-    if (log_fp) { fclose(log_fp); }
+    if (log_fp) {
+        fclose(log_fp);
+    }
     remove(BACKUP_LOG_FILE);
     rename(LOG_FILE, BACKUP_LOG_FILE);
     log_fp = fopen(LOG_FILE, "w");
-    if (!log_fp) no_log_file(log_fp);
+    if (!log_fp)
+        no_log_file(log_fp);
 }
 
 void check_log_rotation() {
@@ -49,15 +47,18 @@ void check_log_rotation() {
     }
 }
 
-void log_message(log_level_t level, char* message) {
-    if (level < current_log_level) { return; }
-    
+void log_message(log_level_t level, char *message) {
+    if (level < current_log_level) {
+        return;
+    }
+
     log_fp = fopen(LOG_FILE, "a");
 
     if (!log_fp) {
         mkdir("./logs", 0700);
         log_fp = fopen(LOG_FILE, "a");
-        if (!log_fp) no_log_file(log_fp);
+        if (!log_fp)
+            no_log_file(log_fp);
     }
 
     check_log_rotation();

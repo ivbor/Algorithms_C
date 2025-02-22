@@ -4,7 +4,7 @@ void pass() {
     tests_passed++;
 }
 
-void fail(const char* message, const char* file, int line) {
+void fail(const char *message, const char *file, int line) {
     tests_failed++;
     printf("%s:%d: error: %s\n", file, line, message);
 }
