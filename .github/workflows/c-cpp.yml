@@ -32,12 +32,12 @@ jobs:
 
     - name: Run Clang-Format
       run: |
-        echo "$FILES" | xargs clang-format -i --verbose
+        echo "$FILES" | xargs clang-format -dry-run --verbose
   
     - name: Run Clang-Tidy
       run: |
         cd Algorithms_C
-        clang-tidy $FILES -- -IAlgorithms_C/include -IAlgorithms_C/src/headers || true
+        clang-tidy $FILES -- -I$(pwd)/include -I$(pwd)/src/headers || true
 
     - name: Run GCC Debug Build with Valgrind
       run: |
