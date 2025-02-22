@@ -1,6 +1,6 @@
 #include "../headers/array_count_sort.h"
-#include <limits>
-#include <cstdlib>
+#include <limits.h>
+#include <stdlib.h>
 
 // Function to find the maximum and minimum values in a 2D array
 // based on a specific key index
