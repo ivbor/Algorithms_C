@@ -1,6 +1,7 @@
 #include "../headers/array_count_sort.h"
 #include <limits.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 // Function to find the maximum and minimum values in a 2D array
 // based on a specific key index
@@ -56,7 +57,11 @@ void array_count_sort(int **arr, int rows, int cols, int key) {
         } else {
             count[range - 1]--;
             for (int j = 0; j < cols; j++) {
-                result[count[range - 1]][j] = arr[i][j];
+                if (count[range - 1] >= 0 && count[range - 1] < rows) {
+                    result[count[range - 1]][j] = arr[i][j];
+                } else {
+                    fprintf(stderr, "Warning: Skipped assignment due to invalid pos=%d\n", count[range - 1]);
+                }
             }
         }
     }

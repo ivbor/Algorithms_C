@@ -23,7 +23,7 @@ int set_log_level(log_level_t level) {
     }
 }
 
-void no_log_file(FILE *log_fp) {
+void no_log_file() {
     fprintf(stderr, "Failed to open log file: %s\n", LOG_FILE);
     exit(EXIT_FAILURE);
 }
@@ -36,7 +36,7 @@ void rotate_logs() {
     rename(LOG_FILE, BACKUP_LOG_FILE);
     log_fp = fopen(LOG_FILE, "w");
     if (!log_fp)
-        no_log_file(log_fp);
+        no_log_file();
 }
 
 void check_log_rotation() {
@@ -58,7 +58,7 @@ void log_message(log_level_t level, char *message) {
         mkdir("./logs", 0700);
         log_fp = fopen(LOG_FILE, "a");
         if (!log_fp)
-            no_log_file(log_fp);
+            no_log_file();
     }
 
     check_log_rotation();
