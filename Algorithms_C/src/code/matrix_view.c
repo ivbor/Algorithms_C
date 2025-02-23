@@ -1,36 +1,26 @@
-#include "../headers/matrix_view.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef Mystrcat
-#include "../../include/mystrcat.c"
-#endif
+#define BUFFER_SIZE 4096
+#define ELEMENT_BUFFER_SIZE 32
+#define FORMAT_WIDTH 5
+#define LOG_FATAL 1
+#define LOG_DEBUG 2
 
-#ifndef Mystrdup
-#include "../../include/mystrdup.c"
-#endif
-
-#ifndef logger
-#include "../../include/logger.h"
-#endif
-
-#define BUFFER_SIZE 16384       // Buffer for full matrix string
-#define ELEMENT_BUFFER_SIZE 32  // Buffer for formatting one element
-#define FORMAT_WIDTH 5          // Width for formatted numbers
+void log_message(int level, const char *message) {
+    const char *level_str = (level == LOG_FATAL) ? "FATAL" : "DEBUG";
+    printf("[%s] %s\n", level_str, message);
+}
 
 void printMatrix(int **matrix, int rows, int columns, int indexes) {
     // Allocate memory for the entire output buffer
     char *to_print = (char *)malloc(BUFFER_SIZE);
     if (!to_print) {
-        log_message(
-            LOG_FATAL, strdup("Failed to allocate memory for to_print.")
-        );
+        log_message(LOG_FATAL, "Failed to allocate memory for to_print.");
         exit(EXIT_FAILURE);
     }
-
-    char *to_print_copy = to_print;
-    to_print[0] = '\0';  // Initialize empty string
+    to_print[0] = '\0';
 
     char one_element[ELEMENT_BUFFER_SIZE];
 
@@ -42,28 +32,27 @@ void printMatrix(int **matrix, int rows, int columns, int indexes) {
                 snprintf(
                     one_element, ELEMENT_BUFFER_SIZE, "%*d ", FORMAT_WIDTH, i
                 );
-                to_print = mystrcat(to_print, one_element);
+                strncat(
+                    to_print, one_element, BUFFER_SIZE - strlen(to_print) - 1
+                );
             } else {
                 log_message(
-                    LOG_FATAL,
-                    strdup("Allocated insufficient memory for one_element.")
+                    LOG_FATAL, "Allocated insufficient memory for one_element."
                 );
-                log_message(
-                    LOG_FATAL, strdup("Difference (required - allocated) = ")
-                );
+                log_message(LOG_FATAL, "Difference (required - allocated) = ");
 
-                char char_length[12];  // Enough to store any int value
+                char char_length[12];
                 snprintf(
                     char_length, sizeof(char_length), "%d",
                     required_length - ELEMENT_BUFFER_SIZE
                 );
                 log_message(LOG_FATAL, char_length);
 
-                free(to_print_copy);
+                free(to_print);
                 exit(EXIT_FAILURE);
             }
         }
-        to_print = mystrdup("\n", to_print);
+        strncat(to_print, "\n", BUFFER_SIZE - strlen(to_print) - 1);
     }
 
     // Printing matrix with optional row indexes
@@ -73,22 +62,25 @@ void printMatrix(int **matrix, int rows, int columns, int indexes) {
                 snprintf(
                     one_element, ELEMENT_BUFFER_SIZE, "%*d ", FORMAT_WIDTH, i
                 );
-                to_print = mystrcat(to_print, one_element);
+                strncat(
+                    to_print, one_element, BUFFER_SIZE - strlen(to_print) - 1
+                );
             }
             if (j < columns) {
                 snprintf(
                     one_element, ELEMENT_BUFFER_SIZE, "%*d ", FORMAT_WIDTH,
                     matrix[i][j]
                 );
-                to_print = mystrcat(to_print, one_element);
+                strncat(
+                    to_print, one_element, BUFFER_SIZE - strlen(to_print) - 1
+                );
             }
         }
-        to_print = mystrdup("\n\n", to_print);
-        ;
+        strncat(to_print, "\n\n", BUFFER_SIZE - strlen(to_print) - 1);
     }
-    mystrdup("\n", to_print);
+    strncat(to_print, "\n", BUFFER_SIZE - strlen(to_print) - 1);
 
     // Log and free memory
-    log_message(LOG_DEBUG, to_print_copy);
-    free(to_print_copy);
+    log_message(LOG_DEBUG, to_print);
+    free(to_print);
 }

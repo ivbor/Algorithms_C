@@ -1,4 +1,5 @@
 #include "logger.h"
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -47,7 +48,7 @@ void check_log_rotation() {
     }
 }
 
-void log_message(log_level_t level, char *message) {
+void log_message(log_level_t level, const char *message) {
     if (level < current_log_level) {
         return;
     }
@@ -57,8 +58,10 @@ void log_message(log_level_t level, char *message) {
     if (!log_fp) {
         mkdir("./logs", 0700);
         log_fp = fopen(LOG_FILE, "a");
-        if (!log_fp)
+        if (!log_fp) {
             no_log_file();
+            return;
+        }
     }
 
     check_log_rotation();
@@ -69,9 +72,7 @@ void log_message(log_level_t level, char *message) {
     strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", localtime(&now));
 
     fprintf(log_fp, "[%s] [%s] \n", time_str, log_level_strings[level]);
+    fprintf(log_fp, "%s\n", message);
 
-    fprintf(log_fp, "%s", message);
-
-    fprintf(log_fp, "\n");
     fclose(log_fp);
 }

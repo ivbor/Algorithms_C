@@ -12,6 +12,6 @@ typedef enum {
 int set_log_level(log_level_t level);
 void rotate_logs();
 void check_log_rotation();
-void log_message(log_level_t level, char *message);
+void log_message(log_level_t level, const char *message);
 
 #endif

@@ -46,17 +46,17 @@ char *test_array_count_sort_case_one_elt_with_huge_variation() {
     };
 
     // Sort the array using array_count_sort
-    log_message(LOG_DEBUG, strdup("array before sort: \n"));
+    log_message(LOG_DEBUG, "array before sort: \n");
     printMatrix(array_with_1_dim, rows, cols, 1);
     array_count_sort(array_with_1_dim, rows, cols, 0);
-    log_message(LOG_DEBUG, strdup("array after sort: \n"));
+    log_message(LOG_DEBUG, "array after sort: \n");
     printMatrix(array_with_1_dim, rows, cols, 1);
 
     // We need a method to sort the array
-    log_message(LOG_DEBUG, strdup("copied array before sort: \n"));
+    log_message(LOG_DEBUG, "copied array before sort: \n");
     printMatrix(ptrs, rows, cols, 1);
     qsort(ptrs, rows, sizeof(int *), comp_func);
-    log_message(LOG_DEBUG, strdup("copied array after sort: \n"));
+    log_message(LOG_DEBUG, "copied array after sort: \n");
     printMatrix(ptrs, rows, cols, 1);
 
     run_assert(

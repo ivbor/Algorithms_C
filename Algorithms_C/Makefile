@@ -5,6 +5,11 @@ BIN = -fsanitize=address
 launch: test/bin/all_tests
 	test/bin/all_tests
 
+clean:
+	rm -f ./include/bin/*
+	rm -f ./test/bin/*
+	rm -f ./src/bin/*
+
 test/bin/all_tests: \
 		test/runners/all_tests.c \
 		test/bin/test_array_count_sort.so
@@ -20,16 +25,15 @@ test/bin/test_array_count_sort.so: \
 		test/test/test_array_count_sort.c \
 		include/bin/minunit.so \
 		include/bin/logger.so \
-		src/bin/matrix_view.so \
-		src/bin/array_count_sort.so \
-		src/bin/compare.so 
+		src/bin/matrix_view.so src/bin/compare.so \
+		src/bin/array_count_sort.so
 	$(CC) $(SHARED) -Isrc/headers -Iinclude \
 		test/test/test_array_count_sort.c \
-		include/bin/minunit.so \
-		include/bin/logger.so \
 		src/bin/matrix_view.so src/bin/compare.so \
 		src/bin/array_count_sort.so \
-		-o test/bin/test_array_count_sort.so
+		-o test/bin/test_array_count_sort.so \
+		-Wl,-rpath=./src/bin:./include/bin \
+		-Linclude/bin -l:minunit.so -l:logger.so
 
 src/bin/matrix_view.so: src/code/matrix_view.c
 	$(CC) $(SHARED) -o src/bin/matrix_view.so src/code/matrix_view.c
