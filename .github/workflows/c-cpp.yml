@@ -49,11 +49,13 @@ jobs:
       run: |
         cd Algorithms_C
         make
+        export ASAN_OPTIONS=detect_leaks=0
         valgrind --quiet --leak-check=full --error-exitcode=123 ./test/bin/all_tests || exit 1
   
     - name: Build and Run Tests
       run: |
         cd Algorithms_C
+        make clean
         make
         if make | grep -q 'Tests Failed: 0'; then
           echo "All tests passed!"
