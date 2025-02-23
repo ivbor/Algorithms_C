@@ -1,4 +1,4 @@
-CC = gcc -Wall -Werror
+CC = gcc -Wall -Werror -Wextra -g
 SHARED = -fPIC -shared
 BIN = -fsanitize=address
 
