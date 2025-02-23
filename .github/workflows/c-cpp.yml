@@ -33,9 +33,13 @@ jobs:
 
     - name: Run Clang-Format
       run: |
-        cd Algorithms_C
-        echo "$FILES" | xargs clang-format -dry-run --verbose
-  
+        find Algorithms_C -type f \( -name '*.c' -o -name '*.h' \) | xargs clang-format -i --verbose
+        if ! git diff --exit-code; then
+          echo "Clang-Format found issues!"
+          find Algorithms_C -type f \( -name '*.c' -o -name '*.h' \) | xargs clang-format --dry-run --verbose
+          exit 1
+        fi
+
     - name: Run Clang-Tidy
       run: |
         cd Algorithms_C
