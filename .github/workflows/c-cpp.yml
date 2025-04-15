@@ -64,7 +64,7 @@ jobs:
         cd Algorithms_C
         make clean
         make
-        if make | grep -q 'Tests Failed: 0'; then
+        if make | grep -q 'All tests passed!'; then
           echo "All tests passed!"
         else
           echo "Some tests failed!"
