@@ -3,7 +3,7 @@ SHARED = -fPIC -shared
 BIN = -fsanitize=address
 
 tidy: 
-	clang-tidy $(shell find . -not -path "./dp_solutions_from_page/*" -name '*.c' -o -name '*.h') -- -Iinclude -Isrc/headers
+	clang-tidy $(shell find . -not -path "./dp_solutions_from_page/*" -name '*.c' -o -name '*.h') -- -Iinclude -Isrc/headers -fno-caret-diagnostics -fdiagnostics-show-option
 
 format:
 	clang-format -Werror -i $(shell find . -name '*.c' -o -name '*.h')

@@ -43,7 +43,7 @@ jobs:
     - name: Run Clang-Tidy
       run: |
         cd Algorithms_C
-        clang-tidy $FILES -- -IAlgorithms_C/include -IAlgorithms_C/src/headers
+        clang-tidy $FILES -- -IAlgorithms_C/include -IAlgorithms_C/src/headers -fno-caret-diagnostics -fdiagnostics-show-option
 
     - name: Run Tests with ASan
       run: |
