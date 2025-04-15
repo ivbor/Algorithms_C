@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdio.h>
 
 int compareArraysdouble(const double *a, const double *b, int n) {
     int ii;
@@ -23,8 +24,10 @@ int compare2dimArraysint(int **a, int **b, int rows, int cols) {
     int col;
     for (row = 0; row < rows; row++) {
         for (col = 0; col < cols; col++) {
-            if (a[row][col] != b[row][col])
+            if (a[row][col] != b[row][col]) {
+                printf("Error row: %d, col: %d", row, col);
                 return 0;
+            }
         };
     };
     return 1;

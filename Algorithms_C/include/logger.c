@@ -2,25 +2,30 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/stat.h>
 #include <time.h>
 
 #define LOG_FILE "./logs/logfile.log"
 #define BACKUP_LOG_FILE "./logs/logfile_backup.log"
-#define MAX_LOG_SIZE 10485760 / 1024  // 10 KB in bytes
+#define MAX_LOG_SIZE 10 * 1024 * 1024
 
 const char *log_level_strings[] = {"DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
 
-log_level_t current_log_level = LOG_DEBUG;
 FILE *log_fp = NULL;
+log_level_t current_log_level = LOG_DEBUG;
 
-int set_log_level(log_level_t level) {
-    current_log_level = level;
-    if (current_log_level == level) {
-        return 0;
-    } else {
-        return (int)current_log_level;
+// HELPERS
+
+void get_timestamp(char *buffer, size_t size) {
+    time_t now;
+    time(&now);
+    strftime(buffer, size, "%Y-%m-%d %H:%M:%S", localtime(&now));
+}
+
+void ensure_log_dir() {
+    struct stat st = {0};
+    if (stat("./logs", &st) == -1) {
+        mkdir("./logs", 0700);
     }
 }
 
@@ -29,9 +34,12 @@ void no_log_file() {
     exit(EXIT_FAILURE);
 }
 
+// LOG ROTATION
+
 void rotate_logs() {
     if (log_fp) {
         fclose(log_fp);
+        log_fp = NULL;
     }
     remove(BACKUP_LOG_FILE);
     rename(LOG_FILE, BACKUP_LOG_FILE);
@@ -41,38 +49,51 @@ void rotate_logs() {
 }
 
 void check_log_rotation() {
+    if (!log_fp)
+        return;
+
     fseek(log_fp, 0, SEEK_END);
     long size = ftell(log_fp);
     if (size >= MAX_LOG_SIZE) {
         rotate_logs();
     }
+    fseek(log_fp, 0, SEEK_END);
 }
 
-void log_message(log_level_t level, const char *message) {
-    if (level < current_log_level) {
-        return;
-    }
+// ACTUAL LOGGERS
 
-    log_fp = fopen(LOG_FILE, "a");
+// Generic function
+static void
+log_message_stream(FILE *stream, log_level_t level, const char *message) {
+    char time_str[20];
+    get_timestamp(time_str, sizeof(time_str));
+    fprintf(
+        stream, "[%s] [%s] %s\n", time_str, log_level_strings[level], message
+    );
+    fflush(stream);
+}
 
+void log_message_file(log_level_t level, const char *message) {
+    // File stream handler
     if (!log_fp) {
-        mkdir("./logs", 0700);
+        ensure_log_dir();
         log_fp = fopen(LOG_FILE, "a");
-        if (!log_fp) {
+        if (!log_fp)
             no_log_file();
-            return;
-        }
+        log_message(LOG_DEBUG, "Opened logging file successfully");
     }
 
     check_log_rotation();
+    log_message_stream(log_fp, level, message);
+}
 
-    time_t now;
-    time(&now);
-    char time_str[20];
-    strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", localtime(&now));
+void log_message_console(log_level_t level, const char *message) {
+    log_message_stream(stdout, level, message);
+}
 
-    fprintf(log_fp, "[%s] [%s] \n", time_str, log_level_strings[level]);
-    fprintf(log_fp, "%s\n", message);
-
-    fclose(log_fp);
+void log_message(log_level_t level, const char *message) {
+    if (level < current_log_level)
+        return;
+    log_message_console(level, message);
+    log_message_file(level, message);
 }

@@ -9,7 +9,8 @@ typedef enum {
     LOG_FATAL
 } log_level_t;
 
-int set_log_level(log_level_t level);
+extern log_level_t current_log_level;
+
 void rotate_logs();
 void check_log_rotation();
 void log_message(log_level_t level, const char *message);

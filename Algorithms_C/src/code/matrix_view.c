@@ -5,13 +5,10 @@
 #define BUFFER_SIZE 4096
 #define ELEMENT_BUFFER_SIZE 32
 #define FORMAT_WIDTH 5
-#define LOG_FATAL 1
-#define LOG_DEBUG 2
 
-void log_message(int level, const char *message) {
-    const char *level_str = (level == LOG_FATAL) ? "FATAL" : "DEBUG";
-    printf("[%s] %s\n", level_str, message);
-}
+#ifndef logger
+#include "../../include/logger.h"
+#endif
 
 void printMatrix(int **matrix, int rows, int columns, int indexes) {
     // Allocate memory for the entire output buffer

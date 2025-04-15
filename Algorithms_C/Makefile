@@ -2,6 +2,12 @@ CC = gcc -Wall -Werror -Wextra -g
 SHARED = -fPIC -shared
 BIN = -fsanitize=address
 
+tidy: 
+	clang-tidy $(shell find . -not -path "./dp_solutions_from_page/*" -name '*.c' -o -name '*.h') -- -Iinclude -Isrc/headers
+
+format:
+	clang-format -Werror -i $(shell find . -name '*.c' -o -name '*.h')
+
 launch: test/bin/all_tests
 	test/bin/all_tests
 
@@ -45,7 +51,7 @@ src/bin/array_count_sort.so: src/code/array_count_sort.c
 src/bin/compare.so: src/code/compare.c
 	$(CC) $(SHARED) -o src/bin/compare.so src/code/compare.c
 
-include/bin/minunit.so: include/minunit.c include/minunit_var.c
+include/bin/minunit.so: include/minunit.c
 	$(CC) $(SHARED) -o include/bin/minunit.so include/minunit.c
 
 include/bin/logger.so: include/logger.c
