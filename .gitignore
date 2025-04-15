@@ -8,3 +8,4 @@ logs/
 Algorithms_Python/C_solutions/logs/**
 Algorithms_Python/C_solutions/test.in
 C_solutions/**bin**
+.aider*

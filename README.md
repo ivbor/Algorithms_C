@@ -25,9 +25,6 @@ All tests are run by `make` command in this directory.
 ## TODOs
 
 - setup CI/CD
-  - clang-tidy
-  - clang-format
   - markdownlint
-  - python scripts to parse setup.cfg into appropriate configs
 - continue writing test cases
   - translate tests for array_count_sort from python to C
