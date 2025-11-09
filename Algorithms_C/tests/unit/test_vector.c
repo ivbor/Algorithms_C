@@ -58,8 +58,9 @@ static void test_vector_pop_back(void) {
     ac_vector_destroy(&vector);
 }
 
-void register_vector_tests(void) {
+int main(void) {
     run_test(test_vector_push_and_get);
     run_test(test_vector_insert_and_erase);
     run_test(test_vector_pop_back);
+    return summary();
 }

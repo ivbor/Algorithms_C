@@ -21,6 +21,7 @@ static void test_stack_push_pop(void) {
     ac_stack_destroy(&stack);
 }
 
-void register_stack_tests(void) {
+int main(void) {
     run_test(test_stack_push_pop);
+    return summary();
 }

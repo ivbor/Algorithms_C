@@ -45,9 +45,11 @@ static void test_counting_sort(void) {
     assert_sorted(data, 100);
 }
 
-void register_sorting_tests(void) {
+int main(void) {
+    srand(12345u);
     run_test(test_insertion_sort);
     run_test(test_merge_sort);
     run_test(test_quick_sort);
     run_test(test_counting_sort);
+    return summary();
 }

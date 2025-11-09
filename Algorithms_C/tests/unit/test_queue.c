@@ -23,6 +23,7 @@ static void test_queue_enqueue_dequeue(void) {
     ac_queue_destroy(&queue);
 }
 
-void register_queue_tests(void) {
+int main(void) {
     run_test(test_queue_enqueue_dequeue);
+    return summary();
 }

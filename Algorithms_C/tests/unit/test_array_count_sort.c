@@ -1,7 +1,6 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include "algorithms_c/algorithms/array_count_sort.h"
 #include "algorithms_c/utils/minunit.h"
 
@@ -57,7 +56,6 @@ static void run_randomized_case(size_t rows, size_t cols, size_t key) {
     int **copy = allocate_matrix(rows, cols);
     MU_ASSERT(copy != NULL);
 
-    srand((unsigned int)time(NULL));
     for (size_t i = 0; i < rows; ++i) {
         for (size_t j = 0; j < cols; ++j) {
             int value = rand() % 2001 - 1000;
@@ -98,7 +96,9 @@ static void test_randomized_matrix(void) {
     run_randomized_case(64, 8, 3);
 }
 
-void register_array_count_sort_tests(void) {
+int main(void) {
+    srand(12345u);
     run_test(test_small_matrix_sorted_by_first_column);
     run_test(test_randomized_matrix);
+    return summary();
 }

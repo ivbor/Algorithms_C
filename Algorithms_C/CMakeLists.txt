@@ -67,26 +67,32 @@ target_link_libraries(algorithms_c
 target_include_directories(algorithms_c INTERFACE ${AC_PUBLIC_INCLUDE_DIR})
 add_library(AlgorithmsC::algorithms_c ALIAS algorithms_c)
 
-set(TEST_SOURCES
-    tests/helpers/all_tests.c
-    tests/unit/test_array_count_sort.c
-    tests/unit/test_vector.c
-    tests/unit/test_stack.c
-    tests/unit/test_queue.c
-    tests/unit/test_sorting.c
-    tests/unit/test_binary_search.c
-    ${TEST_SUPPORT_SOURCES}
+set(UNIT_TEST_TARGETS
+    array_count_sort
+    vector
+    stack
+    queue
+    sorting
+    binary_search
 )
 
-add_executable(algorithms_c_tests ${TEST_SOURCES})
-target_link_libraries(algorithms_c_tests PRIVATE algorithms_c)
-target_compile_options(algorithms_c_tests PRIVATE ${AC_WARNING_FLAGS})
-if(ENABLE_COVERAGE AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
-    target_compile_options(algorithms_c_tests PRIVATE --coverage -O0 -g)
-    target_link_options(algorithms_c_tests PRIVATE --coverage)
-endif()
+set(UNIT_TEST_EXECUTABLES)
 
-add_test(NAME unit_tests COMMAND algorithms_c_tests)
+foreach(test_name IN LISTS UNIT_TEST_TARGETS)
+    set(target "algorithms_c_${test_name}_tests")
+    add_executable(${target}
+        tests/unit/test_${test_name}.c
+        ${TEST_SUPPORT_SOURCES}
+    )
+    target_link_libraries(${target} PRIVATE algorithms_c)
+    target_compile_options(${target} PRIVATE ${AC_WARNING_FLAGS})
+    if(ENABLE_COVERAGE AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(${target} PRIVATE --coverage -O0 -g)
+        target_link_options(${target} PRIVATE --coverage)
+    endif()
+    list(APPEND UNIT_TEST_EXECUTABLES ${target})
+    add_test(NAME ${test_name} COMMAND ${target})
+endforeach()
 
 add_executable(sorting_stress tests/stress/sorting_stress.c)
 target_link_libraries(sorting_stress PRIVATE algorithms_c)
@@ -110,7 +116,7 @@ if(ENABLE_COVERAGE)
                 --html --html-details coverage.html
                 --branches
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-            DEPENDS algorithms_c_tests
+            DEPENDS ${UNIT_TEST_EXECUTABLES}
         )
     else()
         add_custom_target(coverage-report

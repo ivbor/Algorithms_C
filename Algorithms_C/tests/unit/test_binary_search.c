@@ -28,8 +28,9 @@ static void test_bounds(void) {
     MU_ASSERT(upper == 4);
 }
 
-void register_binary_search_tests(void) {
+int main(void) {
     run_test(test_binary_search_found);
     run_test(test_binary_search_not_found);
     run_test(test_bounds);
+    return summary();
 }
