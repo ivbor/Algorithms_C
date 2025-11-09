@@ -1,0 +1,35 @@
+#ifndef ALGORITHMS_C_ALGORITHMS_SORTING_H
+#define ALGORITHMS_C_ALGORITHMS_SORTING_H
+
+#include <stddef.h>
+#include "algorithms_c/algorithms/binary_search.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void ac_insertion_sort(
+    void *data,
+    size_t size,
+    size_t element_size,
+    ac_compare_fn compare
+);
+void ac_merge_sort(
+    void *data,
+    size_t size,
+    size_t element_size,
+    ac_compare_fn compare
+);
+void ac_quick_sort(
+    void *data,
+    size_t size,
+    size_t element_size,
+    ac_compare_fn compare
+);
+void ac_counting_sort_int(int *data, size_t size, int min_value, int max_value);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

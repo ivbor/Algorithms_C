@@ -1,0 +1,7 @@
+Checks: '-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,performance-*,readability-*'
+WarningsAsErrors: '*'
+HeaderFilterRegex: 'include/algorithms_c/.*'
+AnalyzeTemporaryDtors: false
+FormatStyle:     none
+ExtraArgs:
+  - "-std=c17"
