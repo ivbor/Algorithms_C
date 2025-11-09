@@ -1,25 +1,39 @@
-.PHONY: all build test coverage format tidy stress clean
+.PHONY: all build test coverage format format-check tidy stress clean algorithms structures utils
 
+SOURCE_DIR ?= .
+PROJECT_DIR ?= Algorithms_C
 BUILD_DIR ?= build
 
 all: build
 
 build:
-	cmake -S . -B $(BUILD_DIR)
+	cmake -S $(SOURCE_DIR) -B $(BUILD_DIR)
 	cmake --build $(BUILD_DIR)
+
+algorithms: build
+	cmake --build $(BUILD_DIR) --target algorithms_c_algorithms
+
+structures: build
+	cmake --build $(BUILD_DIR) --target algorithms_c_structures
+
+utils: build
+	cmake --build $(BUILD_DIR) --target algorithms_c_utils
 
 test: build
 	ctest --test-dir $(BUILD_DIR) --output-on-failure
 
 stress: build
 	cmake --build $(BUILD_DIR) --target stress
-	"$(BUILD_DIR)/sorting_stress"
+	$(BUILD_DIR)/Algorithms_C/sorting_stress
 
 coverage:
-	bash scripts/run_coverage.sh
+	bash $(PROJECT_DIR)/scripts/run_coverage.sh
 
 format:
-	clang-format -i $(shell find include src tests -name '*.c' -o -name '*.h')
+	bash $(PROJECT_DIR)/scripts/check-format.sh --apply
+
+format-check:
+	bash $(PROJECT_DIR)/scripts/check-format.sh
 
 tidy: build
 	cmake --build $(BUILD_DIR) --target clang-tidy

@@ -8,13 +8,14 @@ harnesses, and CI automation.
 ## Repository layout
 
 ```
-include/algorithms_c/   Public headers grouped by domain (algorithms, structures, utils)
-src/                    Library implementation sources
-scripts/                Tooling helpers (formatting, coverage)
-tests/unit/             Unit test suites using the bundled minunit framework
-tests/stress/           Deterministic stress harnesses for heavy workloads
-examples/               Translated dynamic-programming examples from the Python repo
-.github/workflows/      CI pipelines (linting, build/test, coverage)
+Algorithms_C/
+  include/algorithms_c/  Public headers grouped by domain (algorithms, structures, utils)
+  src/                   Library implementation sources
+  tests/unit/            Unit test suites using the bundled minunit framework
+  tests/stress/          Deterministic stress harnesses for heavy workloads
+  scripts/               Tooling helpers (formatting, coverage)
+  examples/              Translated dynamic-programming examples from the Python repo
+.github/workflows/       CI pipelines (linting, build/test, coverage)
 ```
 
 ## Building
@@ -23,11 +24,14 @@ The project uses CMake (and optionally Ninja).  A convenience `Makefile` is
 provided, so the typical workflow is simply:
 
 ```bash
-make          # configure and build (defaults to ./build)
-make test     # execute the minunit-based test suite
-make stress   # build and run long-running stress checks
-make tidy     # run clang-tidy with the repository configuration
-make format   # apply clang-format to the C sources and headers
+make              # configure and build (defaults to ./build)
+make algorithms   # build only the algorithms static library
+make structures   # build only the structures static library
+make utils        # build only the shared utilities
+make test         # execute the minunit-based test suite
+make stress       # build and run long-running stress checks
+make tidy         # run clang-tidy with the repository configuration
+make format       # apply clang-format to the C sources and headers
 ```
 
 To generate an IDE-friendly build directory manually:
@@ -45,7 +49,7 @@ The helper script configures a dedicated build directory and produces HTML and X
 reports using `gcovr`:
 
 ```bash
-scripts/run_coverage.sh
+Algorithms_C/scripts/run_coverage.sh
 ```
 
 The resulting report lives at `build/coverage/coverage.html` and is uploaded as an
