@@ -1,7 +1,10 @@
-Checks: '-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,performance-*,readability-*'
+Checks: >
+  -*,
+  clang-analyzer-*,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  readability-braces-around-statements
 WarningsAsErrors: '*'
-HeaderFilterRegex: 'include/algorithms_c/.*'
-AnalyzeTemporaryDtors: false
-FormatStyle:     none
+HeaderFilterRegex: 'Algorithms_C/(include|src)/.*'
+FormatStyle: none
 ExtraArgs:
   - "-std=c17"

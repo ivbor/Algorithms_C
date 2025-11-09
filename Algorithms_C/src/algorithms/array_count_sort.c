@@ -13,10 +13,12 @@ find_min_max(int **arr, size_t rows, size_t key, int *min, int *max) {
     *max = INT_MIN;
     for (size_t i = 0; i < rows; ++i) {
         if (arr[i][key] != INT_MIN) {
-            if (arr[i][key] < *min)
+            if (arr[i][key] < *min) {
                 *min = arr[i][key];
-            if (arr[i][key] > *max)
+            }
+            if (arr[i][key] > *max) {
                 *max = arr[i][key];
+            }
         }
     }
 }

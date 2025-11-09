@@ -6,6 +6,9 @@
 #include "algorithms_c/algorithms/sorting.h"
 
 static const size_t kTrials = 3;
+static const double kTimeLimitMs = 5000.0;
+static const size_t kSizeColumnWidth = 10;
+static const size_t kValueColumnWidth = 14;
 
 typedef void (*generic_sort_fn)(void *, size_t, size_t, ac_compare_fn);
 typedef void (*counting_sort_fn)(int *, size_t, int, int);
@@ -23,24 +26,26 @@ typedef struct {
     } fn;
 } sort_entry;
 
+typedef enum {
+    BENCHMARK_OK,
+    BENCHMARK_TIMEOUT,
+    BENCHMARK_ERROR,
+} benchmark_status;
+
+typedef struct {
+    benchmark_status status;
+    double average_ms;
+} benchmark_result;
+
 static const sort_entry kSorts[] = {
-    {"Insertion", SORT_GENERIC, 20000, {.generic = ac_insertion_sort}},
-    {"Merge", SORT_GENERIC, 200000, {.generic = ac_merge_sort}},
-    {"Quick", SORT_GENERIC, 200000, {.generic = ac_quick_sort}},
-    {"Counting", SORT_COUNTING, 300000, {.counting = ac_counting_sort_int}},
+    {"Insertion", SORT_GENERIC, 100000, {.generic = ac_insertion_sort}},
+    {"Merge", SORT_GENERIC, 10000000, {.generic = ac_merge_sort}},
+    {"Quick", SORT_GENERIC, 10000000, {.generic = ac_quick_sort}},
+    {"Counting", SORT_COUNTING, 5000000, {.counting = ac_counting_sort_int}},
 };
 
 static const size_t kSizes[] = {
-    100,
-    500,
-    1000,
-    5000,
-    10000,
-    50000,
-    100000,
-    500000,
-    1000000,
-    10000000
+    10, 50, 100, 500, 1000, 5000, 10000, 50000, 100000, 1000000, 10000000,
 };
 
 static int is_sorted(const int *data, size_t size) {
@@ -53,20 +58,26 @@ static int is_sorted(const int *data, size_t size) {
 }
 
 static void print_separator(size_t sort_count) {
-    printf("+------------");
-    for (size_t i = 0; i < sort_count; ++i) {
-        printf("+----------------");
+    printf("+");
+    for (size_t i = 0; i < kSizeColumnWidth + 2; ++i) {
+        putchar('-');
+    }
+    for (size_t sort_index = 0; sort_index < sort_count; ++sort_index) {
+        printf("+");
+        for (size_t i = 0; i < kValueColumnWidth + 2; ++i) {
+            putchar('-');
+        }
     }
     printf("+\n");
 }
 
 static void print_header(size_t sort_count) {
     print_separator(sort_count);
-    printf("| %10s ", "Size");
+    printf("| %*s ", (int)kSizeColumnWidth, "Size");
     for (size_t i = 0; i < sort_count; ++i) {
         char header[32];
         snprintf(header, sizeof(header), "%s (ms)", kSorts[i].name);
-        printf("| %14s ", header);
+        printf("| %*s ", (int)kValueColumnWidth, header);
     }
     printf("|\n");
     print_separator(sort_count);
@@ -78,7 +89,7 @@ static void fill_random(int *data, size_t size) {
     }
 }
 
-static double
+static benchmark_result
 benchmark_generic(generic_sort_fn fn, const int *base, int *work, size_t size) {
     double total_ms = 0.0;
     for (size_t trial = 0; trial < kTrials; ++trial) {
@@ -86,15 +97,20 @@ benchmark_generic(generic_sort_fn fn, const int *base, int *work, size_t size) {
         clock_t start = clock();
         fn(work, size, sizeof(int), ac_compare_int);
         clock_t end = clock();
-        total_ms += (double)(end - start) * 1000.0 / (double)CLOCKS_PER_SEC;
-        if (!is_sorted(work, size)) {
-            return -1.0;
+        double elapsed_ms =
+            (double)(end - start) * 1000.0 / (double)CLOCKS_PER_SEC;
+        if (elapsed_ms > kTimeLimitMs) {
+            return (benchmark_result){BENCHMARK_TIMEOUT, 0.0};
         }
+        if (!is_sorted(work, size)) {
+            return (benchmark_result){BENCHMARK_ERROR, 0.0};
+        }
+        total_ms += elapsed_ms;
     }
-    return total_ms / (double)kTrials;
+    return (benchmark_result){BENCHMARK_OK, total_ms / (double)kTrials};
 }
 
-static double benchmark_counting(
+static benchmark_result benchmark_counting(
     counting_sort_fn fn,
     const int *base,
     int *work,
@@ -117,12 +133,17 @@ static double benchmark_counting(
         clock_t start = clock();
         fn(work, size, min_value, max_value);
         clock_t end = clock();
-        total_ms += (double)(end - start) * 1000.0 / (double)CLOCKS_PER_SEC;
-        if (!is_sorted(work, size)) {
-            return -1.0;
+        double elapsed_ms =
+            (double)(end - start) * 1000.0 / (double)CLOCKS_PER_SEC;
+        if (elapsed_ms > kTimeLimitMs) {
+            return (benchmark_result){BENCHMARK_TIMEOUT, 0.0};
         }
+        if (!is_sorted(work, size)) {
+            return (benchmark_result){BENCHMARK_ERROR, 0.0};
+        }
+        total_ms += elapsed_ms;
     }
-    return total_ms / (double)kTrials;
+    return (benchmark_result){BENCHMARK_OK, total_ms / (double)kTrials};
 }
 
 int main(void) {
@@ -152,15 +173,15 @@ int main(void) {
         size_t size = kSizes[index];
         fill_random(base, size);
 
-        printf("| %10zu ", size);
+        printf("| %*zu ", (int)kSizeColumnWidth, size);
         for (size_t sort_index = 0; sort_index < sort_count; ++sort_index) {
             const sort_entry *entry = &kSorts[sort_index];
             if (size > entry->max_size) {
-                printf("| %14s ", "N/A");
+                printf("| %*s ", (int)kValueColumnWidth, "N/A");
                 continue;
             }
 
-            double result = -1.0;
+            benchmark_result result;
             if (entry->kind == SORT_GENERIC) {
                 result = benchmark_generic(entry->fn.generic, base, work, size);
             } else {
@@ -168,7 +189,12 @@ int main(void) {
                     benchmark_counting(entry->fn.counting, base, work, size);
             }
 
-            if (result < 0.0) {
+            if (result.status == BENCHMARK_TIMEOUT) {
+                printf("| %*s ", (int)kValueColumnWidth, "N/A");
+                continue;
+            }
+
+            if (result.status == BENCHMARK_ERROR) {
                 fprintf(
                     stderr, "Sorting failed for %s at size %zu\n", entry->name,
                     size
@@ -178,7 +204,7 @@ int main(void) {
                 return 1;
             }
 
-            printf("| %14.2f ", result);
+            printf("| %*.2f ", (int)kValueColumnWidth, result.average_ms);
         }
         printf("|\n");
     }

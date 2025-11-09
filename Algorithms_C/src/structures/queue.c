@@ -107,8 +107,9 @@ int ac_queue_reserve(ac_queue *queue, size_t new_capacity) {
 
     if (queue->size > 0 && queue->data != NULL) {
         unsigned char *dst = (unsigned char *)new_data;
+        size_t capacity = queue->capacity == 0 ? 1 : queue->capacity;
         for (size_t i = 0; i < queue->size; ++i) {
-            size_t index = (queue->head + i) % queue->capacity;
+            size_t index = (queue->head + i) % capacity;
             memcpy(
                 dst + (i * queue->element_size),
                 (unsigned char *)queue->data + (index * queue->element_size),

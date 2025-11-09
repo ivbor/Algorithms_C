@@ -50,13 +50,15 @@ void rotate_logs() {
     remove(BACKUP_LOG_FILE);
     rename(LOG_FILE, BACKUP_LOG_FILE);
     log_fp = fopen(LOG_FILE, "w");
-    if (!log_fp)
+    if (!log_fp) {
         no_log_file();
+    }
 }
 
 void check_log_rotation() {
-    if (!log_fp)
+    if (!log_fp) {
         return;
+    }
 
     fseek(log_fp, 0, SEEK_END);
     long size = ftell(log_fp);
@@ -84,8 +86,9 @@ void log_message_file(log_level_t level, const char *message) {
     if (!log_fp) {
         ensure_log_dir();
         log_fp = fopen(LOG_FILE, "a");
-        if (!log_fp)
+        if (!log_fp) {
             no_log_file();
+        }
         log_message(LOG_DEBUG, "Opened logging file successfully");
     }
 
@@ -98,8 +101,9 @@ void log_message_console(log_level_t level, const char *message) {
 }
 
 void log_message(log_level_t level, const char *message) {
-    if (level < current_log_level)
+    if (level < current_log_level) {
         return;
+    }
     log_message_console(level, message);
     log_message_file(level, message);
 }

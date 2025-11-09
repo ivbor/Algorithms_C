@@ -25,10 +25,15 @@ set(TEST_SUPPORT_SOURCES
 
 set(AC_PUBLIC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+option(AC_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
+
 set(AC_WARNING_FLAGS
     $<$<C_COMPILER_ID:GNU,Clang>:-Wall>
     $<$<C_COMPILER_ID:GNU,Clang>:-Wextra>
     $<$<C_COMPILER_ID:GNU,Clang>:-Wpedantic>
+    $<$<AND:$<BOOL:${AC_WARNINGS_AS_ERRORS}>,$<C_COMPILER_ID:GNU,Clang>>:-Werror>
+    $<$<C_COMPILER_ID:MSVC>:/W4>
+    $<$<AND:$<BOOL:${AC_WARNINGS_AS_ERRORS}>,$<C_COMPILER_ID:MSVC>>:/WX>
 )
 
 function(ac_configure_static_library target)
@@ -108,19 +113,28 @@ if(ENABLE_COVERAGE)
     find_program(GCOVR_PATH gcovr)
     if(GCOVR_PATH)
         add_custom_target(coverage-report
-            COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+            COMMAND
+                ${CMAKE_COMMAND} -E env
+                CTEST_OUTPUT_ON_FAILURE=1
+                ${CMAKE_CTEST_COMMAND}
+                --force-new-ctest-process
+                --output-on-failure
+                --test-dir ${CMAKE_BINARY_DIR}
             COMMAND ${GCOVR_PATH}
                 --root ${CMAKE_SOURCE_DIR}
                 --object-directory ${CMAKE_BINARY_DIR}
                 --xml coverage.xml
                 --html --html-details coverage.html
-                --branches
+                --txt coverage.txt
+                --txt-metric branch
+                --print-summary
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
             DEPENDS ${UNIT_TEST_EXECUTABLES}
         )
     else()
         add_custom_target(coverage-report
             COMMAND ${CMAKE_COMMAND} -E echo "gcovr not found"
+            COMMAND ${CMAKE_COMMAND} -E false
         )
     endif()
 else()

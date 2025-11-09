@@ -35,18 +35,27 @@ fi
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 project_root=$(cd "${script_dir}/.." && pwd)
 
-if ! find "${project_root}/include" "${project_root}/src" "${project_root}/tests" \
-    -type f \( -name '*.c' -o -name '*.h' \) -print -quit >/dev/null 2>&1; then
+mapfile -d '' files < <(
+    find "${project_root}/include" "${project_root}/src" "${project_root}/tests" \
+        -type f \( -name '*.c' -o -name '*.h' \) -print0
+)
+
+if [[ ${#files[@]} -eq 0 ]]; then
     echo "No source files found" >&2
     exit 0
 fi
 
+file_count=${#files[@]}
+
 if [[ "${mode}" == "apply" ]]; then
-    find "${project_root}/include" "${project_root}/src" "${project_root}/tests" \
-        -type f \( -name '*.c' -o -name '*.h' \) -print0 \
-        | xargs -0 clang-format -i
+    printf 'Applying clang-format to %d files...\n' "${file_count}"
+    printf '%s\0' "${files[@]}" | xargs -0 clang-format -i
+    echo "clang-format applied successfully."
 else
-    find "${project_root}/include" "${project_root}/src" "${project_root}/tests" \
-        -type f \( -name '*.c' -o -name '*.h' \) -print0 \
-        | xargs -0 clang-format -n --Werror
+    if printf '%s\0' "${files[@]}" | xargs -0 clang-format -n --Werror; then
+        printf 'clang-format check passed on %d files.\n' "${file_count}"
+    else
+        echo "clang-format check failed." >&2
+        exit 1
+    fi
 fi
