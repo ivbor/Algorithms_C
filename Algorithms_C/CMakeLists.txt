@@ -108,27 +108,19 @@ if(ENABLE_COVERAGE)
     find_program(GCOVR_PATH gcovr)
     if(GCOVR_PATH)
         add_custom_target(coverage-report
-            COMMAND
-                ${CMAKE_COMMAND} -E env
-                CTEST_OUTPUT_ON_FAILURE=1
-                ${CMAKE_CTEST_COMMAND}
-                --force-new-ctest-process
-                --output-on-failure
+            COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
             COMMAND ${GCOVR_PATH}
                 --root ${CMAKE_SOURCE_DIR}
                 --object-directory ${CMAKE_BINARY_DIR}
                 --xml coverage.xml
                 --html --html-details coverage.html
-                --txt coverage.txt
-                --txt-metric branch
-                --print-summary
+                --branches
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
             DEPENDS ${UNIT_TEST_EXECUTABLES}
         )
     else()
         add_custom_target(coverage-report
             COMMAND ${CMAKE_COMMAND} -E echo "gcovr not found"
-            COMMAND ${CMAKE_COMMAND} -E false
         )
     endif()
 else()
