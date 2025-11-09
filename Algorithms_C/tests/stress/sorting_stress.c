@@ -30,7 +30,9 @@ static const sort_entry kSorts[] = {
     {"Counting", SORT_COUNTING, 300000, {.counting = ac_counting_sort_int}},
 };
 
-static const size_t kSizes[] = {10000, 50000, 100000, 200000};
+static const size_t kSizes[] = {
+    100, 500, 1000, 5000, 10000, 50000, 100000, 500000, 1000000, 10000000
+};
 
 static int is_sorted(const int *data, size_t size) {
     for (size_t i = 1; i < size; ++i) {
