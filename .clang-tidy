@@ -1,0 +1,10 @@
+Checks: >
+  -*,
+  clang-analyzer-*,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  readability-braces-around-statements
+WarningsAsErrors: '*'
+HeaderFilterRegex: 'Algorithms_C/(include|src)/.*'
+FormatStyle: none
+ExtraArgs:
+  - "-std=c17"

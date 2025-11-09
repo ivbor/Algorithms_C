@@ -1,5 +1,0 @@
-WarningsAsErrors: "*"
-ExtraArgs:
-    - "-std=c++03"
-ExtraArgsBefore:
-    - "-xc++"

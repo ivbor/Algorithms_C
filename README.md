@@ -1,30 +1,81 @@
-# Algorithms and Data Structures on C
+# Algorithms_C
 
-All folders' and files' places are given as if you are in Algorithms_C folder.
+A modernised C translation of the data structures and algorithms from
+[Algorithms_Python](https://github.com/ivbor/Algorithms_Python).  The codebase is
+organised as a reusable static library accompanied by examples, unit tests, stress
+harnesses, and CI automation.
 
-The repository has the  following structure:
+## Repository layout
 
-- `include` folder contains files with helper functions and macros, such as
-minimal testing framework, logger and some macros for increased code
-readability;
-- `src` folder contains `headers` folder with defines, typedefs and
-declarations for everything in my source code, `code` folder with the source
-code and `bin` folder where compiled source code is stored as a binary or a
-shared library;
-- `test` folder contains `test` folder with test functions, `setup` folder with
-setup functions, `teardown` folder with appropriate similar objective and
-`runners` folder where runners for all tests are written.
-  - `runners` folder contains folders `code` with code for runners and `bin`
-  where there are compiled binaries for those runners
+```
+Algorithms_C/
+  include/algorithms_c/  Public headers grouped by domain (algorithms, structures, utils)
+  src/                   Library implementation sources
+  tests/unit/            Unit test suites using the bundled minunit framework
+  tests/stress/          Deterministic stress harnesses for heavy workloads
+  scripts/               Tooling helpers (formatting, coverage)
+  examples/              Translated dynamic-programming examples from the Python repo
+.github/workflows/       CI pipelines (linting, build/test, coverage)
+```
 
-Also there is a Makefile in this folder where you can find everything you need
-to know about the compilation process for this repo.
+## Building
 
-All tests are run by `make` command in this directory.
+The project uses CMake (and optionally Ninja).  A convenience `Makefile` is
+provided, so the typical workflow is simply:
 
-## TODOs
+```bash
+make              # configure and build (defaults to ./build)
+make algorithms   # build only the algorithms static library
+make structures   # build only the structures static library
+make utils        # build only the shared utilities
+make test         # execute the minunit-based test suite
+make stress       # build and run long-running stress checks
+make tidy         # run clang-tidy with the repository configuration
+make format       # apply clang-format to the C sources and headers
+```
 
-- setup CI/CD
-  - markdownlint
-- continue writing test cases
-  - translate tests for array_count_sort from python to C
+To generate an IDE-friendly build directory manually:
+
+```bash
+cmake -S . -B build
+cmake --build build
+ctest --test-dir build --output-on-failure
+```
+
+## Coverage
+
+Coverage instrumentation is available through the `ENABLE_COVERAGE` CMake option.
+The helper script configures a dedicated build directory and produces HTML and XML
+reports using `gcovr`:
+
+```bash
+Algorithms_C/scripts/run_coverage.sh
+```
+
+The resulting report lives at `build/coverage/coverage.html` and is uploaded as an
+artifact in CI.
+
+## Implemented modules
+
+The initial translation pass currently includes:
+
+* Generic binary search helpers (`ac_binary_search`, `ac_lower_bound`, `ac_upper_bound`).
+* Sorting algorithms – insertion sort, merge sort, quick sort, and counting sort –
+  matching the Python implementations.
+* Counting sort for two-dimensional arrays (`ac_array_count_sort`).
+* Core data structures: a generic `ac_vector`, stack (`ac_stack`), queue (`ac_queue`),
+  and matrix printing helpers (`ac_print_matrix`).
+* Utility helpers for comparisons and logging.
+
+Each module is unit-tested and, where appropriate, covered by stress harnesses.
+
+## Continuous integration
+
+GitHub Actions builds the project on Linux, macOS, and Windows.  Separate jobs
+run clang-format/clang-tidy, execute the unit and stress test suites, and publish
+coverage reports.
+
+## License
+
+The original Python material is licensed under the repository owner's terms.
+This translation follows the same intent for educational use.
