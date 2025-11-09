@@ -1,11 +1,30 @@
-**_sources**
-.fuse*
-bin/
-!bin/.gitkeep
-include/*
+# Build artifacts
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+Testing/
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+*.exe
+*.out
+*.ninja
+*.ninja_deps
+*.ninja_log
+
+# Coverage reports
+*.gcno
+*.gcda
+coverage*.html
+coverage.xml
+
+# Logs
 logs/
-!log/.gitkeep
-Algorithms_Python/C_solutions/logs/**
-Algorithms_Python/C_solutions/test.in
-C_solutions/**bin**
+
+# Tooling
 .aider*
