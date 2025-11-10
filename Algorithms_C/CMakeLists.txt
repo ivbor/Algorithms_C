@@ -79,6 +79,7 @@ set(UNIT_TEST_TARGETS
     queue
     sorting
     binary_search
+    utils
 )
 
 set(UNIT_TEST_EXECUTABLES)
@@ -107,7 +108,15 @@ if(ENABLE_COVERAGE AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
     target_link_options(sorting_stress PRIVATE --coverage)
 endif()
 
-add_custom_target(stress DEPENDS sorting_stress)
+add_executable(structures_stress tests/stress/structures_stress.c)
+target_link_libraries(structures_stress PRIVATE algorithms_c)
+target_compile_options(structures_stress PRIVATE ${AC_WARNING_FLAGS})
+if(ENABLE_COVERAGE AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(structures_stress PRIVATE --coverage -O0 -g)
+    target_link_options(structures_stress PRIVATE --coverage)
+endif()
+
+add_custom_target(stress DEPENDS sorting_stress structures_stress)
 
 if(ENABLE_COVERAGE)
     find_program(GCOVR_PATH gcovr)
@@ -123,6 +132,8 @@ if(ENABLE_COVERAGE)
             COMMAND ${GCOVR_PATH}
                 --root ${CMAKE_SOURCE_DIR}
                 --object-directory ${CMAKE_BINARY_DIR}
+                --exclude ".*tests/.*"
+                --exclude ".*minunit.c"
                 --xml coverage.xml
                 --html --html-details coverage.html
                 --txt coverage.txt
