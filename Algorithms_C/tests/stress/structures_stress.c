@@ -11,6 +11,52 @@
 #define QUEUE_ITERATIONS 50000
 #define STACK_ITERATIONS 50000
 
+// Tracks how often each logical operation succeeded versus intentionally
+// triggering guard paths (e.g. popping from an empty container).
+typedef struct {
+    const char *name;
+    size_t successes;
+    size_t expected_failures;
+} operation_stats;
+
+static void print_operation_separator(void) {
+    printf("+----------------------+--------------+--------------------+\n");
+}
+
+// Render a compact summary similar to the sorting stress harness so that the
+// data structure runs expose throughput at a glance.
+static void print_operation_table(
+    const char *title,
+    const operation_stats *stats,
+    size_t count,
+    size_t iterations,
+    double elapsed_ms
+) {
+    print_operation_separator();
+    printf("| %-20s | %12s | %18s |\n", title, "Successes", "Expected empty");
+    print_operation_separator();
+
+    size_t total = 0;
+    for (size_t i = 0; i < count; ++i) {
+        const operation_stats *entry = &stats[i];
+        size_t subtotal = entry->successes + entry->expected_failures;
+        total += subtotal;
+        printf(
+            "| %-20s | %12zu | %18zu |\n", entry->name, entry->successes,
+            entry->expected_failures
+        );
+    }
+
+    print_operation_separator();
+    double seconds = elapsed_ms > 0.0 ? elapsed_ms / 1000.0 : 0.0;
+    double ops_per_sec = seconds > 0.0 ? (double)total / seconds : 0.0;
+    printf("Total operations: %zu\n", total);
+    printf("Iterations run : %zu\n", iterations);
+    printf("Elapsed (ms)   : %.2f\n", elapsed_ms);
+    printf("Ops / second   : %.2f\n", ops_per_sec);
+    print_operation_separator();
+}
+
 typedef struct {
     int *data;
     size_t size;
@@ -91,8 +137,7 @@ static int ref_vector_insert(reference_vector *ref, size_t index, int value) {
     }
 
     memmove(
-        ref->data + index + 1,
-        ref->data + index,
+        ref->data + index + 1, ref->data + index,
         (ref->size - index) * sizeof(int)
     );
     ref->data[index] = value;
@@ -106,8 +151,7 @@ static int ref_vector_erase(reference_vector *ref, size_t index) {
     }
 
     memmove(
-        ref->data + index,
-        ref->data + index + 1,
+        ref->data + index, ref->data + index + 1,
         (ref->size - index - 1) * sizeof(int)
     );
     ref->size--;
@@ -130,9 +174,13 @@ static void ref_vector_clear(reference_vector *ref) {
     ref->size = 0;
 }
 
-static int verify_vector_matches(const ac_vector *vec, const reference_vector *ref) {
+static int
+verify_vector_matches(const ac_vector *vec, const reference_vector *ref) {
     if (ac_vector_size(vec) != ref->size) {
-        fprintf(stderr, "Vector size mismatch: %zu vs %zu\n", ac_vector_size(vec), ref->size);
+        fprintf(
+            stderr, "Vector size mismatch: %zu vs %zu\n", ac_vector_size(vec),
+            ref->size
+        );
         return -1;
     }
 
@@ -143,7 +191,10 @@ static int verify_vector_matches(const ac_vector *vec, const reference_vector *r
             return -1;
         }
         if (actual != ref->data[i]) {
-            fprintf(stderr, "Vector data mismatch at %zu: %d vs %d\n", i, actual, ref->data[i]);
+            fprintf(
+                stderr, "Vector data mismatch at %zu: %d vs %d\n", i, actual,
+                ref->data[i]
+            );
             return -1;
         }
     }
@@ -151,8 +202,17 @@ static int verify_vector_matches(const ac_vector *vec, const reference_vector *r
 }
 
 static int run_vector_stress(void) {
+    // Use a deterministic reference implementation to cross-check every
+    // operation.  This keeps the stress run reproducible while still
+    // exercising complex interleavings of operations.
     ac_vector vec;
     reference_vector ref;
+
+    operation_stats stats[] = {
+        {"push_back", 0, 0}, {"pop_back", 0, 0}, {"insert", 0, 0},
+        {"erase", 0, 0},     {"set", 0, 0},      {"get", 0, 0},
+        {"clear", 0, 0},     {"reserve", 0, 0},  {"shrink_to_fit", 0, 0},
+    };
 
     if (ac_vector_init(&vec, sizeof(int)) != AC_VECTOR_OK) {
         fprintf(stderr, "Failed to initialise vector\n");
@@ -160,6 +220,7 @@ static int run_vector_stress(void) {
     }
     ref_vector_init(&ref);
 
+    clock_t start = clock();
     for (size_t iteration = 0; iteration < VECTOR_ITERATIONS; ++iteration) {
         int operation = rand() % 9;
         switch (operation) {
@@ -170,16 +231,21 @@ static int run_vector_stress(void) {
                     fprintf(stderr, "Vector push_back failed\n");
                     goto error;
                 }
+                stats[0].successes++;
                 break;
             }
             case 1: {
                 int expected = 0;
                 int actual = 0;
                 if (ref.size == 0) {
-                    if (ac_vector_pop_back(&vec, &actual) != AC_VECTOR_ERR_EMPTY) {
-                        fprintf(stderr, "Vector pop_back should report empty\n");
+                    if (ac_vector_pop_back(&vec, &actual) !=
+                        AC_VECTOR_ERR_EMPTY) {
+                        fprintf(
+                            stderr, "Vector pop_back should report empty\n"
+                        );
                         goto error;
                     }
+                    stats[1].expected_failures++;
                 } else {
                     if (ref_vector_pop_back(&ref, &expected) != 0 ||
                         ac_vector_pop_back(&vec, &actual) != AC_VECTOR_OK ||
@@ -187,17 +253,20 @@ static int run_vector_stress(void) {
                         fprintf(stderr, "Vector pop_back mismatch\n");
                         goto error;
                     }
+                    stats[1].successes++;
                 }
                 break;
             }
             case 2: {
-                size_t index = ref.size == 0 ? 0 : (size_t)(rand() % (ref.size + 1));
+                size_t index =
+                    ref.size == 0 ? 0 : (size_t)(rand() % (ref.size + 1));
                 int value = rand();
                 if (ac_vector_insert(&vec, index, &value) != AC_VECTOR_OK ||
                     ref_vector_insert(&ref, index, value) != 0) {
                     fprintf(stderr, "Vector insert failed\n");
                     goto error;
                 }
+                stats[2].successes++;
                 break;
             }
             case 3: {
@@ -206,6 +275,7 @@ static int run_vector_stress(void) {
                         fprintf(stderr, "Vector erase should fail on empty\n");
                         goto error;
                     }
+                    stats[3].expected_failures++;
                 } else {
                     size_t index = (size_t)(rand() % ref.size);
                     if (ac_vector_erase(&vec, index) != AC_VECTOR_OK ||
@@ -215,15 +285,19 @@ static int run_vector_stress(void) {
                     }
                     if (index < ref.size) {
                         int after = 0;
-                        if (ac_vector_get(&vec, index, &after) != AC_VECTOR_OK) {
+                        if (ac_vector_get(&vec, index, &after) !=
+                            AC_VECTOR_OK) {
                             fprintf(stderr, "Vector get after erase failed\n");
                             goto error;
                         }
                         if (ref.data[index] != after) {
-                            fprintf(stderr, "Vector data mismatch after erase\n");
+                            fprintf(
+                                stderr, "Vector data mismatch after erase\n"
+                            );
                             goto error;
                         }
                     }
+                    stats[3].successes++;
                 }
                 break;
             }
@@ -234,6 +308,7 @@ static int run_vector_stress(void) {
                         fprintf(stderr, "Vector set should fail on empty\n");
                         goto error;
                     }
+                    stats[4].expected_failures++;
                 } else {
                     size_t index = (size_t)(rand() % ref.size);
                     int value = rand();
@@ -242,16 +317,19 @@ static int run_vector_stress(void) {
                         goto error;
                     }
                     ref.data[index] = value;
+                    stats[4].successes++;
                 }
                 break;
             }
             case 5: {
                 int actual = 0;
                 if (ref.size == 0) {
-                    if (ac_vector_get(&vec, 0, &actual) != AC_VECTOR_ERR_INDEX) {
+                    if (ac_vector_get(&vec, 0, &actual) !=
+                        AC_VECTOR_ERR_INDEX) {
                         fprintf(stderr, "Vector get should fail on empty\n");
                         goto error;
                     }
+                    stats[5].expected_failures++;
                 } else {
                     size_t index = (size_t)(rand() % ref.size);
                     if (ac_vector_get(&vec, index, &actual) != AC_VECTOR_OK ||
@@ -259,12 +337,14 @@ static int run_vector_stress(void) {
                         fprintf(stderr, "Vector get mismatch\n");
                         goto error;
                     }
+                    stats[5].successes++;
                 }
                 break;
             }
             case 6:
                 ac_vector_clear(&vec);
                 ref_vector_clear(&ref);
+                stats[6].successes++;
                 break;
             case 7: {
                 size_t target = ref.size + (size_t)(rand() % 20);
@@ -273,6 +353,7 @@ static int run_vector_stress(void) {
                     fprintf(stderr, "Vector reserve failed\n");
                     goto error;
                 }
+                stats[7].successes++;
                 break;
             }
             case 8: {
@@ -281,15 +362,21 @@ static int run_vector_stress(void) {
                     fprintf(stderr, "Vector shrink_to_fit failed\n");
                     goto error;
                 }
+                stats[8].successes++;
                 break;
             }
         }
 
         if (ac_vector_size(&vec) != ref.size) {
-            fprintf(stderr, "Vector size diverged after iteration %zu\n", iteration);
+            fprintf(
+                stderr, "Vector size diverged after iteration %zu\n", iteration
+            );
             goto error;
         }
     }
+
+    clock_t end = clock();
+    double elapsed_ms = (double)(end - start) * 1000.0 / (double)CLOCKS_PER_SEC;
 
     if (verify_vector_matches(&vec, &ref) != 0) {
         goto error;
@@ -297,6 +384,10 @@ static int run_vector_stress(void) {
 
     ac_vector_destroy(&vec);
     ref_vector_destroy(&ref);
+    print_operation_table(
+        "Vector operations", stats, sizeof(stats) / sizeof(stats[0]),
+        VECTOR_ITERATIONS, elapsed_ms
+    );
     printf("Vector stress test passed (%d iterations).\n", VECTOR_ITERATIONS);
     return 0;
 
@@ -371,8 +462,15 @@ static int ref_queue_peek(const reference_queue *ref, int *out_value) {
 }
 
 static int run_queue_stress(void) {
+    // The queue stressor mirrors the vector approach: a mirror data structure
+    // keeps the authoritative state so that we detect even subtle divergence.
     ac_queue queue;
     reference_queue ref;
+
+    operation_stats stats[] = {
+        {"enqueue", 0, 0}, {"dequeue", 0, 0},     {"peek", 0, 0},
+        {"reserve", 0, 0}, {"consistency", 0, 0},
+    };
 
     if (ac_queue_init(&queue, sizeof(int), 0) != 0) {
         fprintf(stderr, "Failed to initialise queue\n");
@@ -380,6 +478,7 @@ static int run_queue_stress(void) {
     }
     ref_queue_init(&ref);
 
+    clock_t start = clock();
     for (size_t iteration = 0; iteration < QUEUE_ITERATIONS; ++iteration) {
         int operation = rand() % 5;
         switch (operation) {
@@ -390,6 +489,7 @@ static int run_queue_stress(void) {
                     fprintf(stderr, "Queue enqueue failed\n");
                     goto queue_error;
                 }
+                stats[0].successes++;
                 break;
             }
             case 1: {
@@ -400,6 +500,7 @@ static int run_queue_stress(void) {
                         fprintf(stderr, "Queue dequeue should report empty\n");
                         goto queue_error;
                     }
+                    stats[1].expected_failures++;
                 } else {
                     if (ref_queue_dequeue(&ref, &expected) != 0 ||
                         ac_queue_dequeue(&queue, &actual) != 0 ||
@@ -407,6 +508,7 @@ static int run_queue_stress(void) {
                         fprintf(stderr, "Queue dequeue mismatch\n");
                         goto queue_error;
                     }
+                    stats[1].successes++;
                 }
                 break;
             }
@@ -418,6 +520,7 @@ static int run_queue_stress(void) {
                         fprintf(stderr, "Queue peek should report empty\n");
                         goto queue_error;
                     }
+                    stats[2].expected_failures++;
                 } else {
                     if (ref_queue_peek(&ref, &expected) != 0 ||
                         ac_queue_peek(&queue, &actual) != 0 ||
@@ -425,6 +528,7 @@ static int run_queue_stress(void) {
                         fprintf(stderr, "Queue peek mismatch\n");
                         goto queue_error;
                     }
+                    stats[2].successes++;
                 }
                 break;
             }
@@ -435,6 +539,7 @@ static int run_queue_stress(void) {
                     fprintf(stderr, "Queue reserve failed\n");
                     goto queue_error;
                 }
+                stats[3].successes++;
                 break;
             }
             case 4: {
@@ -447,30 +552,40 @@ static int run_queue_stress(void) {
                         fprintf(stderr, "Queue consistency check failed\n");
                         goto queue_error;
                     }
+                    stats[4].successes++;
                 }
                 break;
             }
         }
 
         if (ac_queue_size(&queue) != ref.size) {
-            fprintf(stderr, "Queue size diverged after iteration %zu\n", iteration);
+            fprintf(
+                stderr, "Queue size diverged after iteration %zu\n", iteration
+            );
             goto queue_error;
         }
     }
+
+    clock_t end = clock();
+    double elapsed_ms = (double)(end - start) * 1000.0 / (double)CLOCKS_PER_SEC;
 
     while (ref.size > 0) {
         int expected = 0;
         int actual = 0;
         if (ref_queue_dequeue(&ref, &expected) != 0 ||
-            ac_queue_dequeue(&queue, &actual) != 0 ||
-            expected != actual) {
+            ac_queue_dequeue(&queue, &actual) != 0 || expected != actual) {
             fprintf(stderr, "Queue final drain mismatch\n");
             goto queue_error;
         }
+        stats[1].successes++;
     }
 
     ac_queue_destroy(&queue);
     ref_queue_destroy(&ref);
+    print_operation_table(
+        "Queue operations", stats, sizeof(stats) / sizeof(stats[0]),
+        QUEUE_ITERATIONS, elapsed_ms
+    );
     printf("Queue stress test passed (%d iterations).\n", QUEUE_ITERATIONS);
     return 0;
 
@@ -543,8 +658,17 @@ static int ref_stack_top(const reference_stack *ref, int *out_value) {
 }
 
 static int run_stack_stress(void) {
+    // Stress the stack by randomly interleaving pushes/pops and validating
+    // against a simple reference implementation.
     ac_stack stack;
     reference_stack ref;
+
+    operation_stats stats[] = {
+        {"push", 0, 0},
+        {"pop", 0, 0},
+        {"top", 0, 0},
+        {"consistency", 0, 0},
+    };
 
     if (ac_stack_init(&stack, sizeof(int)) != AC_VECTOR_OK) {
         fprintf(stderr, "Failed to initialise stack\n");
@@ -552,6 +676,7 @@ static int run_stack_stress(void) {
     }
     ref_stack_init(&ref);
 
+    clock_t start = clock();
     for (size_t iteration = 0; iteration < STACK_ITERATIONS; ++iteration) {
         int operation = rand() % 4;
         switch (operation) {
@@ -562,6 +687,7 @@ static int run_stack_stress(void) {
                     fprintf(stderr, "Stack push failed\n");
                     goto stack_error;
                 }
+                stats[0].successes++;
                 break;
             }
             case 1: {
@@ -572,6 +698,7 @@ static int run_stack_stress(void) {
                         fprintf(stderr, "Stack pop should report empty\n");
                         goto stack_error;
                     }
+                    stats[1].expected_failures++;
                 } else {
                     if (ref_stack_pop(&ref, &expected) != 0 ||
                         ac_stack_pop(&stack, &actual) != AC_VECTOR_OK ||
@@ -579,6 +706,7 @@ static int run_stack_stress(void) {
                         fprintf(stderr, "Stack pop mismatch\n");
                         goto stack_error;
                     }
+                    stats[1].successes++;
                 }
                 break;
             }
@@ -590,6 +718,7 @@ static int run_stack_stress(void) {
                         fprintf(stderr, "Stack top should report empty\n");
                         goto stack_error;
                     }
+                    stats[2].expected_failures++;
                 } else {
                     if (ref_stack_top(&ref, &expected) != 0 ||
                         ac_stack_top(&stack, &actual) != AC_VECTOR_OK ||
@@ -597,6 +726,7 @@ static int run_stack_stress(void) {
                         fprintf(stderr, "Stack top mismatch\n");
                         goto stack_error;
                     }
+                    stats[2].successes++;
                 }
                 break;
             }
@@ -610,15 +740,21 @@ static int run_stack_stress(void) {
                         fprintf(stderr, "Stack consistency check failed\n");
                         goto stack_error;
                     }
+                    stats[3].successes++;
                 }
                 break;
         }
 
         if (ac_stack_size(&stack) != ref.size) {
-            fprintf(stderr, "Stack size diverged after iteration %zu\n", iteration);
+            fprintf(
+                stderr, "Stack size diverged after iteration %zu\n", iteration
+            );
             goto stack_error;
         }
     }
+
+    clock_t end = clock();
+    double elapsed_ms = (double)(end - start) * 1000.0 / (double)CLOCKS_PER_SEC;
 
     while (ref.size > 0) {
         int expected = 0;
@@ -629,10 +765,15 @@ static int run_stack_stress(void) {
             fprintf(stderr, "Stack final drain mismatch\n");
             goto stack_error;
         }
+        stats[1].successes++;
     }
 
     ac_stack_destroy(&stack);
     ref_stack_destroy(&ref);
+    print_operation_table(
+        "Stack operations", stats, sizeof(stats) / sizeof(stats[0]),
+        STACK_ITERATIONS, elapsed_ms
+    );
     printf("Stack stress test passed (%d iterations).\n", STACK_ITERATIONS);
     return 0;
 

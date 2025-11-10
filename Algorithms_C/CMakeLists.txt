@@ -79,6 +79,7 @@ set(UNIT_TEST_TARGETS
     queue
     sorting
     binary_search
+    utils
 )
 
 set(UNIT_TEST_EXECUTABLES)
@@ -131,6 +132,8 @@ if(ENABLE_COVERAGE)
             COMMAND ${GCOVR_PATH}
                 --root ${CMAKE_SOURCE_DIR}
                 --object-directory ${CMAKE_BINARY_DIR}
+                --exclude ".*tests/.*"
+                --exclude ".*minunit.c"
                 --xml coverage.xml
                 --html --html-details coverage.html
                 --txt coverage.txt

@@ -5,6 +5,16 @@ A modernised C translation of the data structures and algorithms from
 organised as a reusable static library accompanied by examples, unit tests, stress
 harnesses, and CI automation.
 
+## Table of contents
+
+1. [Repository layout](#repository-layout)
+2. [Building](#building)
+3. [Usage](#usage)
+4. [Coverage](#coverage)
+5. [Implemented modules](#implemented-modules)
+6. [Continuous integration](#continuous-integration)
+7. [License](#license)
+
 ## Repository layout
 
 ```
@@ -17,6 +27,14 @@ Algorithms_C/
   examples/              Translated dynamic-programming examples from the Python repo
 .github/workflows/       CI pipelines (linting, build/test, coverage)
 ```
+
+Quick links:
+
+* [Headers](Algorithms_C/include/algorithms_c)
+* [Sources](Algorithms_C/src)
+* [Unit tests](Algorithms_C/tests/unit)
+* [Stress harnesses](Algorithms_C/tests/stress)
+* [Utility scripts](Algorithms_C/scripts)
 
 ## Building
 
@@ -42,11 +60,40 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
+## Usage
+
+All public headers reside under `Algorithms_C/include/algorithms_c`.  A minimal
+program that sorts a `vector` looks like:
+
+```c
+#include "algorithms_c/algorithms/compare.h"
+#include "algorithms_c/algorithms/sorting.h"
+#include "algorithms_c/structures/vector.h"
+
+int main(void) {
+    ac_vector vec;
+    ac_vector_from_array(&vec, sizeof(int), (int[]){4, 2, 1, 3}, 4);
+    ac_quick_sort(ac_vector_data(&vec), ac_vector_size(&vec), sizeof(int), ac_compare_int);
+    ac_vector_destroy(&vec);
+    return 0;
+}
+```
+
+From CMake you can link against the interface target exposed by this project:
+
+```cmake
+find_package(AlgorithmsC CONFIG REQUIRED)
+add_executable(sample main.c)
+target_link_libraries(sample PRIVATE AlgorithmsC::algorithms_c)
+```
+
 ## Coverage
 
 Coverage instrumentation is available through the `ENABLE_COVERAGE` CMake option.
 The helper script configures a dedicated build directory and produces HTML and XML
-reports using `gcovr`:
+reports using `gcovr`.  Non-functional helper code (unit tests and the bundled
+`minunit` framework) is excluded so that the reported percentage focuses on the
+library itself:
 
 ```bash
 Algorithms_C/scripts/run_coverage.sh

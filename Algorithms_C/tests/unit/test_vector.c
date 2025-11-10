@@ -84,12 +84,13 @@ static void test_vector_from_array_and_clear(void) {
     MU_ASSERT(
         ac_vector_from_array(
             &vector, sizeof(int), values, sizeof(values) / sizeof(values[0])
-        )
-        == AC_VECTOR_OK
+        ) == AC_VECTOR_OK
     );
 
     MU_ASSERT(ac_vector_size(&vector) == sizeof(values) / sizeof(values[0]));
-    MU_ASSERT(ac_vector_capacity(&vector) == sizeof(values) / sizeof(values[0]));
+    MU_ASSERT(
+        ac_vector_capacity(&vector) == sizeof(values) / sizeof(values[0])
+    );
 
     for (size_t i = 0; i < ac_vector_size(&vector); ++i) {
         int out = 0;
@@ -99,7 +100,9 @@ static void test_vector_from_array_and_clear(void) {
 
     ac_vector_clear(&vector);
     MU_ASSERT(ac_vector_size(&vector) == 0);
-    MU_ASSERT(ac_vector_capacity(&vector) == sizeof(values) / sizeof(values[0]));
+    MU_ASSERT(
+        ac_vector_capacity(&vector) == sizeof(values) / sizeof(values[0])
+    );
 
     ac_vector_destroy(&vector);
 }
