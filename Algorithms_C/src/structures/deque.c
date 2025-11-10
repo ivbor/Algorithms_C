@@ -9,8 +9,8 @@
  * class but embraces a ring-buffer storage layout so that push and pop
  * operations stay amortised ``O(1)``.  The implementation code purposefully
  * documents every decision point; the comments are intentionally verbose so
- * that readers can reason about the invariants without needing to cross-reference
- * the header file.
+ * that readers can reason about the invariants without needing to
+ * cross-reference the header file.
  */
 
 /** Allocate a raw buffer while guarding against overflow. */
@@ -46,7 +46,11 @@ static int ensure_capacity(ac_deque *deque, size_t min_capacity) {
     return ac_deque_reserve(deque, new_capacity);
 }
 
-int ac_deque_init(ac_deque *deque, size_t element_size, size_t initial_capacity) {
+int ac_deque_init(
+    ac_deque *deque,
+    size_t element_size,
+    size_t initial_capacity
+) {
     if (deque == NULL || element_size == 0) {
         return -EINVAL;
     }
@@ -112,8 +116,7 @@ int ac_deque_reserve(ac_deque *deque, size_t new_capacity) {
             size_t index = (deque->head + i) % old_capacity;
             memcpy(
                 dst + (i * deque->element_size),
-                src + (index * deque->element_size),
-                deque->element_size
+                src + (index * deque->element_size), deque->element_size
             );
         }
     }
@@ -141,7 +144,9 @@ int ac_deque_push_back(ac_deque *deque, const void *value) {
     }
 
     unsigned char *base = (unsigned char *)deque->data;
-    memcpy(base + (deque->tail * deque->element_size), value, deque->element_size);
+    memcpy(
+        base + (deque->tail * deque->element_size), value, deque->element_size
+    );
     deque->tail = (deque->tail + 1) % deque->capacity;
     deque->size++;
     return 0;
@@ -163,7 +168,9 @@ int ac_deque_push_front(ac_deque *deque, const void *value) {
 
     deque->head = (deque->head == 0) ? deque->capacity - 1 : deque->head - 1;
     unsigned char *base = (unsigned char *)deque->data;
-    memcpy(base + (deque->head * deque->element_size), value, deque->element_size);
+    memcpy(
+        base + (deque->head * deque->element_size), value, deque->element_size
+    );
     deque->size++;
     return 0;
 }
@@ -178,7 +185,10 @@ int ac_deque_pop_front(ac_deque *deque, void *out_value) {
 
     if (out_value != NULL) {
         unsigned char *base = (unsigned char *)deque->data;
-        memcpy(out_value, base + (deque->head * deque->element_size), deque->element_size);
+        memcpy(
+            out_value, base + (deque->head * deque->element_size),
+            deque->element_size
+        );
     }
 
     deque->head = (deque->head + 1) % deque->capacity;
@@ -201,7 +211,10 @@ int ac_deque_pop_back(ac_deque *deque, void *out_value) {
     deque->tail = (deque->tail == 0) ? deque->capacity - 1 : deque->tail - 1;
     if (out_value != NULL) {
         unsigned char *base = (unsigned char *)deque->data;
-        memcpy(out_value, base + (deque->tail * deque->element_size), deque->element_size);
+        memcpy(
+            out_value, base + (deque->tail * deque->element_size),
+            deque->element_size
+        );
     }
 
     deque->size--;
@@ -221,7 +234,10 @@ int ac_deque_front(const ac_deque *deque, void *out_value) {
     }
 
     const unsigned char *base = (const unsigned char *)deque->data;
-    memcpy(out_value, base + (deque->head * deque->element_size), deque->element_size);
+    memcpy(
+        out_value, base + (deque->head * deque->element_size),
+        deque->element_size
+    );
     return 0;
 }
 
@@ -235,7 +251,9 @@ int ac_deque_back(const ac_deque *deque, void *out_value) {
 
     size_t index = (deque->tail == 0) ? deque->capacity - 1 : deque->tail - 1;
     const unsigned char *base = (const unsigned char *)deque->data;
-    memcpy(out_value, base + (index * deque->element_size), deque->element_size);
+    memcpy(
+        out_value, base + (index * deque->element_size), deque->element_size
+    );
     return 0;
 }
 

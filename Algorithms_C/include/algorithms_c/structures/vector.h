@@ -69,8 +69,8 @@ typedef struct {
  *
  * @param vec Destination vector to initialise.
  * @param element_size Size in bytes of each stored element; must be non-zero.
- * @return ::AC_VECTOR_OK on success or ::AC_VECTOR_ERR_ALLOCATION when arguments
- *         are invalid.
+ * @return ::AC_VECTOR_OK on success or ::AC_VECTOR_ERR_ALLOCATION when
+ * arguments are invalid.
  * @signature int ac_vector_init(ac_vector *vec, size_t element_size)
  */
 int ac_vector_init(ac_vector *vec, size_t element_size);

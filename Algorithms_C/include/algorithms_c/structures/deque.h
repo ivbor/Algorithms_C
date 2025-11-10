@@ -67,7 +67,11 @@ typedef struct {
  * @signature int ac_deque_init(ac_deque *deque, size_t element_size,
  *                              size_t initial_capacity)
  */
-int ac_deque_init(ac_deque *deque, size_t element_size, size_t initial_capacity);
+int ac_deque_init(
+    ac_deque *deque,
+    size_t element_size,
+    size_t initial_capacity
+);
 
 /**
  * @brief Release every resource owned by ``deque`` and reset it to zero state.

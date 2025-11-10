@@ -74,7 +74,8 @@ static void test_deque_wraparound_and_reserve(void) {
     MU_ASSERT(front == 2);
 
     int expected_values[] = {2, 100, 101, 102};
-    for (size_t i = 0; i < sizeof(expected_values) / sizeof(expected_values[0]); ++i) {
+    for (size_t i = 0; i < sizeof(expected_values) / sizeof(expected_values[0]);
+         ++i) {
         int out = -1;
         MU_ASSERT(ac_deque_pop_front(&deque, &out) == 0);
         MU_ASSERT(out == expected_values[i]);

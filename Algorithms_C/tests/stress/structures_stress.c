@@ -512,9 +512,8 @@ static int run_deque_stress(void) {
     reference_deque ref;
 
     operation_stats stats[] = {
-        {"push_back", 0, 0}, {"push_front", 0, 0},
-        {"pop_front", 0, 0}, {"pop_back", 0, 0},
-        {"front", 0, 0},     {"back", 0, 0},
+        {"push_back", 0, 0}, {"push_front", 0, 0}, {"pop_front", 0, 0},
+        {"pop_back", 0, 0},  {"front", 0, 0},      {"back", 0, 0},
         {"clear", 0, 0},     {"reserve", 0, 0},
     };
 
@@ -528,7 +527,7 @@ static int run_deque_stress(void) {
     for (size_t iteration = 0; iteration < DEQUE_ITERATIONS; ++iteration) {
         int operation = rand() % 8;
         switch (operation) {
-            case 0: { // push_back
+            case 0: {  // push_back
                 int value = rand();
                 if (ac_deque_push_back(&deque, &value) != 0 ||
                     ref_deque_push_back(&ref, value) != 0) {
@@ -538,7 +537,7 @@ static int run_deque_stress(void) {
                 stats[0].successes++;
                 break;
             }
-            case 1: { // push_front
+            case 1: {  // push_front
                 int value = rand();
                 if (ac_deque_push_front(&deque, &value) != 0 ||
                     ref_deque_push_front(&ref, value) != 0) {
@@ -548,12 +547,14 @@ static int run_deque_stress(void) {
                 stats[1].successes++;
                 break;
             }
-            case 2: { // pop_front
+            case 2: {  // pop_front
                 int expected = 0;
                 int actual = 0;
                 if (ref.size == 0) {
                     if (ac_deque_pop_front(&deque, &actual) != -ENOENT) {
-                        fprintf(stderr, "Deque pop_front should report empty\n");
+                        fprintf(
+                            stderr, "Deque pop_front should report empty\n"
+                        );
                         goto deque_error;
                     }
                     stats[2].expected_failures++;
@@ -568,7 +569,7 @@ static int run_deque_stress(void) {
                 }
                 break;
             }
-            case 3: { // pop_back
+            case 3: {  // pop_back
                 int expected = 0;
                 int actual = 0;
                 if (ref.size == 0) {
@@ -588,7 +589,7 @@ static int run_deque_stress(void) {
                 }
                 break;
             }
-            case 4: { // front
+            case 4: {  // front
                 int expected = 0;
                 int actual = 0;
                 if (ref.size == 0) {
@@ -608,7 +609,7 @@ static int run_deque_stress(void) {
                 }
                 break;
             }
-            case 5: { // back
+            case 5: {  // back
                 int expected = 0;
                 int actual = 0;
                 if (ref.size == 0) {
@@ -628,12 +629,12 @@ static int run_deque_stress(void) {
                 }
                 break;
             }
-            case 6: // clear
+            case 6:  // clear
                 ac_deque_clear(&deque);
                 ref_deque_clear(&ref);
                 stats[6].successes++;
                 break;
-            case 7: { // reserve
+            case 7: {  // reserve
                 size_t target = ref.size + (size_t)(rand() % 20);
                 if (ac_deque_reserve(&deque, target) != 0 ||
                     ref_deque_reserve(&ref, target) != 0) {
@@ -646,7 +647,9 @@ static int run_deque_stress(void) {
         }
 
         if (ac_deque_size(&deque) != ref.size) {
-            fprintf(stderr, "Deque size diverged after iteration %zu\n", iteration);
+            fprintf(
+                stderr, "Deque size diverged after iteration %zu\n", iteration
+            );
             goto deque_error;
         }
     }
@@ -658,8 +661,7 @@ static int run_deque_stress(void) {
         int expected = 0;
         int actual = 0;
         if (ref_deque_pop_front(&ref, &expected) != 0 ||
-            ac_deque_pop_front(&deque, &actual) != 0 ||
-            expected != actual) {
+            ac_deque_pop_front(&deque, &actual) != 0 || expected != actual) {
             fprintf(stderr, "Deque final drain mismatch\n");
             goto deque_error;
         }
