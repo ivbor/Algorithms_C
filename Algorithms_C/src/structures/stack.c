@@ -1,6 +1,13 @@
 #include "algorithms_c/structures/stack.h"
 #include <stdlib.h>
 
+/**
+ * Rather than re-implement a bespoke linked structure, the stack piggybacks on
+ * the documented vector helper.  This file exists mostly as thin wrappers, yet
+ * we keep the commentary explicit so that the correspondence with the Python
+ * ``Stack`` class remains evident.
+ */
+
 int ac_stack_init(ac_stack *stack, size_t element_size) {
     if (stack == NULL) {
         return AC_VECTOR_ERR_ALLOCATION;
