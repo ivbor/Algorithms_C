@@ -4,6 +4,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * The queue mirrors the Python ``Queue`` class but is optimised using a
+ * circular buffer.  Inline comments document how indices wrap, how memory
+ * growth is handled, and why the translation stays faithful to the higher-level
+ * semantics.  The verbosity is intentional: educational notes are prioritised
+ * over terseness.
+ */
+
 static void *allocate_buffer(size_t count, size_t element_size) {
     if (count == 0 || element_size == 0) {
         return NULL;
@@ -15,18 +23,21 @@ static void *allocate_buffer(size_t count, size_t element_size) {
     return malloc(count * element_size);
 }
 
+// Copy a single element into the buffer respecting the configured element size.
 static void queue_memcpy(ac_queue *queue, size_t index, const void *source) {
     unsigned char *base = (unsigned char *)queue->data;
     size_t offset = index * queue->element_size;
     memcpy(base + offset, source, queue->element_size);
 }
 
+// Extract a single element from the buffer for dequeue/peek operations.
 static void queue_memmove(ac_queue *queue, void *destination, size_t index) {
     unsigned char *base = (unsigned char *)queue->data;
     size_t offset = index * queue->element_size;
     memcpy(destination, base + offset, queue->element_size);
 }
 
+// Double the allocation until the queue can store ``required_capacity`` items.
 static int grow_if_needed(ac_queue *queue, size_t required_capacity) {
     if (queue->capacity >= required_capacity) {
         return 0;
