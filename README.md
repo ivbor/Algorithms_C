@@ -111,10 +111,14 @@ The initial translation pass currently includes:
   matching the Python implementations.
 * Counting sort for two-dimensional arrays (`ac_array_count_sort`).
 * Core data structures: a generic `ac_vector`, stack (`ac_stack`), queue (`ac_queue`),
-  and matrix printing helpers (`ac_print_matrix`).
+  double-ended queue (`ac_deque`), singly linked list (`ac_slist`), and matrix
+  printing helpers (`ac_print_matrix`).
 * Utility helpers for comparisons and logging.
 
 Each module is unit-tested and, where appropriate, covered by stress harnesses.
+The structure headers mirror the Python repository's rich docstrings so that
+every function now carries both short and long-form descriptions directly in the
+code, making the C translation an equally verbose learning resource.
 
 ## Continuous integration
 

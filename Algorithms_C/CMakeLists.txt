@@ -9,6 +9,8 @@ set(ALGORITHMS_SOURCES
 )
 
 set(STRUCTURES_SOURCES
+    src/structures/slist.c
+    src/structures/deque.c
     src/structures/matrix_view.c
     src/structures/queue.c
     src/structures/stack.c
@@ -74,6 +76,8 @@ add_library(AlgorithmsC::algorithms_c ALIAS algorithms_c)
 
 set(UNIT_TEST_TARGETS
     array_count_sort
+    deque
+    slist
     vector
     stack
     queue
