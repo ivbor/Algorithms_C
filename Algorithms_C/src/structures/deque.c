@@ -31,16 +31,18 @@ static void *allocate_buffer(size_t count, size_t element_size) {
  * keeps amortised operations constant.
  */
 static int ensure_capacity(ac_deque *deque, size_t min_capacity) {
+    size_t new_capacity;
+
     if (deque->capacity >= min_capacity) {
         return 0;
     }
 
-    size_t new_capacity = deque->capacity == 0 ? 1 : deque->capacity;
+    new_capacity = deque->capacity == 0 ? 1U : deque->capacity;
     while (new_capacity < min_capacity) {
-        if (new_capacity > SIZE_MAX / 2) {
+        if (new_capacity > SIZE_MAX / 2U) {
             return -ENOMEM;
         }
-        new_capacity *= 2;
+        new_capacity *= 2U;
     }
 
     return ac_deque_reserve(deque, new_capacity);
@@ -95,6 +97,13 @@ size_t ac_deque_capacity(const ac_deque *deque) {
 }
 
 int ac_deque_reserve(ac_deque *deque, size_t new_capacity) {
+    void *new_data;
+    unsigned char *dst;
+    unsigned char *src;
+    size_t old_capacity;
+    size_t i;
+    size_t index;
+
     if (deque == NULL) {
         return -EINVAL;
     }
@@ -103,17 +112,17 @@ int ac_deque_reserve(ac_deque *deque, size_t new_capacity) {
         return 0;
     }
 
-    void *new_data = allocate_buffer(new_capacity, deque->element_size);
+    new_data = allocate_buffer(new_capacity, deque->element_size);
     if (new_data == NULL) {
         return -ENOMEM;
     }
 
     if (deque->size > 0 && deque->data != NULL) {
-        unsigned char *dst = (unsigned char *)new_data;
-        unsigned char *src = (unsigned char *)deque->data;
-        size_t old_capacity = deque->capacity == 0 ? 1 : deque->capacity;
-        for (size_t i = 0; i < deque->size; ++i) {
-            size_t index = (deque->head + i) % old_capacity;
+        dst = (unsigned char *)new_data;
+        src = (unsigned char *)deque->data;
+        old_capacity = deque->capacity == 0 ? 1U : deque->capacity;
+        for (i = 0; i < deque->size; ++i) {
+            index = (deque->head + i) % old_capacity;
             memcpy(
                 dst + (i * deque->element_size),
                 src + (index * deque->element_size), deque->element_size
@@ -130,11 +139,14 @@ int ac_deque_reserve(ac_deque *deque, size_t new_capacity) {
 }
 
 int ac_deque_push_back(ac_deque *deque, const void *value) {
+    int status;
+    unsigned char *base;
+
     if (deque == NULL || value == NULL) {
         return -EINVAL;
     }
 
-    int status = ensure_capacity(deque, deque->size + 1);
+    status = ensure_capacity(deque, deque->size + 1U);
     if (status != 0) {
         return status;
     }
@@ -143,21 +155,24 @@ int ac_deque_push_back(ac_deque *deque, const void *value) {
         return -ENOMEM;
     }
 
-    unsigned char *base = (unsigned char *)deque->data;
+    base = (unsigned char *)deque->data;
     memcpy(
         base + (deque->tail * deque->element_size), value, deque->element_size
     );
-    deque->tail = (deque->tail + 1) % deque->capacity;
+    deque->tail = (deque->tail + 1U) % deque->capacity;
     deque->size++;
     return 0;
 }
 
 int ac_deque_push_front(ac_deque *deque, const void *value) {
+    int status;
+    unsigned char *base;
+
     if (deque == NULL || value == NULL) {
         return -EINVAL;
     }
 
-    int status = ensure_capacity(deque, deque->size + 1);
+    status = ensure_capacity(deque, deque->size + 1U);
     if (status != 0) {
         return status;
     }
@@ -166,8 +181,8 @@ int ac_deque_push_front(ac_deque *deque, const void *value) {
         return -ENOMEM;
     }
 
-    deque->head = (deque->head == 0) ? deque->capacity - 1 : deque->head - 1;
-    unsigned char *base = (unsigned char *)deque->data;
+    deque->head = (deque->head == 0U) ? deque->capacity - 1U : deque->head - 1U;
+    base = (unsigned char *)deque->data;
     memcpy(
         base + (deque->head * deque->element_size), value, deque->element_size
     );
@@ -176,41 +191,45 @@ int ac_deque_push_front(ac_deque *deque, const void *value) {
 }
 
 int ac_deque_pop_front(ac_deque *deque, void *out_value) {
+    unsigned char *base;
+
     if (deque == NULL) {
         return -EINVAL;
     }
-    if (deque->size == 0) {
+    if (deque->size == 0U) {
         return -ENOENT;
     }
 
     if (out_value != NULL) {
-        unsigned char *base = (unsigned char *)deque->data;
+        base = (unsigned char *)deque->data;
         memcpy(
             out_value, base + (deque->head * deque->element_size),
             deque->element_size
         );
     }
 
-    deque->head = (deque->head + 1) % deque->capacity;
+    deque->head = (deque->head + 1U) % deque->capacity;
     deque->size--;
-    if (deque->size == 0) {
-        deque->head = 0;
-        deque->tail = 0;
+    if (deque->size == 0U) {
+        deque->head = 0U;
+        deque->tail = 0U;
     }
     return 0;
 }
 
 int ac_deque_pop_back(ac_deque *deque, void *out_value) {
+    unsigned char *base;
+
     if (deque == NULL) {
         return -EINVAL;
     }
-    if (deque->size == 0) {
+    if (deque->size == 0U) {
         return -ENOENT;
     }
 
-    deque->tail = (deque->tail == 0) ? deque->capacity - 1 : deque->tail - 1;
+    deque->tail = (deque->tail == 0U) ? deque->capacity - 1U : deque->tail - 1U;
     if (out_value != NULL) {
-        unsigned char *base = (unsigned char *)deque->data;
+        base = (unsigned char *)deque->data;
         memcpy(
             out_value, base + (deque->tail * deque->element_size),
             deque->element_size
@@ -218,22 +237,24 @@ int ac_deque_pop_back(ac_deque *deque, void *out_value) {
     }
 
     deque->size--;
-    if (deque->size == 0) {
-        deque->head = 0;
-        deque->tail = 0;
+    if (deque->size == 0U) {
+        deque->head = 0U;
+        deque->tail = 0U;
     }
     return 0;
 }
 
 int ac_deque_front(const ac_deque *deque, void *out_value) {
+    const unsigned char *base;
+
     if (deque == NULL || out_value == NULL) {
         return -EINVAL;
     }
-    if (deque->size == 0) {
+    if (deque->size == 0U) {
         return -ENOENT;
     }
 
-    const unsigned char *base = (const unsigned char *)deque->data;
+    base = (const unsigned char *)deque->data;
     memcpy(
         out_value, base + (deque->head * deque->element_size),
         deque->element_size
@@ -242,15 +263,18 @@ int ac_deque_front(const ac_deque *deque, void *out_value) {
 }
 
 int ac_deque_back(const ac_deque *deque, void *out_value) {
+    size_t index;
+    const unsigned char *base;
+
     if (deque == NULL || out_value == NULL) {
         return -EINVAL;
     }
-    if (deque->size == 0) {
+    if (deque->size == 0U) {
         return -ENOENT;
     }
 
-    size_t index = (deque->tail == 0) ? deque->capacity - 1 : deque->tail - 1;
-    const unsigned char *base = (const unsigned char *)deque->data;
+    index = (deque->tail == 0U) ? deque->capacity - 1U : deque->tail - 1U;
+    base = (const unsigned char *)deque->data;
     memcpy(
         out_value, base + (index * deque->element_size), deque->element_size
     );

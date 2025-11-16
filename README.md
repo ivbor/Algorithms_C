@@ -90,10 +90,12 @@ target_link_libraries(sample PRIVATE AlgorithmsC::algorithms_c)
 ## Coverage
 
 Coverage instrumentation is available through the `ENABLE_COVERAGE` CMake option.
-The helper script configures a dedicated build directory and produces HTML and XML
-reports using `gcovr`.  Non-functional helper code (unit tests and the bundled
-`minunit` framework) is excluded so that the reported percentage focuses on the
-library itself:
+The helper script configures a dedicated build directory and produces HTML and
+text reports.  When `gcovr` is installed it is used directly, otherwise the
+repository falls back to `scripts/gcov_coverage.py`, which drives `gcov` and
+aggregates the same headline metrics.  Non-functional helper code (unit tests
+and the bundled `minunit` framework) is excluded so that the reported percentage
+focuses on the library itself:
 
 ```bash
 Algorithms_C/scripts/run_coverage.sh
@@ -111,7 +113,8 @@ The initial translation pass currently includes:
   matching the Python implementations.
 * Counting sort for two-dimensional arrays (`ac_array_count_sort`).
 * Core data structures: a generic `ac_vector`, stack (`ac_stack`), queue (`ac_queue`),
-  double-ended queue (`ac_deque`), and matrix printing helpers (`ac_print_matrix`).
+  double-ended queue (`ac_deque`), singly linked list (`ac_slist`), and matrix
+  printing helpers (`ac_print_matrix`).
 * Utility helpers for comparisons and logging.
 
 Each module is unit-tested and, where appropriate, covered by stress harnesses.
