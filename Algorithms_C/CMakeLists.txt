@@ -2,6 +2,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/array_count_sort.c
     src/algorithms/binary_search.c
     src/algorithms/compare.c
+    src/algorithms/heap_sort.c
     src/algorithms/counting_sort.c
     src/algorithms/insertion_sort.c
     src/algorithms/merge_sort.c
@@ -9,6 +10,9 @@ set(ALGORITHMS_SOURCES
 )
 
 set(STRUCTURES_SOURCES
+    src/structures/slist.c
+    src/structures/deque.c
+    src/structures/heap.c
     src/structures/matrix_view.c
     src/structures/queue.c
     src/structures/stack.c
@@ -74,6 +78,9 @@ add_library(AlgorithmsC::algorithms_c ALIAS algorithms_c)
 
 set(UNIT_TEST_TARGETS
     array_count_sort
+    heap
+    deque
+    slist
     vector
     stack
     queue
@@ -120,6 +127,7 @@ add_custom_target(stress DEPENDS sorting_stress structures_stress)
 
 if(ENABLE_COVERAGE)
     find_program(GCOVR_PATH gcovr)
+    find_package(Python3 COMPONENTS Interpreter)
     if(GCOVR_PATH)
         add_custom_target(coverage-report
             COMMAND
@@ -142,9 +150,30 @@ if(ENABLE_COVERAGE)
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
             DEPENDS ${UNIT_TEST_EXECUTABLES}
         )
+    elseif(Python3_Interpreter_FOUND)
+        set(AC_FALLBACK_COVERAGE_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/scripts/gcov_coverage.py)
+        add_custom_target(coverage-report
+            COMMAND
+                ${CMAKE_COMMAND} -E env
+                CTEST_OUTPUT_ON_FAILURE=1
+                ${CMAKE_CTEST_COMMAND}
+                --force-new-ctest-process
+                --output-on-failure
+                --test-dir ${CMAKE_BINARY_DIR}
+            COMMAND ${Python3_EXECUTABLE} ${AC_FALLBACK_COVERAGE_SCRIPT}
+                --root ${CMAKE_SOURCE_DIR}
+                --object-dir ${CMAKE_BINARY_DIR}
+                --output-dir ${CMAKE_BINARY_DIR}/coverage_tmp
+                --txt ${CMAKE_BINARY_DIR}/coverage.txt
+                --html ${CMAKE_BINARY_DIR}/coverage.html
+                --min-line-rate 0.8
+                --min-branch-rate 0.0
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            DEPENDS ${UNIT_TEST_EXECUTABLES}
+        )
     else()
         add_custom_target(coverage-report
-            COMMAND ${CMAKE_COMMAND} -E echo "gcovr not found"
+            COMMAND ${CMAKE_COMMAND} -E echo "gcovr not found and Python3 is unavailable"
             COMMAND ${CMAKE_COMMAND} -E false
         )
     endif()
