@@ -5,6 +5,7 @@
 #include <string.h>
 #include <time.h>
 #include "algorithms_c/structures/deque.h"
+#include "algorithms_c/structures/heap.h"
 #include "algorithms_c/structures/queue.h"
 #include "algorithms_c/structures/slist.h"
 #include "algorithms_c/structures/stack.h"
@@ -13,6 +14,7 @@
 
 #define VECTOR_ITERATIONS 50000
 #define DEQUE_ITERATIONS 50000
+#define HEAP_ITERATIONS 50000
 #define QUEUE_ITERATIONS 50000
 #define SLIST_ITERATIONS 50000
 #define STACK_ITERATIONS 50000
@@ -217,6 +219,129 @@ verify_vector_matches(const ac_vector *vec, const reference_vector *ref) {
         }
     }
     return 0;
+}
+
+typedef struct {
+    int *data;
+    size_t size;
+    size_t capacity;
+} reference_heap;
+
+static void ref_heap_init(reference_heap *heap) {
+    heap->data = NULL;
+    heap->size = 0;
+    heap->capacity = 0;
+}
+
+static void ref_heap_destroy(reference_heap *heap) {
+    free(heap->data);
+    heap->data = NULL;
+    heap->size = 0;
+    heap->capacity = 0;
+}
+
+static int ref_heap_reserve(reference_heap *heap, size_t new_capacity) {
+    if (new_capacity <= heap->capacity) {
+        return 0;
+    }
+
+    int *new_data = realloc(heap->data, new_capacity * sizeof(int));
+    if (new_data == NULL) {
+        return -1;
+    }
+
+    heap->data = new_data;
+    heap->capacity = new_capacity;
+    return 0;
+}
+
+static int ref_heap_ensure_capacity(reference_heap *heap) {
+    if (heap->size < heap->capacity) {
+        return 0;
+    }
+
+    size_t new_capacity = heap->capacity == 0 ? 1U : heap->capacity * 2U;
+    return ref_heap_reserve(heap, new_capacity);
+}
+
+static void ref_heap_sift_up(reference_heap *heap, size_t index) {
+    while (index > 0) {
+        size_t parent = (index - 1U) / 2U;
+        if (heap->data[index] < heap->data[parent]) {
+            int tmp = heap->data[index];
+            heap->data[index] = heap->data[parent];
+            heap->data[parent] = tmp;
+            index = parent;
+        } else {
+            break;
+        }
+    }
+}
+
+static void ref_heap_sift_down(reference_heap *heap, size_t index) {
+    while (1) {
+        size_t left = (2U * index) + 1U;
+        size_t right = left + 1U;
+        size_t smallest = index;
+
+        if (left < heap->size && heap->data[left] < heap->data[smallest]) {
+            smallest = left;
+        }
+        if (right < heap->size && heap->data[right] < heap->data[smallest]) {
+            smallest = right;
+        }
+
+        if (smallest == index) {
+            break;
+        }
+
+        int tmp = heap->data[index];
+        heap->data[index] = heap->data[smallest];
+        heap->data[smallest] = tmp;
+        index = smallest;
+    }
+}
+
+static int ref_heap_push(reference_heap *heap, int value) {
+    if (ref_heap_ensure_capacity(heap) != 0) {
+        return -1;
+    }
+
+    heap->data[heap->size] = value;
+    heap->size++;
+    ref_heap_sift_up(heap, heap->size - 1U);
+    return 0;
+}
+
+static int ref_heap_pop(reference_heap *heap, int *out_value) {
+    if (heap->size == 0) {
+        return -1;
+    }
+
+    int result = heap->data[0];
+    heap->data[0] = heap->data[heap->size - 1U];
+    heap->size--;
+    if (heap->size > 0) {
+        ref_heap_sift_down(heap, 0U);
+    }
+
+    if (out_value != NULL) {
+        *out_value = result;
+    }
+    return 0;
+}
+
+static int ref_heap_peek(const reference_heap *heap, int *out_value) {
+    if (heap->size == 0 || out_value == NULL) {
+        return -1;
+    }
+
+    *out_value = heap->data[0];
+    return 0;
+}
+
+static void ref_heap_clear(reference_heap *heap) {
+    heap->size = 0;
 }
 
 typedef struct {
@@ -831,6 +956,129 @@ deque_error:
     return 1;
 }
 
+static int run_heap_stress(void) {
+    ac_heap heap;
+    reference_heap ref;
+
+    operation_stats stats[] = {
+        {"push", 0, 0},    {"pop", 0, 0},   {"peek", 0, 0},
+        {"reserve", 0, 0}, {"clear", 0, 0},
+    };
+
+    if (ac_heap_init(&heap, sizeof(int), ac_compare_int) != 0) {
+        fprintf(stderr, "Failed to initialise heap\n");
+        return 1;
+    }
+    ref_heap_init(&ref);
+
+    clock_t start = clock();
+    size_t iteration;
+    for (iteration = 0; iteration < HEAP_ITERATIONS; ++iteration) {
+        int operation = rand() % 5;
+        switch (operation) {
+            case 0: {  // push
+                int value = rand();
+                if (ac_heap_push(&heap, &value) != 0 ||
+                    ref_heap_push(&ref, value) != 0) {
+                    fprintf(stderr, "Heap push failed\n");
+                    goto heap_error;
+                }
+                stats[0].successes++;
+                break;
+            }
+            case 1: {  // pop
+                int expected = 0;
+                int actual = 0;
+                if (ref.size == 0) {
+                    if (ac_heap_pop(&heap, &actual) != -ENOENT) {
+                        fprintf(stderr, "Heap pop should report empty\n");
+                        goto heap_error;
+                    }
+                    stats[1].expected_failures++;
+                } else {
+                    if (ref_heap_pop(&ref, &expected) != 0 ||
+                        ac_heap_pop(&heap, &actual) != 0 ||
+                        expected != actual) {
+                        fprintf(stderr, "Heap pop mismatch\n");
+                        goto heap_error;
+                    }
+                    stats[1].successes++;
+                }
+                break;
+            }
+            case 2: {  // peek
+                int expected = 0;
+                int actual = 0;
+                if (ref.size == 0) {
+                    if (ac_heap_peek(&heap, &actual) != -ENOENT) {
+                        fprintf(stderr, "Heap peek should report empty\n");
+                        goto heap_error;
+                    }
+                    stats[2].expected_failures++;
+                } else {
+                    if (ref_heap_peek(&ref, &expected) != 0 ||
+                        ac_heap_peek(&heap, &actual) != 0 ||
+                        expected != actual) {
+                        fprintf(stderr, "Heap peek mismatch\n");
+                        goto heap_error;
+                    }
+                    stats[2].successes++;
+                }
+                break;
+            }
+            case 3: {  // reserve
+                size_t target = ref.capacity + (size_t)(rand() % 16);
+                if (ac_heap_reserve(&heap, target) != 0 ||
+                    ref_heap_reserve(&ref, target) != 0) {
+                    fprintf(stderr, "Heap reserve failed\n");
+                    goto heap_error;
+                }
+                stats[3].successes++;
+                break;
+            }
+            case 4:  // clear
+                ac_heap_clear(&heap);
+                ref_heap_clear(&ref);
+                stats[4].successes++;
+                break;
+        }
+
+        if (ac_heap_size(&heap) != ref.size) {
+            fprintf(
+                stderr, "Heap size diverged after iteration %zu\n", iteration
+            );
+            goto heap_error;
+        }
+    }
+
+    clock_t end = clock();
+    double elapsed_ms = (double)(end - start) * 1000.0 / (double)CLOCKS_PER_SEC;
+
+    while (!ac_heap_empty(&heap)) {
+        int expected = 0;
+        int actual = 0;
+        if (ref_heap_pop(&ref, &expected) != 0 ||
+            ac_heap_pop(&heap, &actual) != 0 || expected != actual) {
+            fprintf(stderr, "Heap verification mismatch during drain\n");
+            goto heap_error;
+        }
+    }
+
+    ac_heap_destroy(&heap);
+    ref_heap_destroy(&ref);
+    print_operation_table(
+        "Heap operations", stats, sizeof(stats) / sizeof(stats[0]),
+        HEAP_ITERATIONS, elapsed_ms
+    );
+    printf("Heap stress test passed (%d iterations).\n", HEAP_ITERATIONS);
+    return 0;
+
+heap_error:
+    ac_heap_destroy(&heap);
+    ref_heap_destroy(&ref);
+    return 1;
+}
+
 typedef struct {
     int *data;
     size_t size;
@@ -1226,6 +1474,9 @@ int main(void) {
         return 1;
     }
     if (run_slist_stress() != 0) {
+        return 1;
+    }
+    if (run_heap_stress() != 0) {
         return 1;
     }
     if (run_queue_stress() != 0) {

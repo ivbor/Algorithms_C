@@ -2,6 +2,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/array_count_sort.c
     src/algorithms/binary_search.c
     src/algorithms/compare.c
+    src/algorithms/heap_sort.c
     src/algorithms/counting_sort.c
     src/algorithms/insertion_sort.c
     src/algorithms/merge_sort.c
@@ -11,6 +12,7 @@ set(ALGORITHMS_SOURCES
 set(STRUCTURES_SOURCES
     src/structures/slist.c
     src/structures/deque.c
+    src/structures/heap.c
     src/structures/matrix_view.c
     src/structures/queue.c
     src/structures/stack.c
@@ -76,6 +78,7 @@ add_library(AlgorithmsC::algorithms_c ALIAS algorithms_c)
 
 set(UNIT_TEST_TARGETS
     array_count_sort
+    heap
     deque
     slist
     vector

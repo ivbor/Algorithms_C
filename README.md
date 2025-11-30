@@ -113,8 +113,10 @@ The initial translation pass currently includes:
   matching the Python implementations.
 * Counting sort for two-dimensional arrays (`ac_array_count_sort`).
 * Core data structures: a generic `ac_vector`, stack (`ac_stack`), queue (`ac_queue`),
-  double-ended queue (`ac_deque`), singly linked list (`ac_slist`), and matrix
-  printing helpers (`ac_print_matrix`).
+  double-ended queue (`ac_deque`), singly linked list (`ac_slist`), binary
+  min-heap (`ac_heap`), and matrix printing helpers (`ac_print_matrix`).
+* Sorting helpers now include a heap-driven variant (`ac_heap_sort`) alongside
+  insertion, merge, quick, and counting sort.
 * Utility helpers for comparisons and logging.
 
 Each module is unit-tested and, where appropriate, covered by stress harnesses.
