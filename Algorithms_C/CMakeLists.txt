@@ -7,6 +7,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/insertion_sort.c
     src/algorithms/merge_sort.c
     src/algorithms/quick_sort.c
+    src/algorithms/split_find.c
 )
 
 set(STRUCTURES_SOURCES
@@ -85,6 +86,7 @@ set(UNIT_TEST_TARGETS
     stack
     queue
     sorting
+    split_find
     binary_search
     utils
 )

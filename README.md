@@ -109,6 +109,8 @@ artifact in CI.
 The initial translation pass currently includes:
 
 * Generic binary search helpers (`ac_binary_search`, `ac_lower_bound`, `ac_upper_bound`).
+* Selection helper that returns the k-th element without fully sorting the input
+  (`ac_split_find`).
 * Sorting algorithms – insertion sort, merge sort, quick sort, and counting sort –
   matching the Python implementations.
 * Counting sort for two-dimensional arrays (`ac_array_count_sort`).
