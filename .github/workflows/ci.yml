@@ -47,7 +47,9 @@ jobs:
       - name: Build stress tests
         run: cmake --build build --target stress
       - name: Run stress tests
-        run: ./build/Algorithms_C/sorting_stress
+        run: |
+          ./build/Algorithms_C/sorting_stress
+          ./build/Algorithms_C/structures_stress
         shell: bash
 
   coverage:
