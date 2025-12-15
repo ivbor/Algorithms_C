@@ -4,6 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**
+ * This translation of the Python ``Vector`` class keeps the implementation
+ * deliberately transparent: helper routines and public functions are annotated
+ * with narrative comments so that the control flow mirrors the heavily
+ * documented docstrings from the source material.  Even seemingly trivial
+ * helpers such as ``ensure_capacity`` are explained to preserve the educational
+ * tone where prose outweighs code.
+ */
+
 static int ensure_capacity(ac_vector *vec, size_t min_capacity) {
     if (vec->capacity >= min_capacity) {
         return AC_VECTOR_OK;
@@ -20,6 +29,7 @@ static int ensure_capacity(ac_vector *vec, size_t min_capacity) {
     return ac_vector_reserve(vec, new_capacity);
 }
 
+/** Allocate zero-initialised storage while defending against overflow. */
 static void *allocate_buffer(size_t count, size_t element_size) {
     if (count == 0 || element_size == 0) {
         return NULL;

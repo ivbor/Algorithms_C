@@ -1,6 +1,9 @@
 #include "algorithms_c/structures/matrix_view.h"
 #include <stdio.h>
 
+// A straightforward transcription of the Python helper with additional prose so
+// that formatting decisions are clear when reading the C source in isolation.
+
 void ac_print_matrix(
     int **matrix,
     size_t rows,
