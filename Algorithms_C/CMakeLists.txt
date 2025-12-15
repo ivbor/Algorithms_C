@@ -3,6 +3,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/binary_search.c
     src/algorithms/compare.c
     src/algorithms/heap_sort.c
+    src/algorithms/ternary_search.c
     src/algorithms/counting_sort.c
     src/algorithms/insertion_sort.c
     src/algorithms/merge_sort.c
@@ -86,6 +87,7 @@ set(UNIT_TEST_TARGETS
     stack
     queue
     sorting
+    ternary_search
     split_find
     binary_search
     utils
