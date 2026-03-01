@@ -31,6 +31,43 @@ void ac_insertion_sort(
 );
 
 /**
+ * @brief Bubble sort with adjacent swaps and early-exit optimization.
+ *
+ * The helper mirrors the translated Python educational routine: repeated
+ * adjacent comparisons move larger elements toward the array tail on each
+ * pass. If a full pass performs no swaps, the routine stops early.
+ *
+ * @signature void ac_bubble_sort(void *data, size_t size,
+ *                                size_t element_size,
+ *                                ac_compare_fn compare)
+ */
+void ac_bubble_sort(
+    void *data,
+    size_t size,
+    size_t element_size,
+    ac_compare_fn compare
+);
+
+/**
+ * @brief Quadratic-time selection sort that minimizes swap count.
+ *
+ * The helper mirrors the translated Python implementation used for teaching:
+ * repeatedly find the minimum in the unsorted suffix and swap it into the next
+ * output slot. This algorithm is intentionally simple and useful for
+ * algorithm-comparison exercises.
+ *
+ * @signature void ac_selection_sort(void *data, size_t size,
+ *                                   size_t element_size,
+ *                                   ac_compare_fn compare)
+ */
+void ac_selection_sort(
+    void *data,
+    size_t size,
+    size_t element_size,
+    ac_compare_fn compare
+);
+
+/**
  * @brief Stable divide-and-conquer merge sort.
  *
  * @signature void ac_merge_sort(void *data, size_t size, size_t element_size,
