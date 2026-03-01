@@ -39,6 +39,7 @@ typedef struct {
 
 static const sort_entry kSorts[] = {
     {"Insertion", SORT_GENERIC, 100000, {.generic = ac_insertion_sort}},
+    {"Bubble", SORT_GENERIC, 20000, {.generic = ac_bubble_sort}},
     {"Selection", SORT_GENERIC, 100000, {.generic = ac_selection_sort}},
     {"Merge", SORT_GENERIC, 10000000, {.generic = ac_merge_sort}},
     {"Quick", SORT_GENERIC, 10000000, {.generic = ac_quick_sort}},
