@@ -6,6 +6,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/ternary_search.c
     src/algorithms/counting_sort.c
     src/algorithms/insertion_sort.c
+    src/algorithms/selection_sort.c
     src/algorithms/merge_sort.c
     src/algorithms/quick_sort.c
     src/algorithms/split_find.c
