@@ -13,16 +13,20 @@ extern "C" {
  * @file stack.h
  * @brief LIFO stack abstraction layered atop the documented vector container.
  *
- * The stack mirrors the Python ``Stack`` class which internally reused the
- * doubly linked list primitives.  In C we leverage the already-tested vector to
- * provide amortised ``O(1)`` push/pop while keeping the API surface familiar.
- * The comments intentionally provide both concise and in-depth descriptions so
- * that learners can trace the design decisions easily.
+ * The Python repository exposes a pedagogical ``Stack`` class with rich
+ * docstrings describing complexity and observable behavior. The C translation
+ * follows the same educational style: every operation includes a concise and
+ * long-form description, plus an explicit signature block so readers can study
+ * semantics directly in the header.
  */
 
 /**
  * @struct ac_stack
  * @brief Wrapper around ::ac_vector that exposes stack semantics.
+ *
+ * The single ``storage`` field intentionally remains visible to keep the data
+ * model transparent for learners: pushing appends to the vector tail, popping
+ * removes from the vector tail, and top inspection reads the last element.
  */
 typedef struct {
     /** Underlying storage used to hold stack elements. */
@@ -32,7 +36,8 @@ typedef struct {
 /**
  * @brief Initialise a stack capable of storing elements of ``element_size``.
  *
- * Delegates to ::ac_vector_init and therefore shares the same failure modes.
+ * Delegates to ::ac_vector_init and therefore shares the same allocation
+ * behavior and error codes. Runtime is ``O(1)``.
  *
  * @param stack Destination stack structure to initialise.
  * @param element_size Size in bytes of each element to be stored.
@@ -44,6 +49,9 @@ int ac_stack_init(ac_stack *stack, size_t element_size);
 /**
  * @brief Destroy the stack and free any owned resources.
  *
+ * Safe to call with ``NULL``. After destruction, all resources held by the
+ * underlying vector are released.
+ *
  * @param stack Pointer to an initialised stack (nullable).
  * @signature void ac_stack_destroy(ac_stack *stack)
  */
@@ -51,6 +59,8 @@ void ac_stack_destroy(ac_stack *stack);
 
 /**
  * @brief Determine whether the stack currently stores zero elements.
+ *
+ * Equivalent to Python's truthy/empty checks. Runtime is ``O(1)``.
  *
  * @param stack Pointer to an initialised stack (nullable).
  * @return ``true`` when empty, otherwise ``false``.
@@ -61,6 +71,9 @@ bool ac_stack_empty(const ac_stack *stack);
 /**
  * @brief Return the number of elements currently pushed onto the stack.
  *
+ * Mirrors ``len(stack)`` behavior from the Python educational implementation.
+ * Runtime is ``O(1)``.
+ *
  * @param stack Pointer to an initialised stack (nullable).
  * @return Size of the stack.
  * @signature size_t ac_stack_size(const ac_stack *stack)
@@ -70,7 +83,8 @@ size_t ac_stack_size(const ac_stack *stack);
 /**
  * @brief Push ``value`` onto the top of the stack.
  *
- * Internally forwards to ::ac_vector_push_back.
+ * Internally forwards to ::ac_vector_push_back, giving amortised ``O(1)``
+ * complexity and occasional growth reallocations.
  *
  * @param stack Pointer to an initialised stack.
  * @param value Address of the element to store; must not be ``NULL``.
@@ -82,6 +96,9 @@ int ac_stack_push(ac_stack *stack, const void *value);
 /**
  * @brief Pop the top element and optionally copy it into ``out_value``.
  *
+ * Equivalent to Python ``Stack.pop`` semantics. Runtime is ``O(1)`` because
+ * removal occurs at the vector tail.
+ *
  * @param stack Pointer to an initialised stack.
  * @param out_value Optional destination buffer that receives the removed value.
  * @return ::AC_VECTOR_OK on success or ::AC_VECTOR_ERR_EMPTY if the stack is
@@ -92,6 +109,9 @@ int ac_stack_pop(ac_stack *stack, void *out_value);
 
 /**
  * @brief Copy the element currently at the top of the stack without removal.
+ *
+ * Equivalent to Python ``Stack.peek`` / ``top``. Runtime is ``O(1)`` and the
+ * stack contents remain unchanged.
  *
  * @param stack Pointer to an initialised stack.
  * @param out_value Destination buffer that receives the copied value.
