@@ -15,6 +15,11 @@ static void test_transposition(void) {
     MU_ASSERT(ac_damerau_levenshtein_distance("ca", "ac") == 1);
 }
 
+static void test_reference_examples(void) {
+    MU_ASSERT(ac_damerau_levenshtein_distance("sunday", "saturday") == 3);
+    MU_ASSERT(ac_damerau_levenshtein_distance("abcdef", "abcfde") == 2);
+}
+
 static void test_empty_and_invalid(void) {
     MU_ASSERT(ac_damerau_levenshtein_distance("", "") == 0);
     MU_ASSERT(ac_damerau_levenshtein_distance("abc", "") == 3);
@@ -27,6 +32,7 @@ int main(void) {
     run_test(test_equal_strings);
     run_test(test_basic_operations);
     run_test(test_transposition);
+    run_test(test_reference_examples);
     run_test(test_empty_and_invalid);
     return summary();
 }
