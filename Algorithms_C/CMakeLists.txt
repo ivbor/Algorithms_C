@@ -10,6 +10,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/quick_sort.c
     src/algorithms/split_find.c
     src/algorithms/damerau_levenshtein.c
+    src/algorithms/minknap.c
 )
 
 set(STRUCTURES_SOURCES
@@ -93,6 +94,7 @@ set(UNIT_TEST_TARGETS
     binary_search
     utils
     damerau_levenshtein
+    minknap
 )
 
 set(UNIT_TEST_EXECUTABLES)
