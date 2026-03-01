@@ -22,6 +22,42 @@ static void test_insertion_sort(void) {
     assert_sorted(data, 32);
 }
 
+static void test_bubble_sort(void) {
+    int data[40];
+    fill_random(data, 40);
+    ac_bubble_sort(data, 40, sizeof(int), ac_compare_int);
+    assert_sorted(data, 40);
+}
+
+static void test_selection_sort(void) {
+    int data[48];
+    fill_random(data, 48);
+    ac_selection_sort(data, 48, sizeof(int), ac_compare_int);
+    assert_sorted(data, 48);
+}
+
+static void test_shell_sort(void) {
+    int data[96];
+    fill_random(data, 96);
+    ac_shell_sort(data, 96, sizeof(int), ac_compare_int);
+    assert_sorted(data, 96);
+}
+
+static void test_comb_sort(void) {
+    int data[96];
+    fill_random(data, 96);
+    ac_comb_sort(data, 96, sizeof(int), ac_compare_int);
+    assert_sorted(data, 96);
+}
+
+static void test_selection_sort_handles_duplicates_and_negatives(void) {
+    int data[] = {5, -1, 3, -1, 0, 2, 5, -7, 2};
+    ac_selection_sort(
+        data, sizeof(data) / sizeof(data[0]), sizeof(int), ac_compare_int
+    );
+    assert_sorted(data, sizeof(data) / sizeof(data[0]));
+}
+
 static void test_merge_sort(void) {
     int data[128];
     fill_random(data, 128);
@@ -52,12 +88,70 @@ static void test_counting_sort(void) {
     assert_sorted(data, 100);
 }
 
+static void test_selection_sort_invalid_arguments_are_noop(void) {
+    int data[] = {3, 1, 2};
+    ac_selection_sort(NULL, 3, sizeof(int), ac_compare_int);
+    ac_selection_sort(data, 3, 0, ac_compare_int);
+    ac_selection_sort(data, 3, sizeof(int), NULL);
+    MU_ASSERT(data[0] == 3);
+    MU_ASSERT(data[1] == 1);
+    MU_ASSERT(data[2] == 2);
+}
+
+static void test_bubble_sort_handles_sorted_input(void) {
+    int data[] = {-3, -1, 0, 4, 9, 11};
+    ac_bubble_sort(
+        data, sizeof(data) / sizeof(data[0]), sizeof(int), ac_compare_int
+    );
+    assert_sorted(data, sizeof(data) / sizeof(data[0]));
+}
+
+static void test_bubble_sort_invalid_arguments_are_noop(void) {
+    int data[] = {9, 2, 7};
+    ac_bubble_sort(NULL, 3, sizeof(int), ac_compare_int);
+    ac_bubble_sort(data, 3, 0, ac_compare_int);
+    ac_bubble_sort(data, 3, sizeof(int), NULL);
+    MU_ASSERT(data[0] == 9);
+    MU_ASSERT(data[1] == 2);
+    MU_ASSERT(data[2] == 7);
+}
+
+static void test_shell_sort_invalid_arguments_are_noop(void) {
+    int data[] = {10, 8, 9};
+    ac_shell_sort(NULL, 3, sizeof(int), ac_compare_int);
+    ac_shell_sort(data, 3, 0, ac_compare_int);
+    ac_shell_sort(data, 3, sizeof(int), NULL);
+    MU_ASSERT(data[0] == 10);
+    MU_ASSERT(data[1] == 8);
+    MU_ASSERT(data[2] == 9);
+}
+
+static void test_comb_sort_invalid_arguments_are_noop(void) {
+    int data[] = {12, 11, 10};
+    ac_comb_sort(NULL, 3, sizeof(int), ac_compare_int);
+    ac_comb_sort(data, 3, 0, ac_compare_int);
+    ac_comb_sort(data, 3, sizeof(int), NULL);
+    MU_ASSERT(data[0] == 12);
+    MU_ASSERT(data[1] == 11);
+    MU_ASSERT(data[2] == 10);
+}
+
 int main(void) {
     srand(12345u);
     run_test(test_insertion_sort);
+    run_test(test_bubble_sort);
+    run_test(test_selection_sort);
+    run_test(test_shell_sort);
+    run_test(test_comb_sort);
+    run_test(test_selection_sort_handles_duplicates_and_negatives);
     run_test(test_merge_sort);
     run_test(test_quick_sort);
     run_test(test_heap_sort);
     run_test(test_counting_sort);
+    run_test(test_selection_sort_invalid_arguments_are_noop);
+    run_test(test_bubble_sort_handles_sorted_input);
+    run_test(test_bubble_sort_invalid_arguments_are_noop);
+    run_test(test_shell_sort_invalid_arguments_are_noop);
+    run_test(test_comb_sort_invalid_arguments_are_noop);
     return summary();
 }
