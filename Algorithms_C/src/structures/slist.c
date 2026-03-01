@@ -94,6 +94,12 @@ static int ac_slist_validate_inputs(const ac_slist *list, const void *value) {
     return AC_SLIST_OK;
 }
 
+/*
+ * Short description: initialize an empty singly linked list.
+ * Long description: sets head/tail to NULL, resets size, and stores element
+ * width so node allocations can copy payload bytes safely.
+ * Signature: int ac_slist_init(ac_slist *list, size_t element_size)
+ */
 int ac_slist_init(ac_slist *list, size_t element_size) {
     if (list == NULL || element_size == 0) {
         return AC_SLIST_ERR_ARGUMENT;
@@ -106,6 +112,12 @@ int ac_slist_init(ac_slist *list, size_t element_size) {
     return AC_SLIST_OK;
 }
 
+/*
+ * Short description: remove all nodes while keeping list object usable.
+ * Long description: clear walks the chain, frees each node, and restores a
+ * canonical empty state with head/tail NULL and size zero.
+ * Signature: void ac_slist_clear(ac_slist *list)
+ */
 void ac_slist_clear(ac_slist *list) {
     if (list == NULL) {
         return;
@@ -121,6 +133,12 @@ void ac_slist_clear(ac_slist *list) {
     list->size = 0;
 }
 
+/*
+ * Short description: destroy list contents and reset metadata.
+ * Long description: destroy delegates node teardown to clear and then resets
+ * element_size to mark the container as uninitialized for defensive callers.
+ * Signature: void ac_slist_destroy(ac_slist *list)
+ */
 void ac_slist_destroy(ac_slist *list) {
     if (list == NULL) {
         return;
@@ -130,18 +148,42 @@ void ac_slist_destroy(ac_slist *list) {
     list->element_size = 0;
 }
 
+/*
+ * Short description: return logical number of elements.
+ * Long description: size is tracked eagerly and returned in O(1); NULL returns
+ * zero to simplify diagnostics.
+ * Signature: size_t ac_slist_size(const ac_slist *list)
+ */
 size_t ac_slist_size(const ac_slist *list) {
     return list != NULL ? list->size : 0U;
 }
 
+/*
+ * Short description: report whether list stores no nodes.
+ * Long description: emptiness derives from size invariant, avoiding additional
+ * state flags and keeping checks constant time.
+ * Signature: bool ac_slist_empty(const ac_slist *list)
+ */
 bool ac_slist_empty(const ac_slist *list) {
     return ac_slist_size(list) == 0U;
 }
 
+/*
+ * Short description: expose payload width in bytes.
+ * Long description: this metadata helps callers validate buffer sizes for
+ * get/front/back/pop operations that copy element payloads.
+ * Signature: size_t ac_slist_element_size(const ac_slist *list)
+ */
 size_t ac_slist_element_size(const ac_slist *list) {
     return list != NULL ? list->element_size : 0U;
 }
 
+/*
+ * Short description: append one element at logical tail.
+ * Long description: append allocates a new node, links it after current tail,
+ * updates tail pointer, and increments size, preserving FIFO traversal order.
+ * Signature: int ac_slist_append(ac_slist *list, const void *value)
+ */
 int ac_slist_append(ac_slist *list, const void *value) {
     int validation = ac_slist_validate_inputs(list, value);
     if (validation != AC_SLIST_OK) {
@@ -165,6 +207,12 @@ int ac_slist_append(ac_slist *list, const void *value) {
     return AC_SLIST_OK;
 }
 
+/*
+ * Short description: insert one element at logical head.
+ * Long description: prepend allocates a node, makes it new head, and updates
+ * tail when list was previously empty. Complexity is O(1).
+ * Signature: int ac_slist_prepend(ac_slist *list, const void *value)
+ */
 int ac_slist_prepend(ac_slist *list, const void *value) {
     int validation = ac_slist_validate_inputs(list, value);
     if (validation != AC_SLIST_OK) {
@@ -213,6 +261,13 @@ static int ac_slist_insert_after(
     return AC_SLIST_OK;
 }
 
+/*
+ * Short description: insert element before position `index`.
+ * Long description: insertion handles edge cases (head/tail) directly and
+ * otherwise traverses to predecessor node, rewires links, and increments size.
+ * Signature: int ac_slist_insert(ac_slist *list, size_t index, const void
+ * *value)
+ */
 int ac_slist_insert(ac_slist *list, size_t index, const void *value) {
     int validation = ac_slist_validate_inputs(list, value);
     if (validation != AC_SLIST_OK) {
@@ -254,10 +309,22 @@ static int ac_slist_remove_head(ac_slist *list, void *out_value) {
     return AC_SLIST_OK;
 }
 
+/*
+ * Short description: remove first node and optionally copy payload out.
+ * Long description: pop_front updates head to next node, adjusts tail when list
+ * becomes empty, and decrements size while preserving list invariants.
+ * Signature: int ac_slist_pop_front(ac_slist *list, void *out_value)
+ */
 int ac_slist_pop_front(ac_slist *list, void *out_value) {
     return ac_slist_remove_head(list, out_value);
 }
 
+/*
+ * Short description: remove last node and optionally copy payload out.
+ * Long description: because links are single-directional, pop_back walks to the
+ * predecessor of tail, unlinks tail, and updates tail pointer accordingly.
+ * Signature: int ac_slist_pop_back(ac_slist *list, void *out_value)
+ */
 int ac_slist_pop_back(ac_slist *list, void *out_value) {
     if (list == NULL || list->head == NULL) {
         return AC_SLIST_ERR_EMPTY;
@@ -282,6 +349,12 @@ int ac_slist_pop_back(ac_slist *list, void *out_value) {
     return AC_SLIST_OK;
 }
 
+/*
+ * Short description: erase node at arbitrary index.
+ * Long description: erase delegates index==0 and tail cases to pop helpers; for
+ * middle nodes it rewires predecessor->next around removed node.
+ * Signature: int ac_slist_erase(ac_slist *list, size_t index, void *out_value)
+ */
 int ac_slist_erase(ac_slist *list, size_t index, void *out_value) {
     if (list == NULL) {
         return AC_SLIST_ERR_ARGUMENT;
@@ -315,6 +388,13 @@ int ac_slist_erase(ac_slist *list, size_t index, void *out_value) {
     return AC_SLIST_OK;
 }
 
+/*
+ * Short description: read element at index without mutation.
+ * Long description: get traverses from head to requested index and copies one
+ * payload into caller buffer after validating pointers and bounds.
+ * Signature: int ac_slist_get(const ac_slist *list, size_t index,
+ *                             void *out_value)
+ */
 int ac_slist_get(const ac_slist *list, size_t index, void *out_value) {
     if (list == NULL || out_value == NULL) {
         return AC_SLIST_ERR_ARGUMENT;
@@ -331,6 +411,12 @@ int ac_slist_get(const ac_slist *list, size_t index, void *out_value) {
     return AC_SLIST_OK;
 }
 
+/*
+ * Short description: copy first element without removal.
+ * Long description: front is a constant-time convenience wrapper around head
+ * payload access with defensive null/empty checks.
+ * Signature: int ac_slist_front(const ac_slist *list, void *out_value)
+ */
 int ac_slist_front(const ac_slist *list, void *out_value) {
     if (list == NULL || out_value == NULL) {
         return AC_SLIST_ERR_ARGUMENT;
@@ -343,6 +429,12 @@ int ac_slist_front(const ac_slist *list, void *out_value) {
     return AC_SLIST_OK;
 }
 
+/*
+ * Short description: copy last element without removal.
+ * Long description: back reads payload from tail node in O(1), complementing
+ * front for deque-like observation without mutation.
+ * Signature: int ac_slist_back(const ac_slist *list, void *out_value)
+ */
 int ac_slist_back(const ac_slist *list, void *out_value) {
     if (list == NULL || out_value == NULL) {
         return AC_SLIST_ERR_ARGUMENT;
@@ -355,6 +447,14 @@ int ac_slist_back(const ac_slist *list, void *out_value) {
     return AC_SLIST_OK;
 }
 
+/*
+ * Short description: test whether list contains a value via comparator.
+ * Long description: performs linear scan and treats comparator return value 0
+ * as equality, mirroring Python `in` semantics with custom equality logic.
+ * Signature: bool ac_slist_contains(const ac_slist *list, const void *needle,
+ *                                   ac_slist_compare_fn compare,
+ *                                   void *user_data)
+ */
 bool ac_slist_contains(
     const ac_slist *list,
     const void *needle,
@@ -373,6 +473,12 @@ bool ac_slist_contains(
     return false;
 }
 
+/*
+ * Short description: iterate mutable callback over all elements.
+ * Long description: visitor receives each payload pointer and may abort early
+ * by returning non-zero status, which is propagated to caller. Signature: int
+ * ac_slist_for_each(ac_slist *list, ac_slist_visit_fn visit, void *user_data)
+ */
 int ac_slist_for_each(
     ac_slist *list,
     ac_slist_visit_fn visit,
@@ -392,6 +498,14 @@ int ac_slist_for_each(
     return AC_SLIST_OK;
 }
 
+/*
+ * Short description: iterate read-only callback over all elements.
+ * Long description: const traversal mirrors for_each control flow while
+ * exposing payload as const pointer to enforce non-mutating visitors.
+ * Signature: int ac_slist_for_each_const(const ac_slist *list,
+ *                                        ac_slist_visit_const_fn visit,
+ *                                        void *user_data)
+ */
 int ac_slist_for_each_const(
     const ac_slist *list,
     ac_slist_const_visit_fn visit,

@@ -133,6 +133,8 @@ The initial translation pass currently includes:
   * Source structure translated in this step: Python repository `Heap` structure (mirrored by `ac_heap` in `Algorithms_C/include/algorithms_c/structures/heap.h` and `Algorithms_C/src/structures/heap.c`).
   * Vector source now includes explicit short/long/signature inline blocks for each operation, documenting dynamic-array invariants and memory-growth decisions.
   * Source structure translated in this step: Python repository `Vector` structure (mirrored by `ac_vector` in `Algorithms_C/include/algorithms_c/structures/vector.h` and `Algorithms_C/src/structures/vector.c`).
+  * Singly linked list source now includes explicit short/long/signature inline blocks for each operation, documenting node-link invariants and traversal-based decisions.
+  * Source structure translated in this step: Python repository `LinkedList` structure (mirrored by `ac_slist` in `Algorithms_C/include/algorithms_c/structures/slist.h` and `Algorithms_C/src/structures/slist.c`).
   double-ended queue (`ac_deque`), singly linked list (`ac_slist`), binary
   min-heap (`ac_heap`), and matrix printing helpers (`ac_print_matrix`).
 * Sorting helpers now include a heap-driven variant (`ac_heap_sort`) alongside
