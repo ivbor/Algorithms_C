@@ -8,6 +8,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/insertion_sort.c
     src/algorithms/merge_sort.c
     src/algorithms/quick_sort.c
+    src/algorithms/shell_sort.c
     src/algorithms/split_find.c
 )
 

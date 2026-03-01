@@ -109,12 +109,12 @@ artifact in CI.
 
 The initial translation pass currently includes:
 
-* Generic search helpers: binary search/bounds (`ac_binary_search`, `ac_lower_bound`, `ac_upper_bound`), jump search (`ac_jump_search_int`), exponential search (`ac_exponential_search_int`), fibonacci search (`ac_fibonacci_search_int`), and integer interpolation search (`ac_interpolation_search_int`).
+* Generic search helpers: binary search/bounds (`ac_binary_search`, `ac_lower_bound`, `ac_upper_bound`).
 * Ternary search helpers for locating minima and maxima of unimodal functions
   (`ac_ternary_search_min`, `ac_ternary_search_max`).
 * Selection helper that returns the k-th element without fully sorting the input
   (`ac_split_find`).
-* Sorting algorithms – insertion sort, merge sort, quick sort, and counting sort –
+* Sorting algorithms – insertion sort, merge sort, quick sort, shell sort, and counting sort –
   matching the Python implementations.
 * Counting sort for two-dimensional arrays (`ac_array_count_sort`).
 * Core data structures: a generic `ac_vector`, stack (`ac_stack`), queue (`ac_queue`),

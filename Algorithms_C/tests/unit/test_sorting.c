@@ -36,6 +36,14 @@ static void test_quick_sort(void) {
     assert_sorted(data, 128);
 }
 
+
+static void test_shell_sort(void) {
+    int data[96];
+    fill_random(data, 96);
+    ac_shell_sort(data, 96, sizeof(int), ac_compare_int);
+    assert_sorted(data, 96);
+}
+
 static void test_heap_sort(void) {
     int data[64];
     fill_random(data, 64);
@@ -57,6 +65,7 @@ int main(void) {
     run_test(test_insertion_sort);
     run_test(test_merge_sort);
     run_test(test_quick_sort);
+    run_test(test_shell_sort);
     run_test(test_heap_sort);
     run_test(test_counting_sort);
     return summary();

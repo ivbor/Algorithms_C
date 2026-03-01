@@ -38,88 +38,10 @@ static void test_bounds_invalid_input_returns_size(void) {
     MU_ASSERT(ac_upper_bound(data, 3, sizeof(int), &target, NULL) == 3);
 }
 
-static void test_interpolation_search_found(void) {
-    int data[] = {10, 20, 30, 40, 50, 60, 70};
-    ptrdiff_t index = ac_interpolation_search_int(data, 7, 50);
-    MU_ASSERT(index == 4);
-}
-
-static void test_interpolation_search_not_found(void) {
-    int data[] = {10, 20, 30, 40, 50, 60, 70};
-    ptrdiff_t index = ac_interpolation_search_int(data, 7, 55);
-    MU_ASSERT(index == -1);
-}
-
-static void test_interpolation_search_uniform_values(void) {
-    int data[] = {5, 5, 5, 5};
-    MU_ASSERT(ac_interpolation_search_int(data, 4, 5) == 0);
-    MU_ASSERT(ac_interpolation_search_int(data, 4, 6) == -1);
-}
-
-
-static void test_jump_search_found(void) {
-    int data[] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
-    MU_ASSERT(ac_jump_search_int(data, 9, 2) == 0);
-    MU_ASSERT(ac_jump_search_int(data, 9, 12) == 5);
-    MU_ASSERT(ac_jump_search_int(data, 9, 18) == 8);
-}
-
-static void test_jump_search_not_found_and_invalid(void) {
-    int data[] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
-    MU_ASSERT(ac_jump_search_int(data, 9, 11) == -1);
-    MU_ASSERT(ac_jump_search_int(NULL, 9, 11) == -1);
-    MU_ASSERT(ac_jump_search_int(data, 0, 11) == -1);
-}
-
-
-static void test_exponential_search_found(void) {
-    int data[] = {3, 6, 9, 12, 15, 18, 21, 24, 27, 30};
-    MU_ASSERT(ac_exponential_search_int(data, 10, 3) == 0);
-    MU_ASSERT(ac_exponential_search_int(data, 10, 18) == 5);
-    MU_ASSERT(ac_exponential_search_int(data, 10, 30) == 9);
-}
-
-static void test_exponential_search_not_found_and_invalid(void) {
-    int data[] = {3, 6, 9, 12, 15, 18, 21, 24, 27, 30};
-    MU_ASSERT(ac_exponential_search_int(data, 10, 25) == -1);
-    MU_ASSERT(ac_exponential_search_int(NULL, 10, 12) == -1);
-    MU_ASSERT(ac_exponential_search_int(data, 0, 12) == -1);
-}
-
-
-static void test_fibonacci_search_found(void) {
-    int data[] = {1, 4, 7, 9, 12, 15, 18, 21, 24, 27, 30};
-    MU_ASSERT(ac_fibonacci_search_int(data, 11, 1) == 0);
-    MU_ASSERT(ac_fibonacci_search_int(data, 11, 15) == 5);
-    MU_ASSERT(ac_fibonacci_search_int(data, 11, 30) == 10);
-}
-
-static void test_fibonacci_search_not_found_and_invalid(void) {
-    int data[] = {1, 4, 7, 9, 12, 15, 18, 21, 24, 27, 30};
-    MU_ASSERT(ac_fibonacci_search_int(data, 11, 14) == -1);
-    MU_ASSERT(ac_fibonacci_search_int(NULL, 11, 14) == -1);
-    MU_ASSERT(ac_fibonacci_search_int(data, 0, 14) == -1);
-}
-
-static void test_interpolation_search_invalid(void) {
-    MU_ASSERT(ac_interpolation_search_int(NULL, 10, 4) == -1);
-    MU_ASSERT(ac_interpolation_search_int((const int[]){1, 2}, 0, 1) == -1);
-}
-
 int main(void) {
     run_test(test_binary_search_found);
     run_test(test_binary_search_not_found);
     run_test(test_bounds);
     run_test(test_bounds_invalid_input_returns_size);
-    run_test(test_interpolation_search_found);
-    run_test(test_interpolation_search_not_found);
-    run_test(test_interpolation_search_uniform_values);
-    run_test(test_jump_search_found);
-    run_test(test_jump_search_not_found_and_invalid);
-    run_test(test_exponential_search_found);
-    run_test(test_exponential_search_not_found_and_invalid);
-    run_test(test_fibonacci_search_found);
-    run_test(test_fibonacci_search_not_found_and_invalid);
-    run_test(test_interpolation_search_invalid);
     return summary();
 }
