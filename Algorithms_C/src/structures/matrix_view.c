@@ -2,10 +2,10 @@
 #include <stdio.h>
 
 /*
- * This implementation intentionally keeps logic straightforward so the helper
- * reads like the educational Python original. The function prints optional
- * axis indexes first, then emits every row using fixed-width formatting so
- * rectangular matrices remain visually aligned for debugging and lectures.
+ * This implementation intentionally remains compact while preserving the
+ * educational flavor of the Python helper.  Instead of introducing formatter
+ * abstractions, the function keeps explicit loops for headers and rows so
+ * students can directly map printed output to matrix coordinates.
  */
 void ac_print_matrix(
     int **matrix,
@@ -17,7 +17,10 @@ void ac_print_matrix(
         return;
     }
 
-    /* Print column headers when callers request explicit coordinates. */
+    /*
+     * Optional column index header.  The leading padding reserves space for row
+     * labels so data columns align regardless of whether indexes are enabled.
+     */
     if (print_indexes) {
         printf("    ");
         for (size_t col = 0; col < columns; ++col) {
@@ -26,7 +29,11 @@ void ac_print_matrix(
         printf("\n");
     }
 
-    /* Emit matrix data row by row, optionally prefixing each row index. */
+    /*
+     * Emit matrix content row-by-row.  Every numeric cell uses a fixed width
+     * of four characters plus a trailing space, keeping columns easy to scan in
+     * test logs and manual debugging sessions.
+     */
     for (size_t row = 0; row < rows; ++row) {
         if (print_indexes) {
             printf("%4zu ", row);
