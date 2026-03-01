@@ -53,6 +53,11 @@ size_t ac_lower_bound(
     const void *target,
     ac_compare_fn compare
 ) {
+    if (data == NULL || target == NULL || compare == NULL ||
+        element_size == 0) {
+        return size;
+    }
+
     size_t left = 0;
     size_t right = size;
 
@@ -76,6 +81,11 @@ size_t ac_upper_bound(
     const void *target,
     ac_compare_fn compare
 ) {
+    if (data == NULL || target == NULL || compare == NULL ||
+        element_size == 0) {
+        return size;
+    }
+
     size_t left = 0;
     size_t right = size;
 

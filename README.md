@@ -13,7 +13,8 @@ harnesses, and CI automation.
 4. [Coverage](#coverage)
 5. [Implemented modules](#implemented-modules)
 6. [Continuous integration](#continuous-integration)
-7. [License](#license)
+7. [Documentation style](#documentation-style)
+8. [License](#license)
 
 ## Repository layout
 
@@ -108,15 +109,20 @@ artifact in CI.
 
 The initial translation pass currently includes:
 
-* Generic binary search helpers (`ac_binary_search`, `ac_lower_bound`, `ac_upper_bound`).
+* Generic search helpers: binary search/bounds (`ac_binary_search`, `ac_lower_bound`, `ac_upper_bound`).
 * Ternary search helpers for locating minima and maxima of unimodal functions
   (`ac_ternary_search_min`, `ac_ternary_search_max`).
 * Selection helper that returns the k-th element without fully sorting the input
   (`ac_split_find`).
+* Damerau-Levenshtein edit distance helper for strings
+  (`ac_damerau_levenshtein_distance`, compatibility alias `ac_damerau_levenstein_distance`).
+  * Wrapper parity is validated by unit test `tests/unit/test_damerau_example_wrapper.c` against the translated example source.
+  * Source structure translated: `Algorithms_Python/examples/dp_solutions_from_page/damerau_levenstein.py` (algorithm) and mirrored educational wrapper `Algorithms_C/examples/dp_solutions_from_page/damerau_levenstein.c`.
 * Sorting algorithms – insertion sort, merge sort, quick sort, and counting sort –
   matching the Python implementations.
 * Counting sort for two-dimensional arrays (`ac_array_count_sort`).
 * Core data structures: a generic `ac_vector`, stack (`ac_stack`), queue (`ac_queue`),
+  * Stack docs now include expanded short/long descriptions and explicit signatures in both header and source commentary to match the documentation-first translation style.
   double-ended queue (`ac_deque`), singly linked list (`ac_slist`), binary
   min-heap (`ac_heap`), and matrix printing helpers (`ac_print_matrix`).
 * Sorting helpers now include a heap-driven variant (`ac_heap_sort`) alongside
@@ -127,6 +133,15 @@ Each module is unit-tested and, where appropriate, covered by stress harnesses.
 The structure headers mirror the Python repository's rich docstrings so that
 every function now carries both short and long-form descriptions directly in the
 code, making the C translation an equally verbose learning resource.
+
+
+## Documentation style
+
+To stay faithful to the educational Python source, public headers and structure
+implementations include short and long-form descriptions, repeated signatures,
+and inline comments that explain invariants and design decisions (often in more
+lines than the functional code itself). This is intentional: the C translation
+prioritises readability and teaching value over terseness.
 
 ## Continuous integration
 
