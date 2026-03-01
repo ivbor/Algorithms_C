@@ -11,6 +11,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/split_find.c
     src/algorithms/damerau_levenshtein.c
     src/algorithms/minknap.c
+    src/algorithms/genhard.c
 )
 
 set(STRUCTURES_SOURCES
@@ -95,6 +96,7 @@ set(UNIT_TEST_TARGETS
     utils
     damerau_levenshtein
     minknap
+    genhard
 )
 
 set(UNIT_TEST_EXECUTABLES)
