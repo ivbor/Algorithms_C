@@ -114,6 +114,8 @@ The initial translation pass currently includes:
   (`ac_ternary_search_min`, `ac_ternary_search_max`).
 * Selection helper that returns the k-th element without fully sorting the input
   (`ac_split_find`).
+* Damerau-Levenshtein edit distance helper for strings
+  (`ac_damerau_levenshtein_distance`).
 * Sorting algorithms – insertion sort, merge sort, quick sort, and counting sort –
   matching the Python implementations.
 * Counting sort for two-dimensional arrays (`ac_array_count_sort`).
