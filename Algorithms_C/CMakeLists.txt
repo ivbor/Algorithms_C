@@ -9,6 +9,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/merge_sort.c
     src/algorithms/quick_sort.c
     src/algorithms/split_find.c
+    src/algorithms/damerau_levenshtein.c
 )
 
 set(STRUCTURES_SOURCES
@@ -91,6 +92,7 @@ set(UNIT_TEST_TARGETS
     split_find
     binary_search
     utils
+    damerau_levenshtein
 )
 
 set(UNIT_TEST_EXECUTABLES)
