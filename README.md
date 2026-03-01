@@ -125,6 +125,8 @@ The initial translation pass currently includes:
   * Stack docs now include expanded short/long descriptions and explicit signatures in both header and source commentary to match the documentation-first translation style.
   * Source structure translated in this step: Python repository `Stack` structure (mirrored by `ac_stack` in `Algorithms_C/include/algorithms_c/structures/stack.h` and `Algorithms_C/src/structures/stack.c`).
   * Matrix-view helper docs were also expanded with short/long descriptions and formatting rationale to mirror Python-style educational prose.
+  * Queue source now includes explicit short/long/signature inline blocks for each operation to document FIFO/ring-buffer decisions in implementation context.
+  * Source structure translated in this step: Python repository `Queue` structure (mirrored by `ac_queue` in `Algorithms_C/include/algorithms_c/structures/queue.h` and `Algorithms_C/src/structures/queue.c`).
   double-ended queue (`ac_deque`), singly linked list (`ac_slist`), binary
   min-heap (`ac_heap`), and matrix printing helpers (`ac_print_matrix`).
 * Sorting helpers now include a heap-driven variant (`ac_heap_sort`) alongside
