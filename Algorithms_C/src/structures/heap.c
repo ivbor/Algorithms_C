@@ -104,6 +104,14 @@ static int sift_down(ac_heap *heap, size_t index) {
     return 0;
 }
 
+/*
+ * Short description: initialize an empty min-heap with comparator.
+ * Long description: the heap delegates storage allocation to the vector backend
+ * and records the comparator used to enforce ordering. Valid element size and
+ * comparator are required so subsequent sift operations are well-defined.
+ * Signature: int ac_heap_init(ac_heap *heap, size_t element_size,
+ *                             ac_compare_fn compare)
+ */
 int ac_heap_init(ac_heap *heap, size_t element_size, ac_compare_fn compare) {
     if (heap == NULL || element_size == 0 || compare == NULL) {
         return -EINVAL;
@@ -115,6 +123,15 @@ int ac_heap_init(ac_heap *heap, size_t element_size, ac_compare_fn compare) {
                : -ENOMEM;
 }
 
+/*
+ * Short description: initialize heap with pre-reserved capacity.
+ * Long description: this constructor mirrors Python-style preallocation paths
+ * for performance-sensitive code by reserving storage up-front while preserving
+ * the same comparator-driven min-heap semantics.
+ * Signature: int ac_heap_with_capacity(ac_heap *heap, size_t element_size,
+ *                                      size_t capacity,
+ *                                      ac_compare_fn compare)
+ */
 int ac_heap_with_capacity(
     ac_heap *heap,
     size_t element_size,
@@ -151,6 +168,15 @@ static int heapify(ac_heap *heap) {
     return 0;
 }
 
+/*
+ * Short description: build heap from an existing array copy.
+ * Long description: values are copied into vector storage and then heapified
+ * bottom-up. This keeps build complexity O(n) and matches educational
+ * constructor variants shown in Python references.
+ * Signature: int ac_heap_from_array(ac_heap *heap, size_t element_size,
+ *                                   const void *source, size_t count,
+ *                                   ac_compare_fn compare)
+ */
 int ac_heap_from_array(
     ac_heap *heap,
     size_t element_size,
@@ -172,6 +198,13 @@ int ac_heap_from_array(
     return heapify(heap);
 }
 
+/*
+ * Short description: destroy heap storage and reset comparator pointer.
+ * Long description: destruction delegates memory release to vector destroy and
+ * nulls comparator to make post-destroy misuse easier to diagnose in tests.
+ * NULL heaps are accepted as a defensive no-op.
+ * Signature: void ac_heap_destroy(ac_heap *heap)
+ */
 void ac_heap_destroy(ac_heap *heap) {
     if (heap == NULL) {
         return;
@@ -181,18 +214,42 @@ void ac_heap_destroy(ac_heap *heap) {
     heap->compare = NULL;
 }
 
+/*
+ * Short description: return current number of elements.
+ * Long description: size is tracked by vector backend and exposed in O(1), with
+ * NULL treated as zero to simplify diagnostic call sites.
+ * Signature: size_t ac_heap_size(const ac_heap *heap)
+ */
 size_t ac_heap_size(const ac_heap *heap) {
     return heap != NULL ? ac_vector_size(&heap->storage) : 0U;
 }
 
+/*
+ * Short description: return allocated element capacity.
+ * Long description: capacity reports reserved slots in underlying storage and
+ * is useful in growth-behavior tests and stress instrumentation.
+ * Signature: size_t ac_heap_capacity(const ac_heap *heap)
+ */
 size_t ac_heap_capacity(const ac_heap *heap) {
     return heap != NULL ? ac_vector_capacity(&heap->storage) : 0U;
 }
 
+/*
+ * Short description: check whether heap contains no elements.
+ * Long description: emptiness derives from explicit size, avoiding additional
+ * state flags and keeping checks constant time.
+ * Signature: bool ac_heap_empty(const ac_heap *heap)
+ */
 bool ac_heap_empty(const ac_heap *heap) {
     return ac_heap_size(heap) == 0U;
 }
 
+/*
+ * Short description: ensure storage can hold at least `new_capacity` elements.
+ * Long description: reserve forwards to vector reserve and keeps existing heap
+ * layout intact; only storage capacity changes, not logical ordering.
+ * Signature: int ac_heap_reserve(ac_heap *heap, size_t new_capacity)
+ */
 int ac_heap_reserve(ac_heap *heap, size_t new_capacity) {
     if (heap == NULL) {
         return -EINVAL;
@@ -203,6 +260,12 @@ int ac_heap_reserve(ac_heap *heap, size_t new_capacity) {
                : -ENOMEM;
 }
 
+/*
+ * Short description: insert one element while preserving min-heap property.
+ * Long description: insertion appends at tail then performs sift-up until
+ * parent ordering is restored, giving O(log n) worst-case and amortized O(1)
+ * growth. Signature: int ac_heap_push(ac_heap *heap, const void *element)
+ */
 int ac_heap_push(ac_heap *heap, const void *element) {
     if (heap == NULL || element == NULL) {
         return -EINVAL;
@@ -221,6 +284,12 @@ int ac_heap_push(ac_heap *heap, const void *element) {
     return 0;
 }
 
+/*
+ * Short description: copy current minimum element without removal.
+ * Long description: peek reads root element at index 0 and leaves structure
+ * unchanged, enabling non-destructive observation in algorithms and tests.
+ * Signature: int ac_heap_peek(const ac_heap *heap, void *out_element)
+ */
 int ac_heap_peek(const ac_heap *heap, void *out_element) {
     if (heap == NULL || out_element == NULL || ac_heap_empty(heap)) {
         return -ENOENT;
@@ -233,6 +302,13 @@ int ac_heap_peek(const ac_heap *heap, void *out_element) {
     return 0;
 }
 
+/*
+ * Short description: remove minimum element and optionally copy it out.
+ * Long description: pop swaps root with tail, removes tail in O(1), then
+ * restores ordering via sift-down from root. This is canonical array-heap
+ * deletion and keeps complexity O(log n).
+ * Signature: int ac_heap_pop(ac_heap *heap, void *out_element)
+ */
 int ac_heap_pop(ac_heap *heap, void *out_element) {
     if (heap == NULL || ac_heap_empty(heap)) {
         return -ENOENT;
@@ -260,6 +336,12 @@ int ac_heap_pop(ac_heap *heap, void *out_element) {
     return 0;
 }
 
+/*
+ * Short description: clear all elements while retaining allocation.
+ * Long description: clear resets logical size through vector backend so future
+ * pushes reuse allocated memory and avoid immediate reallocations.
+ * Signature: void ac_heap_clear(ac_heap *heap)
+ */
 void ac_heap_clear(ac_heap *heap) {
     if (heap == NULL) {
         return;
@@ -268,6 +350,12 @@ void ac_heap_clear(ac_heap *heap) {
     ac_vector_clear(&heap->storage);
 }
 
+/*
+ * Short description: compute number of levels in implicit heap tree.
+ * Long description: height is derived from element count by repeated halving,
+ * matching the conceptual binary-tree representation used in explanations.
+ * Signature: size_t ac_heap_height(const ac_heap *heap)
+ */
 size_t ac_heap_height(const ac_heap *heap) {
     size_t size = ac_heap_size(heap);
     size_t height = 0U;

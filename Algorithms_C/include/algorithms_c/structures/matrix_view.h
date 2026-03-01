@@ -12,16 +12,21 @@ extern "C" {
  * @brief Helper utilities for rendering integer matrices in tabular form.
  *
  * The Python repository exposes a ``print_matrix`` helper with extensive
- * commentary on formatting decisions.  The C version mirrors that spirit by
- * documenting both the short and long descriptions inline.
+ * educational commentary on layout and readability.  The C translation mirrors
+ * that style by documenting *why* each formatting decision exists, not only
+ * what function is called.  The helper is intentionally small in code but rich
+ * in prose so learners can quickly understand indexing, alignment, and
+ * diagnostic intent.
  */
 
 /**
  * @brief Render a matrix of integers to standard output.
  *
- * The function prints rows and columns with consistent alignment and optionally
- * emits header indexes for additional clarity—matching the behaviour of the
- * Python helper.
+ * The function prints rows and columns using fixed-width cells so rectangular
+ * data remains visually aligned, which makes debugging dynamic-programming
+ * tables significantly easier.  When ``print_indexes`` is non-zero, a header
+ * row and leading row labels are emitted to expose coordinates explicitly,
+ * matching the pedagogical output style used by the Python source.
  *
  * @param matrix Two-dimensional array expressed as an array of row pointers.
  * @param rows Number of rows in ``matrix``.

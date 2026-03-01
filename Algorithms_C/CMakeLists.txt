@@ -9,6 +9,8 @@ set(ALGORITHMS_SOURCES
     src/algorithms/merge_sort.c
     src/algorithms/quick_sort.c
     src/algorithms/split_find.c
+    src/algorithms/damerau_levenshtein.c
+    src/algorithms/minknap.c
 )
 
 set(STRUCTURES_SOURCES
@@ -91,6 +93,8 @@ set(UNIT_TEST_TARGETS
     split_find
     binary_search
     utils
+    damerau_levenshtein
+    minknap
 )
 
 set(UNIT_TEST_EXECUTABLES)
@@ -110,6 +114,20 @@ foreach(test_name IN LISTS UNIT_TEST_TARGETS)
     list(APPEND UNIT_TEST_EXECUTABLES ${target})
     add_test(NAME ${test_name} COMMAND ${target})
 endforeach()
+
+add_executable(algorithms_c_damerau_example_wrapper_tests
+    tests/unit/test_damerau_example_wrapper.c
+    examples/dp_solutions_from_page/damerau_levenstein.c
+    ${TEST_SUPPORT_SOURCES}
+)
+target_link_libraries(algorithms_c_damerau_example_wrapper_tests PRIVATE algorithms_c)
+target_compile_options(algorithms_c_damerau_example_wrapper_tests PRIVATE ${AC_WARNING_FLAGS})
+if(ENABLE_COVERAGE AND CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(algorithms_c_damerau_example_wrapper_tests PRIVATE --coverage -O0 -g)
+    target_link_options(algorithms_c_damerau_example_wrapper_tests PRIVATE --coverage)
+endif()
+add_test(NAME damerau_example_wrapper COMMAND algorithms_c_damerau_example_wrapper_tests)
+list(APPEND UNIT_TEST_EXECUTABLES algorithms_c_damerau_example_wrapper_tests)
 
 add_executable(sorting_stress tests/stress/sorting_stress.c)
 target_link_libraries(sorting_stress PRIVATE algorithms_c)
