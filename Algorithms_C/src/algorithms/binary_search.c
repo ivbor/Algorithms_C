@@ -136,3 +136,35 @@ ptrdiff_t ac_interpolation_search_int(const int *data, size_t size, int target) 
 
     return -1;
 }
+
+
+ptrdiff_t ac_jump_search_int(const int *data, size_t size, int target) {
+    if (data == NULL || size == 0) {
+        return -1;
+    }
+
+    size_t step = 1;
+    while (step * step < size) {
+        step++;
+    }
+
+    size_t prev = 0;
+    size_t curr = step;
+
+    while (prev < size && data[(curr < size ? curr : size) - 1] < target) {
+        prev = curr;
+        curr += step;
+        if (prev >= size) {
+            return -1;
+        }
+    }
+
+    size_t end = curr < size ? curr : size;
+    for (size_t i = prev; i < end; ++i) {
+        if (data[i] == target) {
+            return (ptrdiff_t)i;
+        }
+    }
+
+    return -1;
+}

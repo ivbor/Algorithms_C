@@ -109,7 +109,7 @@ artifact in CI.
 
 The initial translation pass currently includes:
 
-* Generic search helpers: binary search/bounds (`ac_binary_search`, `ac_lower_bound`, `ac_upper_bound`) and integer interpolation search (`ac_interpolation_search_int`).
+* Generic search helpers: binary search/bounds (`ac_binary_search`, `ac_lower_bound`, `ac_upper_bound`), jump search (`ac_jump_search_int`), and integer interpolation search (`ac_interpolation_search_int`).
 * Ternary search helpers for locating minima and maxima of unimodal functions
   (`ac_ternary_search_min`, `ac_ternary_search_max`).
 * Selection helper that returns the k-th element without fully sorting the input

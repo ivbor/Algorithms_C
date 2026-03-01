@@ -56,6 +56,21 @@ static void test_interpolation_search_uniform_values(void) {
     MU_ASSERT(ac_interpolation_search_int(data, 4, 6) == -1);
 }
 
+
+static void test_jump_search_found(void) {
+    int data[] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
+    MU_ASSERT(ac_jump_search_int(data, 9, 2) == 0);
+    MU_ASSERT(ac_jump_search_int(data, 9, 12) == 5);
+    MU_ASSERT(ac_jump_search_int(data, 9, 18) == 8);
+}
+
+static void test_jump_search_not_found_and_invalid(void) {
+    int data[] = {2, 4, 6, 8, 10, 12, 14, 16, 18};
+    MU_ASSERT(ac_jump_search_int(data, 9, 11) == -1);
+    MU_ASSERT(ac_jump_search_int(NULL, 9, 11) == -1);
+    MU_ASSERT(ac_jump_search_int(data, 0, 11) == -1);
+}
+
 static void test_interpolation_search_invalid(void) {
     MU_ASSERT(ac_interpolation_search_int(NULL, 10, 4) == -1);
     MU_ASSERT(ac_interpolation_search_int((const int[]){1, 2}, 0, 1) == -1);
@@ -69,6 +84,8 @@ int main(void) {
     run_test(test_interpolation_search_found);
     run_test(test_interpolation_search_not_found);
     run_test(test_interpolation_search_uniform_values);
+    run_test(test_jump_search_found);
+    run_test(test_jump_search_not_found_and_invalid);
     run_test(test_interpolation_search_invalid);
     return summary();
 }

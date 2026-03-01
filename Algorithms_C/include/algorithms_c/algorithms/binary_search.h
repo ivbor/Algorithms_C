@@ -111,6 +111,25 @@ size_t ac_upper_bound(
  */
 ptrdiff_t ac_interpolation_search_int(const int *data, size_t size, int target);
 
+
+/**
+ * @brief Jump search for sorted integer arrays.
+ *
+ * This helper mirrors the Python jump-search variant that advances in
+ * ``sqrt(n)`` sized blocks and then performs a linear scan within the located
+ * block. It is useful as another educational search strategy between linear and
+ * binary search.
+ *
+ * @param data Pointer to a sorted ``int`` array in ascending order.
+ * @param size Number of elements in ``data``.
+ * @param target Integer value to locate.
+ * @return Zero-based index of ``target`` when found, or ``-1`` when absent or
+ *         arguments are invalid.
+ * @signature ptrdiff_t ac_jump_search_int(const int *data, size_t size,
+ *                                         int target)
+ */
+ptrdiff_t ac_jump_search_int(const int *data, size_t size, int target);
+
 /**
  * @brief Convenience comparator for ``int`` values.
  *
