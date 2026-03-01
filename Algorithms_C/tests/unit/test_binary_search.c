@@ -86,6 +86,21 @@ static void test_exponential_search_not_found_and_invalid(void) {
     MU_ASSERT(ac_exponential_search_int(data, 0, 12) == -1);
 }
 
+
+static void test_fibonacci_search_found(void) {
+    int data[] = {1, 4, 7, 9, 12, 15, 18, 21, 24, 27, 30};
+    MU_ASSERT(ac_fibonacci_search_int(data, 11, 1) == 0);
+    MU_ASSERT(ac_fibonacci_search_int(data, 11, 15) == 5);
+    MU_ASSERT(ac_fibonacci_search_int(data, 11, 30) == 10);
+}
+
+static void test_fibonacci_search_not_found_and_invalid(void) {
+    int data[] = {1, 4, 7, 9, 12, 15, 18, 21, 24, 27, 30};
+    MU_ASSERT(ac_fibonacci_search_int(data, 11, 14) == -1);
+    MU_ASSERT(ac_fibonacci_search_int(NULL, 11, 14) == -1);
+    MU_ASSERT(ac_fibonacci_search_int(data, 0, 14) == -1);
+}
+
 static void test_interpolation_search_invalid(void) {
     MU_ASSERT(ac_interpolation_search_int(NULL, 10, 4) == -1);
     MU_ASSERT(ac_interpolation_search_int((const int[]){1, 2}, 0, 1) == -1);
@@ -103,6 +118,8 @@ int main(void) {
     run_test(test_jump_search_not_found_and_invalid);
     run_test(test_exponential_search_found);
     run_test(test_exponential_search_not_found_and_invalid);
+    run_test(test_fibonacci_search_found);
+    run_test(test_fibonacci_search_not_found_and_invalid);
     run_test(test_interpolation_search_invalid);
     return summary();
 }

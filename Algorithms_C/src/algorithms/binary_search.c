@@ -208,3 +208,53 @@ ptrdiff_t ac_exponential_search_int(const int *data, size_t size, int target) {
 
     return -1;
 }
+
+
+ptrdiff_t ac_fibonacci_search_int(const int *data, size_t size, int target) {
+    if (data == NULL || size == 0) {
+        return -1;
+    }
+
+    size_t fib_mm2 = 0; /* (m-2)'th Fibonacci number. */
+    size_t fib_mm1 = 1; /* (m-1)'th Fibonacci number. */
+    size_t fib_m = fib_mm1 + fib_mm2; /* m'th Fibonacci number. */
+
+    while (fib_m < size) {
+        fib_mm2 = fib_mm1;
+        fib_mm1 = fib_m;
+        fib_m = fib_mm1 + fib_mm2;
+    }
+
+    ptrdiff_t offset = -1;
+
+    while (fib_m > 1) {
+        size_t i;
+        if ((size_t)(offset + (ptrdiff_t)fib_mm2) >= size) {
+            i = size - 1;
+        } else {
+            i = (size_t)(offset + (ptrdiff_t)fib_mm2);
+        }
+
+        if (data[i] < target) {
+            fib_m = fib_mm1;
+            fib_mm1 = fib_mm2;
+            fib_mm2 = fib_m - fib_mm1;
+            offset = (ptrdiff_t)i;
+        } else if (data[i] > target) {
+            fib_m = fib_mm2;
+            fib_mm1 -= fib_mm2;
+            fib_mm2 = fib_m - fib_mm1;
+        } else {
+            return (ptrdiff_t)i;
+        }
+    }
+
+    if (fib_mm1 != 0 && offset + 1 < (ptrdiff_t)size) {
+        size_t i = (size_t)(offset + 1);
+        if (data[i] == target) {
+            return (ptrdiff_t)i;
+        }
+    }
+
+    return -1;
+}

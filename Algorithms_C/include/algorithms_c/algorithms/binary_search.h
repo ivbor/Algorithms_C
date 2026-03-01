@@ -150,6 +150,25 @@ ptrdiff_t ac_jump_search_int(const int *data, size_t size, int target);
  */
 ptrdiff_t ac_exponential_search_int(const int *data, size_t size, int target);
 
+
+/**
+ * @brief Fibonacci search for sorted integer arrays.
+ *
+ * Fibonacci search uses Fibonacci offsets instead of midpoint division to probe
+ * sorted data. This mirrors the Python educational implementation and provides
+ * another comparison-friendly strategy for static arrays.
+ *
+ * @param data Pointer to a sorted ``int`` array in ascending order.
+ * @param size Number of elements in ``data``.
+ * @param target Integer value to locate.
+ * @return Zero-based index of ``target`` when found, or ``-1`` when absent or
+ *         arguments are invalid.
+ * @signature ptrdiff_t ac_fibonacci_search_int(const int *data,
+ *                                              size_t size,
+ *                                              int target)
+ */
+ptrdiff_t ac_fibonacci_search_int(const int *data, size_t size, int target);
+
 /**
  * @brief Convenience comparator for ``int`` values.
  *
