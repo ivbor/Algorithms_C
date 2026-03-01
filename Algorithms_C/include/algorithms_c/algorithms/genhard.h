@@ -78,6 +78,43 @@ int ac_genhard_generate_weakly_correlated(
     int *out_capacity
 );
 
+/**
+ * @brief Generate a strongly-correlated 0/1-knapsack instance.
+ *
+ * Weights are sampled from ``[1, range_max]`` and profits are computed as
+ * ``weight + correlation_offset``. This mirrors the classic strongly-correlated
+ * benchmark family where value and weight are almost linearly coupled.
+ *
+ * @param n Number of items.
+ * @param range_max Maximum generated weight value (inclusive).
+ * @param correlation_offset Non-negative additive offset applied to profits.
+ * @param seed Deterministic seed for reproducible generation.
+ * @param capacity_ratio Ratio in ``[0.0, 1.0]`` used to derive capacity.
+ * @param out_profits Output profits array of length ``n``.
+ * @param out_weights Output weights array of length ``n``.
+ * @param out_capacity Output pointer receiving derived capacity.
+ * @return ``0`` on success, ``-1`` for invalid arguments.
+ * @signature int ac_genhard_generate_strongly_correlated(
+ *               size_t n,
+ *               int range_max,
+ *               int correlation_offset,
+ *               unsigned int seed,
+ *               double capacity_ratio,
+ *               int *out_profits,
+ *               int *out_weights,
+ *               int *out_capacity)
+ */
+int ac_genhard_generate_strongly_correlated(
+    size_t n,
+    int range_max,
+    int correlation_offset,
+    unsigned int seed,
+    double capacity_ratio,
+    int *out_profits,
+    int *out_weights,
+    int *out_capacity
+);
+
 #ifdef __cplusplus
 }
 #endif

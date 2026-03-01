@@ -118,7 +118,7 @@ The initial translation pass currently includes:
   (`ac_damerau_levenshtein_distance`, compatibility alias `ac_damerau_levenstein_distance`).
   * Wrapper parity is validated by unit test `tests/unit/test_damerau_example_wrapper.c` against the translated example source.
   * Source structure translated: `Algorithms_Python/examples/dp_solutions_from_page/damerau_levenstein.py` (algorithm) and mirrored educational wrapper `Algorithms_C/examples/dp_solutions_from_page/damerau_levenstein.c`.
-* Knapsack instance generator helpers (`ac_genhard_generate_uncorrelated`, `ac_genhard_generate_weakly_correlated`).
+* Knapsack instance generator helpers (`ac_genhard_generate_uncorrelated`, `ac_genhard_generate_weakly_correlated`, `ac_genhard_generate_strongly_correlated`).
   * Source structure translated in this step: `Algorithms_Python/examples/dp_solutions_from_page/genhard.py` mirrored as reusable C API (`Algorithms_C/include/algorithms_c/algorithms/genhard.h`, `Algorithms_C/src/algorithms/genhard.c`).
 * 0/1 knapsack dynamic-programming helper (`ac_minknap_max_profit`).
   * Added `ac_minknap` compatibility wrapper preserving classic `(n, p, w, x, c)` call form for translated examples.

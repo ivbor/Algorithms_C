@@ -85,6 +85,48 @@ static void test_genhard_weakly_correlated_near_weight(void) {
     }
 }
 
+static void test_genhard_strongly_correlated_profit_rule(void) {
+    int profits[10], weights[10], cap = -1;
+    int offset = 17;
+
+    MU_ASSERT(
+        ac_genhard_generate_strongly_correlated(
+            10, 80, offset, 99u, 0.5, profits, weights, &cap
+        ) == 0
+    );
+
+    int sum_weights = 0;
+    for (size_t i = 0; i < 10; ++i) {
+        MU_ASSERT(profits[i] == weights[i] + offset);
+        MU_ASSERT(weights[i] >= 1);
+        MU_ASSERT(weights[i] <= 80);
+        sum_weights += weights[i];
+    }
+
+    MU_ASSERT(cap >= 1);
+    MU_ASSERT(cap <= sum_weights);
+}
+
+static void test_genhard_strongly_correlated_invalid(void) {
+    int profits[2], weights[2], cap = 0;
+
+    MU_ASSERT(
+        ac_genhard_generate_strongly_correlated(
+            2, 10, -1, 1u, 0.5, profits, weights, &cap
+        ) == -1
+    );
+    MU_ASSERT(
+        ac_genhard_generate_strongly_correlated(
+            2, 0, 2, 1u, 0.5, profits, weights, &cap
+        ) == -1
+    );
+    MU_ASSERT(
+        ac_genhard_generate_strongly_correlated(
+            2, 10, 2, 1u, 1.5, profits, weights, &cap
+        ) == -1
+    );
+}
+
 static void test_genhard_zero_items(void) {
     int capacity = -1;
 
@@ -136,6 +178,8 @@ int main(void) {
     run_test(test_genhard_generates_positive_values);
     run_test(test_genhard_weakly_correlated_reproducible);
     run_test(test_genhard_weakly_correlated_near_weight);
+    run_test(test_genhard_strongly_correlated_profit_rule);
+    run_test(test_genhard_strongly_correlated_invalid);
     run_test(test_genhard_zero_items);
     run_test(test_genhard_invalid_arguments);
     return summary();
