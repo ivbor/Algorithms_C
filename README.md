@@ -116,6 +116,7 @@ The initial translation pass currently includes:
   (`ac_split_find`).
 * Damerau-Levenshtein edit distance helper for strings
   (`ac_damerau_levenshtein_distance`, compatibility alias `ac_damerau_levenstein_distance`).
+  * Wrapper parity is validated by unit test `tests/unit/test_damerau_example_wrapper.c` against the translated example source.
   * Source structure translated: `Algorithms_Python/examples/dp_solutions_from_page/damerau_levenstein.py` (algorithm) and mirrored educational wrapper `Algorithms_C/examples/dp_solutions_from_page/damerau_levenstein.c`.
 * Sorting algorithms – insertion sort, merge sort, quick sort, and counting sort –
   matching the Python implementations.
