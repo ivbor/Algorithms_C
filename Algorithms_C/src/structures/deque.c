@@ -48,6 +48,14 @@ static int ensure_capacity(ac_deque *deque, size_t min_capacity) {
     return ac_deque_reserve(deque, new_capacity);
 }
 
+/*
+ * Short description: initialize deque storage and ring indices.
+ * Long description: initialization allocates optional initial capacity and
+ * sets a canonical empty state (size=0, head=tail=0), mirroring constructor
+ * semantics of the Python Deque structure while making ownership explicit.
+ * Signature: int ac_deque_init(ac_deque *deque, size_t element_size,
+ *                              size_t initial_capacity)
+ */
 int ac_deque_init(
     ac_deque *deque,
     size_t element_size,
@@ -70,6 +78,13 @@ int ac_deque_init(
     return 0;
 }
 
+/*
+ * Short description: free deque resources and reset metadata.
+ * Long description: destruction releases the backing buffer and clears fields
+ * so repeated init/destroy cycles in tests remain deterministic. NULL is
+ * accepted as a defensive no-op to simplify teardown paths. Signature: void
+ * ac_deque_destroy(ac_deque *deque)
+ */
 void ac_deque_destroy(ac_deque *deque) {
     if (deque == NULL) {
         return;
@@ -84,18 +99,44 @@ void ac_deque_destroy(ac_deque *deque) {
     deque->tail = 0;
 }
 
+/*
+ * Short description: report whether deque holds zero elements.
+ * Long description: emptiness is determined from explicit size tracking rather
+ * than head/tail comparison, avoiding ambiguous states in ring-buffer layouts.
+ * NULL is treated as empty for defensive callers.
+ * Signature: bool ac_deque_empty(const ac_deque *deque)
+ */
 bool ac_deque_empty(const ac_deque *deque) {
     return deque == NULL || deque->size == 0;
 }
 
+/*
+ * Short description: return logical element count.
+ * Long description: size is maintained eagerly on push/pop, so this accessor is
+ * O(1) and useful for tests asserting invariants after random operations.
+ * Signature: size_t ac_deque_size(const ac_deque *deque)
+ */
 size_t ac_deque_size(const ac_deque *deque) {
     return deque == NULL ? 0U : deque->size;
 }
 
+/*
+ * Short description: return allocated slot capacity.
+ * Long description: capacity reflects reserved storage, not current size. This
+ * is primarily surfaced for diagnostics and growth-behavior stress checks.
+ * Signature: size_t ac_deque_capacity(const ac_deque *deque)
+ */
 size_t ac_deque_capacity(const ac_deque *deque) {
     return deque == NULL ? 0U : deque->capacity;
 }
 
+/*
+ * Short description: grow underlying storage to at least `new_capacity`.
+ * Long description: reserve linearizes logical order into a fresh buffer, then
+ * re-bases indices (head=0, tail=size). This makes subsequent wrap-around math
+ * predictable and keeps semantics identical to Python's abstract sequence view.
+ * Signature: int ac_deque_reserve(ac_deque *deque, size_t new_capacity)
+ */
 int ac_deque_reserve(ac_deque *deque, size_t new_capacity) {
     void *new_data;
     unsigned char *dst;
@@ -138,6 +179,12 @@ int ac_deque_reserve(ac_deque *deque, size_t new_capacity) {
     return 0;
 }
 
+/*
+ * Short description: append one element at logical back.
+ * Long description: push_back ensures capacity, writes at tail, and advances
+ * tail modulo capacity, preserving amortized O(1) insertion in ring layout.
+ * Signature: int ac_deque_push_back(ac_deque *deque, const void *value)
+ */
 int ac_deque_push_back(ac_deque *deque, const void *value) {
     int status;
     unsigned char *base;
@@ -164,6 +211,13 @@ int ac_deque_push_back(ac_deque *deque, const void *value) {
     return 0;
 }
 
+/*
+ * Short description: prepend one element at logical front.
+ * Long description: push_front ensures capacity, rewinds head with wrap-around,
+ * writes value into the new head slot, and increments size. This is the dual of
+ * push_back and keeps deque-end operations constant-time amortized.
+ * Signature: int ac_deque_push_front(ac_deque *deque, const void *value)
+ */
 int ac_deque_push_front(ac_deque *deque, const void *value) {
     int status;
     unsigned char *base;
@@ -190,6 +244,13 @@ int ac_deque_push_front(ac_deque *deque, const void *value) {
     return 0;
 }
 
+/*
+ * Short description: remove front element and optionally copy it out.
+ * Long description: pop_front reads current head (if requested), advances head
+ * modulo capacity, decrements size, and normalizes indices to zero when empty
+ * to keep post-condition state deterministic for debugging and tests.
+ * Signature: int ac_deque_pop_front(ac_deque *deque, void *out_value)
+ */
 int ac_deque_pop_front(ac_deque *deque, void *out_value) {
     unsigned char *base;
 
@@ -217,6 +278,13 @@ int ac_deque_pop_front(ac_deque *deque, void *out_value) {
     return 0;
 }
 
+/*
+ * Short description: remove back element and optionally copy it out.
+ * Long description: pop_back rewinds tail with wrap-around, then reads that
+ * slot as the removed element. Like pop_front, it resets indices when the deque
+ * becomes empty for deterministic empty-state invariants.
+ * Signature: int ac_deque_pop_back(ac_deque *deque, void *out_value)
+ */
 int ac_deque_pop_back(ac_deque *deque, void *out_value) {
     unsigned char *base;
 
@@ -244,6 +312,12 @@ int ac_deque_pop_back(ac_deque *deque, void *out_value) {
     return 0;
 }
 
+/*
+ * Short description: inspect front element without mutation.
+ * Long description: front copies from head slot and leaves indices unchanged,
+ * enabling read-only observation of deque state in algorithm traces and tests.
+ * Signature: int ac_deque_front(const ac_deque *deque, void *out_value)
+ */
 int ac_deque_front(const ac_deque *deque, void *out_value) {
     const unsigned char *base;
 
@@ -262,6 +336,12 @@ int ac_deque_front(const ac_deque *deque, void *out_value) {
     return 0;
 }
 
+/*
+ * Short description: inspect back element without mutation.
+ * Long description: back computes the tail-predecessor index with wrap-around
+ * and copies that element, preserving deque state exactly.
+ * Signature: int ac_deque_back(const ac_deque *deque, void *out_value)
+ */
 int ac_deque_back(const ac_deque *deque, void *out_value) {
     size_t index;
     const unsigned char *base;
@@ -281,6 +361,12 @@ int ac_deque_back(const ac_deque *deque, void *out_value) {
     return 0;
 }
 
+/*
+ * Short description: clear contents while retaining allocated capacity.
+ * Long description: clear resets logical size and both indices to zero but
+ * keeps the backing buffer for future pushes, mirroring common deque clear
+ * semantics. Signature: void ac_deque_clear(ac_deque *deque)
+ */
 void ac_deque_clear(ac_deque *deque) {
     if (deque == NULL) {
         return;
