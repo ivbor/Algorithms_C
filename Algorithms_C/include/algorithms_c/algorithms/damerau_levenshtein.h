@@ -31,6 +31,23 @@ extern "C" {
  */
 int ac_damerau_levenshtein_distance(const char *lhs, const char *rhs);
 
+/**
+ * @brief Compatibility alias preserving the Python file spelling
+ *        ``damerau_levenstein``.
+ *
+ * Some educational materials and example names use the historic "levenstein"
+ * spelling. This wrapper keeps that name available while delegating to
+ * ::ac_damerau_levenshtein_distance.
+ *
+ * @param lhs Source string. Must not be ``NULL``.
+ * @param rhs Target string. Must not be ``NULL``.
+ * @return Same value and error semantics as
+ *         ::ac_damerau_levenshtein_distance.
+ * @signature int ac_damerau_levenstein_distance(const char *lhs,
+ *                                               const char *rhs)
+ */
+int ac_damerau_levenstein_distance(const char *lhs, const char *rhs);
+
 #ifdef __cplusplus
 }
 #endif

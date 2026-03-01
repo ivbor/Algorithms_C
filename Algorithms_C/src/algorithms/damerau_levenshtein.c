@@ -68,3 +68,7 @@ int ac_damerau_levenshtein_distance(const char *lhs, const char *rhs) {
     }
     return (int)distance;
 }
+
+int ac_damerau_levenstein_distance(const char *lhs, const char *rhs) {
+    return ac_damerau_levenshtein_distance(lhs, rhs);
+}
