@@ -28,9 +28,20 @@ static void test_bounds(void) {
     MU_ASSERT(upper == 4);
 }
 
+static void test_bounds_invalid_input_returns_size(void) {
+    int data[] = {1, 2, 3};
+    int target = 2;
+
+    MU_ASSERT(ac_lower_bound(NULL, 3, sizeof(int), &target, ac_compare_int) == 3);
+    MU_ASSERT(ac_upper_bound(data, 3, sizeof(int), NULL, ac_compare_int) == 3);
+    MU_ASSERT(ac_lower_bound(data, 3, 0, &target, ac_compare_int) == 3);
+    MU_ASSERT(ac_upper_bound(data, 3, sizeof(int), &target, NULL) == 3);
+}
+
 int main(void) {
     run_test(test_binary_search_found);
     run_test(test_binary_search_not_found);
     run_test(test_bounds);
+    run_test(test_bounds_invalid_input_returns_size);
     return summary();
 }

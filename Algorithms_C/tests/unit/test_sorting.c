@@ -36,6 +36,8 @@ static void test_quick_sort(void) {
     assert_sorted(data, 128);
 }
 
+
+
 static void test_heap_sort(void) {
     int data[64];
     fill_random(data, 64);
