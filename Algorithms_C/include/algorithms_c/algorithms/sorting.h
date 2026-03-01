@@ -58,23 +58,6 @@ void ac_quick_sort(
 
 
 /**
- * @brief Shell sort using decreasing gap-based insertion passes.
- *
- * This helper mirrors the Python ``shell_sort`` educational implementation: it
- * starts with large gaps to move elements quickly across the array and then
- * finishes with a standard insertion pass at gap 1.
- *
- * @signature void ac_shell_sort(void *data, size_t size, size_t element_size,
- *                               ac_compare_fn compare)
- */
-void ac_shell_sort(
-    void *data,
-    size_t size,
-    size_t element_size,
-    ac_compare_fn compare
-);
-
-/**
  * @brief Heap sort implemented via the documented ``ac_heap`` container.
  *
  * The helper mirrors the Python ``heap_sort`` routine: all elements are first
