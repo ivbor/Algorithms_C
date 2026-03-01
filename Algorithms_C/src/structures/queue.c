@@ -116,6 +116,13 @@ int ac_queue_reserve(ac_queue *queue, size_t new_capacity) {
         return -ENOMEM;
     }
 
+    /*
+     * The queue may currently wrap around the end of the old buffer. During
+     * reallocation we linearise the logical order so that ``head`` becomes
+     * zero in the new storage. This keeps subsequent push/pop logic simple and
+     * mirrors how the Python implementation conceptually stores items in a
+     * contiguous list.
+     */
     if (queue->size > 0 && queue->data != NULL) {
         unsigned char *dst = (unsigned char *)new_data;
         size_t capacity = queue->capacity == 0 ? 1 : queue->capacity;
@@ -147,6 +154,7 @@ int ac_queue_enqueue(ac_queue *queue, const void *value) {
         return status;
     }
 
+    /* Place the element at the current tail slot, then advance tail. */
     queue_memcpy(queue, queue->tail, value);
     queue->tail =
         (queue->tail + 1) % (queue->capacity == 0 ? 1 : queue->capacity);
@@ -159,12 +167,18 @@ int ac_queue_dequeue(ac_queue *queue, void *out_value) {
         return -ENOENT;
     }
 
+    /* Optionally expose the dequeued value before moving the head pointer. */
     if (out_value != NULL) {
         queue_memmove(queue, out_value, queue->head);
     }
 
     queue->head = (queue->head + 1) % queue->capacity;
     queue->size--;
+    /*
+     * Reset indices when the queue becomes empty. This is not strictly
+     * required for correctness, but it simplifies debugging and keeps state
+     * deterministic for tests and docs.
+     */
     if (queue->size == 0) {
         queue->head = 0;
         queue->tail = 0;

@@ -13,7 +13,8 @@ harnesses, and CI automation.
 4. [Coverage](#coverage)
 5. [Implemented modules](#implemented-modules)
 6. [Continuous integration](#continuous-integration)
-7. [License](#license)
+7. [Documentation style](#documentation-style)
+8. [License](#license)
 
 ## Repository layout
 
@@ -127,6 +128,15 @@ Each module is unit-tested and, where appropriate, covered by stress harnesses.
 The structure headers mirror the Python repository's rich docstrings so that
 every function now carries both short and long-form descriptions directly in the
 code, making the C translation an equally verbose learning resource.
+
+
+## Documentation style
+
+To stay faithful to the educational Python source, public headers and structure
+implementations include short and long-form descriptions, repeated signatures,
+and inline comments that explain invariants and design decisions (often in more
+lines than the functional code itself). This is intentional: the C translation
+prioritises readability and teaching value over terseness.
 
 ## Continuous integration
 
