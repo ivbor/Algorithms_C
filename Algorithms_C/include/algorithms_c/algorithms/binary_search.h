@@ -52,7 +52,8 @@ ptrdiff_t ac_binary_search(
  * @param element_size Size of each element in bytes.
  * @param target Value used for boundary lookup.
  * @param compare Comparator defining array order.
- * @return Insertion index in range ``[0, size]``.
+ * @return Insertion index in range ``[0, size]``. Returns ``size`` on invalid
+ *         input to stay fail-safe.
  * @signature size_t ac_lower_bound(const void *data, size_t size,
  *                                  size_t element_size,
  *                                  const void *target,
@@ -77,6 +78,7 @@ size_t ac_lower_bound(
  * @param target Value used for boundary lookup.
  * @param compare Comparator defining array order.
  * @return Insertion index in range ``[0, size]`` after any equal elements.
+ *         Returns ``size`` on invalid input.
  * @signature size_t ac_upper_bound(const void *data, size_t size,
  *                                  size_t element_size,
  *                                  const void *target,
@@ -89,6 +91,25 @@ size_t ac_upper_bound(
     const void *target,
     ac_compare_fn compare
 );
+
+/**
+ * @brief Interpolation search for sorted integer arrays.
+ *
+ * This helper mirrors Python implementations of interpolation search used for
+ * uniformly distributed numeric data. Unlike generic binary search it estimates
+ * the probe position based on the target value and boundary values, which can
+ * reduce comparisons on near-uniform inputs.
+ *
+ * @param data Pointer to a sorted ``int`` array in ascending order.
+ * @param size Number of elements in ``data``.
+ * @param target Integer value to locate.
+ * @return Zero-based index of ``target`` when found, or ``-1`` when absent or
+ *         arguments are invalid.
+ * @signature ptrdiff_t ac_interpolation_search_int(const int *data,
+ *                                                  size_t size,
+ *                                                  int target)
+ */
+ptrdiff_t ac_interpolation_search_int(const int *data, size_t size, int target);
 
 /**
  * @brief Convenience comparator for ``int`` values.

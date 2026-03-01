@@ -20,8 +20,7 @@ ptrdiff_t ac_binary_search(
     const void *target,
     ac_compare_fn compare
 ) {
-    if (data == NULL || target == NULL || compare == NULL ||
-        element_size == 0) {
+    if (data == NULL || target == NULL || compare == NULL || element_size == 0) {
         return -1;
     }
 
@@ -53,6 +52,10 @@ size_t ac_lower_bound(
     const void *target,
     ac_compare_fn compare
 ) {
+    if (data == NULL || target == NULL || compare == NULL || element_size == 0) {
+        return size;
+    }
+
     size_t left = 0;
     size_t right = size;
 
@@ -76,6 +79,10 @@ size_t ac_upper_bound(
     const void *target,
     ac_compare_fn compare
 ) {
+    if (data == NULL || target == NULL || compare == NULL || element_size == 0) {
+        return size;
+    }
+
     size_t left = 0;
     size_t right = size;
 
@@ -90,4 +97,42 @@ size_t ac_upper_bound(
         }
     }
     return left;
+}
+
+ptrdiff_t ac_interpolation_search_int(const int *data, size_t size, int target) {
+    if (data == NULL || size == 0) {
+        return -1;
+    }
+
+    size_t low = 0;
+    size_t high = size - 1;
+
+    while (low <= high && target >= data[low] && target <= data[high]) {
+        if (data[high] == data[low]) {
+            return data[low] == target ? (ptrdiff_t)low : -1;
+        }
+
+        /*
+         * Estimate likely position assuming quasi-uniform distribution:
+         * pos = low + (target - data[low]) * (high - low) / (data[high] - data[low])
+         */
+        size_t pos = low +
+            (size_t)(((long long)(target - data[low]) * (long long)(high - low)) /
+                     (long long)(data[high] - data[low]));
+
+        if (data[pos] == target) {
+            return (ptrdiff_t)pos;
+        }
+
+        if (data[pos] < target) {
+            low = pos + 1;
+        } else {
+            if (pos == 0) {
+                break;
+            }
+            high = pos - 1;
+        }
+    }
+
+    return -1;
 }
