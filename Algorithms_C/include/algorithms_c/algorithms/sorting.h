@@ -68,6 +68,40 @@ void ac_selection_sort(
 );
 
 /**
+ * @brief Shell sort with shrinking-gap insertion passes.
+ *
+ * The helper mirrors the translated Python educational routine with a simple
+ * gap sequence ``N/2, N/4, ..., 1``.
+ *
+ * @signature void ac_shell_sort(void *data, size_t size,
+ *                               size_t element_size,
+ *                               ac_compare_fn compare)
+ */
+void ac_shell_sort(
+    void *data,
+    size_t size,
+    size_t element_size,
+    ac_compare_fn compare
+);
+
+/**
+ * @brief Comb sort with shrinking gap to reduce turtle inversions.
+ *
+ * Source file translated in this step:
+ * ``Algorithms_Python/algorithms/sorting/comb_sort.py``.
+ *
+ * @signature void ac_comb_sort(void *data, size_t size,
+ *                              size_t element_size,
+ *                              ac_compare_fn compare)
+ */
+void ac_comb_sort(
+    void *data,
+    size_t size,
+    size_t element_size,
+    ac_compare_fn compare
+);
+
+/**
  * @brief Stable divide-and-conquer merge sort.
  *
  * @signature void ac_merge_sort(void *data, size_t size, size_t element_size,
