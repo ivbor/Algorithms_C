@@ -1,5 +1,6 @@
 #include "algorithms_c/algorithms/binary_search.h"
 #include <stddef.h>
+#include <stdint.h>
 
 int ac_compare_int(const void *lhs, const void *rhs) {
     const int left = *(const int *)lhs;
@@ -163,6 +164,45 @@ ptrdiff_t ac_jump_search_int(const int *data, size_t size, int target) {
     for (size_t i = prev; i < end; ++i) {
         if (data[i] == target) {
             return (ptrdiff_t)i;
+        }
+    }
+
+    return -1;
+}
+
+
+ptrdiff_t ac_exponential_search_int(const int *data, size_t size, int target) {
+    if (data == NULL || size == 0) {
+        return -1;
+    }
+
+    if (data[0] == target) {
+        return 0;
+    }
+
+    size_t bound = 1;
+    while (bound < size && data[bound] < target) {
+        if (bound > SIZE_MAX / 2) {
+            break;
+        }
+        bound *= 2;
+    }
+
+    size_t left = bound / 2;
+    size_t right = bound < size ? bound : size - 1;
+
+    while (left <= right) {
+        size_t mid = left + ((right - left) / 2);
+        if (data[mid] == target) {
+            return (ptrdiff_t)mid;
+        }
+        if (data[mid] < target) {
+            left = mid + 1;
+        } else {
+            if (mid == 0) {
+                break;
+            }
+            right = mid - 1;
         }
     }
 

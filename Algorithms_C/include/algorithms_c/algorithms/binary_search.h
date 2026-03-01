@@ -130,6 +130,26 @@ ptrdiff_t ac_interpolation_search_int(const int *data, size_t size, int target);
  */
 ptrdiff_t ac_jump_search_int(const int *data, size_t size, int target);
 
+
+/**
+ * @brief Exponential search for sorted integer arrays.
+ *
+ * Exponential search first grows a probe bound (1, 2, 4, 8, ...) until the
+ * target is not greater than the bound value, then performs binary search in
+ * that narrowed range. This mirrors the educational Python variant and keeps
+ * lookups efficient when the target is near the beginning of large arrays.
+ *
+ * @param data Pointer to a sorted ``int`` array in ascending order.
+ * @param size Number of elements in ``data``.
+ * @param target Integer value to locate.
+ * @return Zero-based index of ``target`` when found, or ``-1`` when absent or
+ *         arguments are invalid.
+ * @signature ptrdiff_t ac_exponential_search_int(const int *data,
+ *                                                size_t size,
+ *                                                int target)
+ */
+ptrdiff_t ac_exponential_search_int(const int *data, size_t size, int target);
+
 /**
  * @brief Convenience comparator for ``int`` values.
  *

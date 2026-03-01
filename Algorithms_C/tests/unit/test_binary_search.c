@@ -71,6 +71,21 @@ static void test_jump_search_not_found_and_invalid(void) {
     MU_ASSERT(ac_jump_search_int(data, 0, 11) == -1);
 }
 
+
+static void test_exponential_search_found(void) {
+    int data[] = {3, 6, 9, 12, 15, 18, 21, 24, 27, 30};
+    MU_ASSERT(ac_exponential_search_int(data, 10, 3) == 0);
+    MU_ASSERT(ac_exponential_search_int(data, 10, 18) == 5);
+    MU_ASSERT(ac_exponential_search_int(data, 10, 30) == 9);
+}
+
+static void test_exponential_search_not_found_and_invalid(void) {
+    int data[] = {3, 6, 9, 12, 15, 18, 21, 24, 27, 30};
+    MU_ASSERT(ac_exponential_search_int(data, 10, 25) == -1);
+    MU_ASSERT(ac_exponential_search_int(NULL, 10, 12) == -1);
+    MU_ASSERT(ac_exponential_search_int(data, 0, 12) == -1);
+}
+
 static void test_interpolation_search_invalid(void) {
     MU_ASSERT(ac_interpolation_search_int(NULL, 10, 4) == -1);
     MU_ASSERT(ac_interpolation_search_int((const int[]){1, 2}, 0, 1) == -1);
@@ -86,6 +101,8 @@ int main(void) {
     run_test(test_interpolation_search_uniform_values);
     run_test(test_jump_search_found);
     run_test(test_jump_search_not_found_and_invalid);
+    run_test(test_exponential_search_found);
+    run_test(test_exponential_search_not_found_and_invalid);
     run_test(test_interpolation_search_invalid);
     return summary();
 }
