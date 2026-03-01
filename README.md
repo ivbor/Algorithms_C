@@ -129,6 +129,8 @@ The initial translation pass currently includes:
   * Source structure translated in this step: Python repository `Queue` structure (mirrored by `ac_queue` in `Algorithms_C/include/algorithms_c/structures/queue.h` and `Algorithms_C/src/structures/queue.c`).
   * Deque source now includes explicit short/long/signature inline blocks for each operation, documenting ring-buffer invariants and end-operation symmetry.
   * Source structure translated in this step: Python repository `Deque` structure (mirrored by `ac_deque` in `Algorithms_C/include/algorithms_c/structures/deque.h` and `Algorithms_C/src/structures/deque.c`).
+  * Heap source now includes explicit short/long/signature inline blocks for each operation, documenting sift-up/sift-down and vector-backed storage decisions.
+  * Source structure translated in this step: Python repository `Heap` structure (mirrored by `ac_heap` in `Algorithms_C/include/algorithms_c/structures/heap.h` and `Algorithms_C/src/structures/heap.c`).
   double-ended queue (`ac_deque`), singly linked list (`ac_slist`), binary
   min-heap (`ac_heap`), and matrix printing helpers (`ac_print_matrix`).
 * Sorting helpers now include a heap-driven variant (`ac_heap_sort`) alongside
