@@ -123,6 +123,7 @@ The initial translation pass currently includes:
 * Counting sort for two-dimensional arrays (`ac_array_count_sort`).
 * Core data structures: a generic `ac_vector`, stack (`ac_stack`), queue (`ac_queue`),
   * Stack docs now include expanded short/long descriptions and explicit signatures in both header and source commentary to match the documentation-first translation style.
+  * Source structure translated in this step: Python repository `Stack` structure (mirrored by `ac_stack` in `Algorithms_C/include/algorithms_c/structures/stack.h` and `Algorithms_C/src/structures/stack.c`).
   * Matrix-view helper docs were also expanded with short/long descriptions and formatting rationale to mirror Python-style educational prose.
   double-ended queue (`ac_deque`), singly linked list (`ac_slist`), binary
   min-heap (`ac_heap`), and matrix printing helpers (`ac_print_matrix`).
