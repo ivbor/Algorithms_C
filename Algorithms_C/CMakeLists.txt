@@ -5,6 +5,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/heap_sort.c
     src/algorithms/ternary_search.c
     src/algorithms/counting_sort.c
+    src/algorithms/digit_sort.c
     src/algorithms/insertion_sort.c
     src/algorithms/bubble_sort.c
     src/algorithms/selection_sort.c
@@ -16,6 +17,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/damerau_levenshtein.c
     src/algorithms/minknap.c
     src/algorithms/genhard.c
+    src/algorithms/real_binary_search.c
 )
 
 set(STRUCTURES_SOURCES
@@ -101,6 +103,7 @@ set(UNIT_TEST_TARGETS
     damerau_levenshtein
     minknap
     genhard
+    real_binary_search
 )
 
 set(UNIT_TEST_EXECUTABLES)
