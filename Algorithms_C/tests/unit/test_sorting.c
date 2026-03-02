@@ -113,6 +113,20 @@ static void test_quick_sort(void) {
     assert_sorted(data, 128);
 }
 
+static void test_quick_sort_double(void) {
+    double data[] = {4.4, -2.1, 4.4, 0.0, 7.8, -10.0};
+    ac_quick_sort_double(data, sizeof(data) / sizeof(data[0]));
+    assert_sorted_double(data, sizeof(data) / sizeof(data[0]));
+}
+
+static void test_quick_sort_double_invalid_arguments_are_noop(void) {
+    double data[] = {5.0, 1.0};
+    ac_quick_sort_double(NULL, 2);
+    ac_quick_sort_double(data, 0);
+    MU_ASSERT(data[0] == 5.0);
+    MU_ASSERT(data[1] == 1.0);
+}
+
 static void test_heap_sort(void) {
     int data[64];
     fill_random(data, 64);
@@ -234,6 +248,7 @@ int main(void) {
     run_test(test_selection_sort_handles_duplicates_and_negatives);
     run_test(test_merge_sort);
     run_test(test_quick_sort);
+    run_test(test_quick_sort_double);
     run_test(test_heap_sort);
     run_test(test_counting_sort);
     run_test(test_count_sort_auto);
@@ -249,5 +264,6 @@ int main(void) {
     run_test(test_digit_sort_opt_invalid_arguments_are_noop);
     run_test(test_insertion_sort_opt_double_invalid_arguments_are_noop);
     run_test(test_insertion_sort_double_invalid_arguments_are_noop);
+    run_test(test_quick_sort_double_invalid_arguments_are_noop);
     return summary();
 }

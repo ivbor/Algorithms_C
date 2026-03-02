@@ -89,3 +89,19 @@ void ac_quick_sort(
     );
     free(scratch);
 }
+
+static int ac_compare_double_local(const void *lhs, const void *rhs) {
+    const double left = *(const double *)lhs;
+    const double right = *(const double *)rhs;
+    if (left < right) {
+        return -1;
+    }
+    if (left > right) {
+        return 1;
+    }
+    return 0;
+}
+
+void ac_quick_sort_double(double *data, size_t size) {
+    ac_quick_sort(data, size, sizeof(double), ac_compare_double_local);
+}

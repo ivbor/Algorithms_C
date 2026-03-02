@@ -171,6 +171,18 @@ void ac_quick_sort(
 );
 
 /**
+ * @brief Convenience quick-sort wrapper for ``double`` arrays.
+ *
+ * Mirrors the common ``quick_sort`` usage pattern in
+ * ``Algorithms_Python/quick_sort.py`` for numeric lists.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_quick_sort_double(double *data, size_t size)
+ */
+void ac_quick_sort_double(double *data, size_t size);
+
+/**
  * @brief Heap sort implemented via the documented ``ac_heap`` container.
  *
  * The helper mirrors the Python ``heap_sort`` routine: all elements are first
