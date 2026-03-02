@@ -1,6 +1,7 @@
 set(ALGORITHMS_SOURCES
     src/algorithms/array_count_sort.c
     src/algorithms/binary_search.c
+    src/algorithms/bounds.c
     src/algorithms/compare.c
     src/algorithms/heap_sort.c
     src/algorithms/ternary_search.c
@@ -99,6 +100,7 @@ set(UNIT_TEST_TARGETS
     ternary_search
     split_find
     binary_search
+    bounds
     utils
     damerau_levenshtein
     minknap

@@ -110,6 +110,10 @@ artifact in CI.
 The initial translation pass currently includes:
 
 * Generic search helpers: binary search/bounds (`ac_binary_search`, `ac_lower_bound`, `ac_upper_bound`).
+* Integer duplicate-range bound helpers (`ac_bounds_lower_int`, `ac_bounds_upper_int`).
+  * Source structure translated in this step: `Algorithms_Python/bounds.py`
+    (mirrored by `Algorithms_C/include/algorithms_c/algorithms/bounds.h`
+    and `Algorithms_C/src/algorithms/bounds.c`).
 * Ternary search helpers for locating minima and maxima of unimodal functions
   (`ac_ternary_search_min`, `ac_ternary_search_max`).
 * Selection helper that returns the k-th element without fully sorting the input
