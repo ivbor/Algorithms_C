@@ -159,6 +159,10 @@ The initial translation pass currently includes:
   min-heap (`ac_heap`), and matrix printing helpers (`ac_print_matrix`).
 * Sorting helpers now include a heap-driven variant (`ac_heap_sort`) alongside
   insertion, merge, quick, and counting sort.
+* Real-number binary search for monotonic functions (`ac_real_binary_search`).
+  * Source structure translated in this step: `Algorithms_Python/real_bin_search.py`
+    (mirrored by `ac_real_binary_search` in `Algorithms_C/include/algorithms_c/algorithms/real_binary_search.h`
+    and `Algorithms_C/src/algorithms/real_binary_search.c`).
 * Utility helpers for comparisons and logging.
 
 Each module is unit-tested and, where appropriate, covered by stress harnesses.
