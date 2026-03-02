@@ -163,6 +163,32 @@ void ac_heap_sort(
  */
 void ac_counting_sort_int(int *data, size_t size, int min_value, int max_value);
 
+/**
+ * @brief Counting sort that infers min/max bounds from the input array.
+ *
+ * Mirrors ``Algorithms_Python/count_sort.py`` where bounds are computed from
+ * the data before counting frequencies.
+ *
+ * @param data Array of integers to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_count_sort_int_auto(int *data, size_t size)
+ */
+void ac_count_sort_int_auto(int *data, size_t size);
+
+/**
+ * @brief Radix-style digit sort for signed integer arrays.
+ *
+ * Mirrors ``Algorithms_Python/digit_sort.py`` by normalising values with the
+ * minimum element and sorting digits from least significant to most
+ * significant using stable counting passes.
+ *
+ * @param data Array of integers to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @param base Radix base for digit extraction; values below 2 are ignored.
+ * @signature void ac_digit_sort_int(int *data, size_t size, int base)
+ */
+void ac_digit_sort_int(int *data, size_t size, int base);
+
 #ifdef __cplusplus
 }
 #endif

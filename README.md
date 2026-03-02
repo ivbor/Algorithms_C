@@ -110,6 +110,13 @@ artifact in CI.
 The initial translation pass currently includes:
 
 * Generic search helpers: binary search/bounds (`ac_binary_search`, `ac_lower_bound`, `ac_upper_bound`).
+  * Source structure translated in this step: `Algorithms_Python/bin_search.py`
+    (mirrored by `ac_bin_search_int` in `Algorithms_C/include/algorithms_c/algorithms/binary_search.h`
+    and `Algorithms_C/src/algorithms/binary_search.c`).
+* Integer duplicate-range bound helpers (`ac_bounds_lower_int`, `ac_bounds_upper_int`).
+  * Source structure translated in this step: `Algorithms_Python/bounds.py`
+    (mirrored by `Algorithms_C/include/algorithms_c/algorithms/bounds.h`
+    and `Algorithms_C/src/algorithms/bounds.c`).
 * Ternary search helpers for locating minima and maxima of unimodal functions
   (`ac_ternary_search_min`, `ac_ternary_search_max`).
 * Selection helper that returns the k-th element without fully sorting the input
@@ -123,8 +130,14 @@ The initial translation pass currently includes:
 * 0/1 knapsack dynamic-programming helper (`ac_minknap_max_profit`).
   * Added `ac_minknap` compatibility wrapper preserving classic `(n, p, w, x, c)` call form for translated examples.
   * Source structure translated in this step: `Algorithms_Python/examples/dp_solutions_from_page/minknap.py` mirrored as reusable C API (`Algorithms_C/include/algorithms_c/algorithms/minknap.h`, `Algorithms_C/src/algorithms/minknap.c`).
-* Sorting algorithms – insertion sort, bubble sort, selection sort, shell sort, comb sort, merge sort, quick sort, and counting sort –
+* Sorting algorithms – insertion sort, bubble sort, selection sort, shell sort, comb sort, merge sort, quick sort, counting sort, and digit sort –
   matching the Python implementations.
+  * Source structure translated in this step: `Algorithms_Python/count_sort.py`
+    (mirrored by `ac_count_sort_int_auto` in `Algorithms_C/include/algorithms_c/algorithms/sorting.h`
+    and `Algorithms_C/src/algorithms/counting_sort.c`).
+  * Source structure translated in this step: ``Algorithms_Python/digit_sort.py``
+    (mirrored by ``ac_digit_sort_int`` in ``Algorithms_C/include/algorithms_c/algorithms/sorting.h``
+    and ``Algorithms_C/src/algorithms/digit_sort.c``).
   * Source structure translated in this step: Python repository `BubbleSort` routine
     (mirrored by `ac_bubble_sort` in `Algorithms_C/include/algorithms_c/algorithms/sorting.h`
     and `Algorithms_C/src/algorithms/bubble_sort.c`).
@@ -156,6 +169,10 @@ The initial translation pass currently includes:
   min-heap (`ac_heap`), and matrix printing helpers (`ac_print_matrix`).
 * Sorting helpers now include a heap-driven variant (`ac_heap_sort`) alongside
   insertion, merge, quick, and counting sort.
+* Real-number binary search for monotonic functions (`ac_real_binary_search`).
+  * Source structure translated in this step: `Algorithms_Python/real_bin_search.py`
+    (mirrored by `ac_real_binary_search` in `Algorithms_C/include/algorithms_c/algorithms/real_binary_search.h`
+    and `Algorithms_C/src/algorithms/real_binary_search.c`).
 * Utility helpers for comparisons and logging.
 
 Each module is unit-tested and, where appropriate, covered by stress harnesses.

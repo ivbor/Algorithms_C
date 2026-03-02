@@ -93,6 +93,27 @@ size_t ac_upper_bound(
 );
 
 /**
+ * @brief Integer binary-search compatibility helper from ``bin_search.py``.
+ *
+ * Mirrors the Python interface that returns a boolean-like answer and supports
+ * both recursive and non-recursive implementations.
+ *
+ * @param data Sorted integer array.
+ * @param size Number of elements in ``data``.
+ * @param value Value to search for.
+ * @param no_recursion When true, use iterative mode; otherwise recursive mode.
+ * @return ``1`` when found, otherwise ``0``.
+ * @signature int ac_bin_search_int(const int *data, size_t size, int value,
+ *                                  int no_recursion)
+ */
+int ac_bin_search_int(
+    const int *data,
+    size_t size,
+    int value,
+    int no_recursion
+);
+
+/**
  * @brief Convenience comparator for ``int`` values.
  *
  * @param lhs Pointer to first ``int``.
