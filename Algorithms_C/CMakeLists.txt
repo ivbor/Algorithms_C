@@ -5,6 +5,7 @@ set(ALGORITHMS_SOURCES
     src/algorithms/heap_sort.c
     src/algorithms/ternary_search.c
     src/algorithms/counting_sort.c
+    src/algorithms/digit_sort.c
     src/algorithms/insertion_sort.c
     src/algorithms/bubble_sort.c
     src/algorithms/selection_sort.c
