@@ -91,3 +91,19 @@ void ac_merge_sort(
     merge_sort_recursive(array, buffer, 0, size, element_size, compare);
     free(buffer);
 }
+
+static int ac_compare_double_local_merge(const void *lhs, const void *rhs) {
+    const double left = *(const double *)lhs;
+    const double right = *(const double *)rhs;
+    if (left < right) {
+        return -1;
+    }
+    if (left > right) {
+        return 1;
+    }
+    return 0;
+}
+
+void ac_merge_sort_double(double *data, size_t size) {
+    ac_merge_sort(data, size, sizeof(double), ac_compare_double_local_merge);
+}

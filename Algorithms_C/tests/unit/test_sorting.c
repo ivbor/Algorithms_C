@@ -106,6 +106,20 @@ static void test_merge_sort(void) {
     assert_sorted(data, 128);
 }
 
+static void test_merge_sort_double(void) {
+    double data[] = {5.5, -3.3, 1.2, 1.2, 0.0};
+    ac_merge_sort_double(data, sizeof(data) / sizeof(data[0]));
+    assert_sorted_double(data, sizeof(data) / sizeof(data[0]));
+}
+
+static void test_merge_sort_double_invalid_arguments_are_noop(void) {
+    double data[] = {2.0, -1.0};
+    ac_merge_sort_double(NULL, 2);
+    ac_merge_sort_double(data, 0);
+    MU_ASSERT(data[0] == 2.0);
+    MU_ASSERT(data[1] == -1.0);
+}
+
 static void test_quick_sort(void) {
     int data[128];
     fill_random(data, 128);
@@ -247,6 +261,7 @@ int main(void) {
     run_test(test_comb_sort);
     run_test(test_selection_sort_handles_duplicates_and_negatives);
     run_test(test_merge_sort);
+    run_test(test_merge_sort_double);
     run_test(test_quick_sort);
     run_test(test_quick_sort_double);
     run_test(test_heap_sort);
@@ -265,5 +280,6 @@ int main(void) {
     run_test(test_insertion_sort_opt_double_invalid_arguments_are_noop);
     run_test(test_insertion_sort_double_invalid_arguments_are_noop);
     run_test(test_quick_sort_double_invalid_arguments_are_noop);
+    run_test(test_merge_sort_double_invalid_arguments_are_noop);
     return summary();
 }

@@ -150,6 +150,9 @@ The initial translation pass currently includes:
   * Source structure translated in this step: `Algorithms_Python/quick_sort.py` numeric helper
     (mirrored by `ac_quick_sort_double` in `Algorithms_C/include/algorithms_c/algorithms/sorting.h`
     and `Algorithms_C/src/algorithms/quick_sort.c`).
+  * Source structure translated in this step: `Algorithms_Python/merge_sort.py` numeric helper
+    (mirrored by `ac_merge_sort_double` in `Algorithms_C/include/algorithms_c/algorithms/sorting.h`
+    and `Algorithms_C/src/algorithms/merge_sort.c`).
   * Source structure translated in this step: Python repository `ShellSort` routine
     (mirrored by `ac_shell_sort` in `Algorithms_C/include/algorithms_c/algorithms/sorting.h`
     and `Algorithms_C/src/algorithms/shell_sort.c`).

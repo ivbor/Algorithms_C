@@ -158,6 +158,18 @@ void ac_merge_sort(
 );
 
 /**
+ * @brief Convenience merge-sort wrapper for ``double`` arrays.
+ *
+ * Mirrors the common ``merge_sort`` numeric usage in
+ * ``Algorithms_Python/merge_sort.py``.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_merge_sort_double(double *data, size_t size)
+ */
+void ac_merge_sort_double(double *data, size_t size);
+
+/**
  * @brief In-place quick sort with recursive partitioning.
  *
  * @signature void ac_quick_sort(void *data, size_t size, size_t element_size,
