@@ -40,10 +40,29 @@ static void test_bounds_invalid_input_returns_size(void) {
     MU_ASSERT(ac_upper_bound(data, 3, sizeof(int), &target, NULL) == 3);
 }
 
+static void test_bin_search_int_recursive_mode(void) {
+    int data[] = {1, 3, 5, 7, 9};
+    MU_ASSERT(ac_bin_search_int(data, 5, 7, 0) == 1);
+    MU_ASSERT(ac_bin_search_int(data, 5, 2, 0) == 0);
+}
+
+static void test_bin_search_int_iterative_mode(void) {
+    int data[] = {1, 3, 5, 7, 9};
+    MU_ASSERT(ac_bin_search_int(data, 5, 9, 1) == 1);
+    MU_ASSERT(ac_bin_search_int(data, 5, -1, 1) == 0);
+}
+
+static void test_bin_search_int_invalid_input(void) {
+    MU_ASSERT(ac_bin_search_int(NULL, 0, 1, 0) == 0);
+}
+
 int main(void) {
     run_test(test_binary_search_found);
     run_test(test_binary_search_not_found);
     run_test(test_bounds);
     run_test(test_bounds_invalid_input_returns_size);
+    run_test(test_bin_search_int_recursive_mode);
+    run_test(test_bin_search_int_iterative_mode);
+    run_test(test_bin_search_int_invalid_input);
     return summary();
 }
