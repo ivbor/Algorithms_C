@@ -129,6 +129,9 @@ The initial translation pass currently includes:
   * Source structure translated in this step: `Algorithms_Python/examples/dp_solutions_from_page/minknap.py` mirrored as reusable C API (`Algorithms_C/include/algorithms_c/algorithms/minknap.h`, `Algorithms_C/src/algorithms/minknap.c`).
 * Sorting algorithms – insertion sort, bubble sort, selection sort, shell sort, comb sort, merge sort, quick sort, counting sort, and digit sort –
   matching the Python implementations.
+  * Source structure translated in this step: `Algorithms_Python/count_sort.py`
+    (mirrored by `ac_count_sort_int_auto` in `Algorithms_C/include/algorithms_c/algorithms/sorting.h`
+    and `Algorithms_C/src/algorithms/counting_sort.c`).
   * Source structure translated in this step: ``Algorithms_Python/digit_sort.py``
     (mirrored by ``ac_digit_sort_int`` in ``Algorithms_C/include/algorithms_c/algorithms/sorting.h``
     and ``Algorithms_C/src/algorithms/digit_sort.c``).
