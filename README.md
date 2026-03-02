@@ -110,6 +110,9 @@ artifact in CI.
 The initial translation pass currently includes:
 
 * Generic search helpers: binary search/bounds (`ac_binary_search`, `ac_lower_bound`, `ac_upper_bound`).
+  * Source structure translated in this step: `Algorithms_Python/bin_search.py`
+    (mirrored by `ac_bin_search_int` in `Algorithms_C/include/algorithms_c/algorithms/binary_search.h`
+    and `Algorithms_C/src/algorithms/binary_search.c`).
 * Integer duplicate-range bound helpers (`ac_bounds_lower_int`, `ac_bounds_upper_int`).
   * Source structure translated in this step: `Algorithms_Python/bounds.py`
     (mirrored by `Algorithms_C/include/algorithms_c/algorithms/bounds.h`
