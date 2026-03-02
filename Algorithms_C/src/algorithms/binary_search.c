@@ -101,3 +101,58 @@ size_t ac_upper_bound(
     }
     return left;
 }
+
+static int ac_bin_search_int_recursive(
+    const int *data,
+    size_t left,
+    size_t right,
+    int value
+) {
+    if (right <= left) {
+        return 0;
+    }
+    if (right - left == 1U) {
+        return data[left] == value ? 1 : 0;
+    }
+
+    size_t middle = left + ((right - left) / 2U);
+    if (data[middle] == value) {
+        return 1;
+    }
+    if (value < data[middle]) {
+        return ac_bin_search_int_recursive(data, left, middle, value);
+    }
+    return ac_bin_search_int_recursive(data, middle, right, value);
+}
+
+int ac_bin_search_int(
+    const int *data,
+    size_t size,
+    int value,
+    int no_recursion
+) {
+    if (data == NULL || size == 0U) {
+        return 0;
+    }
+
+    if (no_recursion) {
+        size_t left = 0U;
+        size_t right = size - 1U;
+
+        while (left < right) {
+            size_t middle = left + ((right - left) / 2U);
+            if (value <= data[middle]) {
+                right = middle;
+            } else {
+                left = middle;
+            }
+            if (left + 1U == right) {
+                break;
+            }
+        }
+
+        return (data[left] == value || data[right] == value) ? 1 : 0;
+    }
+
+    return ac_bin_search_int_recursive(data, 0U, size, value);
+}

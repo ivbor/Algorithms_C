@@ -31,6 +31,49 @@ void ac_insertion_sort(
 );
 
 /**
+ * @brief In-place insertion sort specialized for ``double`` arrays.
+ *
+ * Mirrors ``insert_sort`` from ``Algorithms_Python/insert_sort.py``.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_insertion_sort_double(double *data, size_t size)
+ */
+void ac_insertion_sort_double(double *data, size_t size);
+
+/**
+ * @brief Binary-search helper for insertion-sort over ``double`` slices.
+ *
+ * Mirrors ``bin_search_fl`` from ``Algorithms_Python/insert_sort.py`` and
+ * returns the insertion index that preserves ascending order in ``array``.
+ *
+ * @param array Pointer to sorted ``double`` storage.
+ * @param value Candidate value to insert.
+ * @param start Inclusive lower bound for the search.
+ * @param end Exclusive upper bound for the search.
+ * @signature size_t ac_bin_search_double(const double *array, double value,
+ *                                        size_t start, size_t end)
+ */
+size_t ac_bin_search_double(
+    const double *array,
+    double value,
+    size_t start,
+    size_t end
+);
+
+/**
+ * @brief Optimized insertion sort for ``double`` arrays.
+ *
+ * Mirrors ``insert_sort_opt`` from ``Algorithms_Python/insert_sort.py`` by
+ * using binary search to locate insertion positions before shifting elements.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_insertion_sort_opt_double(double *data, size_t size)
+ */
+void ac_insertion_sort_opt_double(double *data, size_t size);
+
+/**
  * @brief Bubble sort with adjacent swaps and early-exit optimization.
  *
  * The helper mirrors the translated Python educational routine: repeated
@@ -115,6 +158,18 @@ void ac_merge_sort(
 );
 
 /**
+ * @brief Convenience merge-sort wrapper for ``double`` arrays.
+ *
+ * Mirrors the common ``merge_sort`` numeric usage in
+ * ``Algorithms_Python/merge_sort.py``.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_merge_sort_double(double *data, size_t size)
+ */
+void ac_merge_sort_double(double *data, size_t size);
+
+/**
  * @brief In-place quick sort with recursive partitioning.
  *
  * @signature void ac_quick_sort(void *data, size_t size, size_t element_size,
@@ -126,6 +181,18 @@ void ac_quick_sort(
     size_t element_size,
     ac_compare_fn compare
 );
+
+/**
+ * @brief Convenience quick-sort wrapper for ``double`` arrays.
+ *
+ * Mirrors the common ``quick_sort`` usage pattern in
+ * ``Algorithms_Python/quick_sort.py`` for numeric lists.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_quick_sort_double(double *data, size_t size)
+ */
+void ac_quick_sort_double(double *data, size_t size);
 
 /**
  * @brief Heap sort implemented via the documented ``ac_heap`` container.
@@ -162,6 +229,45 @@ void ac_heap_sort(
  *                                      int max_value)
  */
 void ac_counting_sort_int(int *data, size_t size, int min_value, int max_value);
+
+/**
+ * @brief Counting sort that infers min/max bounds from the input array.
+ *
+ * Mirrors ``Algorithms_Python/count_sort.py`` where bounds are computed from
+ * the data before counting frequencies.
+ *
+ * @param data Array of integers to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_count_sort_int_auto(int *data, size_t size)
+ */
+void ac_count_sort_int_auto(int *data, size_t size);
+
+/**
+ * @brief Optimized radix-style digit sort for signed integer arrays.
+ *
+ * Mirrors ``digit_sort_opt`` from ``Algorithms_Python/digit_sort.py`` using
+ * bucketed stable passes over each digit place.
+ *
+ * @param data Array of integers to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @param base Radix base for digit extraction; values below 2 are ignored.
+ * @signature void ac_digit_sort_opt_int(int *data, size_t size, int base)
+ */
+void ac_digit_sort_opt_int(int *data, size_t size, int base);
+
+/**
+ * @brief Radix-style digit sort for signed integer arrays.
+ *
+ * Mirrors ``Algorithms_Python/digit_sort.py`` by normalising values with the
+ * minimum element and sorting digits from least significant to most
+ * significant using stable counting passes.
+ *
+ * @param data Array of integers to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @param base Radix base for digit extraction; values below 2 are ignored.
+ * @signature void ac_digit_sort_int(int *data, size_t size, int base)
+ */
+void ac_digit_sort_int(int *data, size_t size, int base);
 
 #ifdef __cplusplus
 }
