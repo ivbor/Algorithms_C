@@ -123,8 +123,11 @@ The initial translation pass currently includes:
 * 0/1 knapsack dynamic-programming helper (`ac_minknap_max_profit`).
   * Added `ac_minknap` compatibility wrapper preserving classic `(n, p, w, x, c)` call form for translated examples.
   * Source structure translated in this step: `Algorithms_Python/examples/dp_solutions_from_page/minknap.py` mirrored as reusable C API (`Algorithms_C/include/algorithms_c/algorithms/minknap.h`, `Algorithms_C/src/algorithms/minknap.c`).
-* Sorting algorithms – insertion sort, bubble sort, selection sort, shell sort, comb sort, merge sort, quick sort, and counting sort –
+* Sorting algorithms – insertion sort, bubble sort, selection sort, shell sort, comb sort, merge sort, quick sort, counting sort, and digit sort –
   matching the Python implementations.
+  * Source structure translated in this step: ``Algorithms_Python/digit_sort.py``
+    (mirrored by ``ac_digit_sort_int`` in ``Algorithms_C/include/algorithms_c/algorithms/sorting.h``
+    and ``Algorithms_C/src/algorithms/digit_sort.c``).
   * Source structure translated in this step: Python repository `BubbleSort` routine
     (mirrored by `ac_bubble_sort` in `Algorithms_C/include/algorithms_c/algorithms/sorting.h`
     and `Algorithms_C/src/algorithms/bubble_sort.c`).
