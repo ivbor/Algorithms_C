@@ -108,6 +108,21 @@ static void test_digit_sort(void) {
     assert_sorted(data, sizeof(data) / sizeof(data[0]));
 }
 
+static void test_digit_sort_opt(void) {
+    int data[] = {170, 45, 75, 90, 802, 24, 2, 66, -5, -300, 45};
+    ac_digit_sort_opt_int(data, sizeof(data) / sizeof(data[0]), 10);
+    assert_sorted(data, sizeof(data) / sizeof(data[0]));
+}
+
+static void test_digit_sort_opt_invalid_arguments_are_noop(void) {
+    int data[] = {8, 6, 7};
+    ac_digit_sort_opt_int(NULL, 3, 10);
+    ac_digit_sort_opt_int(data, 3, 1);
+    MU_ASSERT(data[0] == 8);
+    MU_ASSERT(data[1] == 6);
+    MU_ASSERT(data[2] == 7);
+}
+
 static void test_digit_sort_invalid_arguments_are_noop(void) {
     int data[] = {3, 1, 2};
     ac_digit_sort_int(NULL, 3, 10);
@@ -179,6 +194,7 @@ int main(void) {
     run_test(test_counting_sort);
     run_test(test_count_sort_auto);
     run_test(test_digit_sort);
+    run_test(test_digit_sort_opt);
     run_test(test_selection_sort_invalid_arguments_are_noop);
     run_test(test_bubble_sort_handles_sorted_input);
     run_test(test_bubble_sort_invalid_arguments_are_noop);
@@ -186,5 +202,6 @@ int main(void) {
     run_test(test_comb_sort_invalid_arguments_are_noop);
     run_test(test_digit_sort_invalid_arguments_are_noop);
     run_test(test_count_sort_auto_invalid_arguments_are_noop);
+    run_test(test_digit_sort_opt_invalid_arguments_are_noop);
     return summary();
 }

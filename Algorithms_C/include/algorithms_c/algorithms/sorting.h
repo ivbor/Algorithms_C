@@ -176,6 +176,19 @@ void ac_counting_sort_int(int *data, size_t size, int min_value, int max_value);
 void ac_count_sort_int_auto(int *data, size_t size);
 
 /**
+ * @brief Optimized radix-style digit sort for signed integer arrays.
+ *
+ * Mirrors ``digit_sort_opt`` from ``Algorithms_Python/digit_sort.py`` using
+ * bucketed stable passes over each digit place.
+ *
+ * @param data Array of integers to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @param base Radix base for digit extraction; values below 2 are ignored.
+ * @signature void ac_digit_sort_opt_int(int *data, size_t size, int base)
+ */
+void ac_digit_sort_opt_int(int *data, size_t size, int base);
+
+/**
  * @brief Radix-style digit sort for signed integer arrays.
  *
  * Mirrors ``Algorithms_Python/digit_sort.py`` by normalising values with the
