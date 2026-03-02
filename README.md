@@ -138,8 +138,8 @@ The initial translation pass currently includes:
   * Source structure translated in this step: ``Algorithms_Python/digit_sort.py``
     (mirrored by ``ac_digit_sort_int`` and ``ac_digit_sort_opt_int`` in ``Algorithms_C/include/algorithms_c/algorithms/sorting.h``
     and ``Algorithms_C/src/algorithms/digit_sort.c``).
-  * Source structure translated in this step: `Algorithms_Python/insert_sort.py` optimized helpers
-    (mirrored by `ac_bin_search_double` and `ac_insertion_sort_opt_double` in
+  * Source structure translated in this step: `Algorithms_Python/insert_sort.py` helpers
+    (mirrored by `ac_insertion_sort_double`, `ac_bin_search_double`, and `ac_insertion_sort_opt_double` in
     `Algorithms_C/include/algorithms_c/algorithms/sorting.h` and `Algorithms_C/src/algorithms/insertion_sort.c`).
   * Source structure translated in this step: Python repository `BubbleSort` routine
     (mirrored by `ac_bubble_sort` in `Algorithms_C/include/algorithms_c/algorithms/sorting.h`

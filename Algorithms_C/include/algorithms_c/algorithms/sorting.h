@@ -31,6 +31,17 @@ void ac_insertion_sort(
 );
 
 /**
+ * @brief In-place insertion sort specialized for ``double`` arrays.
+ *
+ * Mirrors ``insert_sort`` from ``Algorithms_Python/insert_sort.py``.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_insertion_sort_double(double *data, size_t size)
+ */
+void ac_insertion_sort_double(double *data, size_t size);
+
+/**
  * @brief Binary-search helper for insertion-sort over ``double`` slices.
  *
  * Mirrors ``bin_search_fl`` from ``Algorithms_Python/insert_sort.py`` and

@@ -71,3 +71,19 @@ void ac_insertion_sort_opt_double(double *data, size_t size) {
         data[position] = current;
     }
 }
+
+void ac_insertion_sort_double(double *data, size_t size) {
+    if (data == NULL || size < 2U) {
+        return;
+    }
+
+    for (size_t i = 0; i < size; ++i) {
+        size_t k = i;
+        while (k > 0U && data[k - 1U] > data[k]) {
+            double tmp = data[k - 1U];
+            data[k - 1U] = data[k];
+            data[k] = tmp;
+            --k;
+        }
+    }
+}
