@@ -31,6 +31,38 @@ void ac_insertion_sort(
 );
 
 /**
+ * @brief Binary-search helper for insertion-sort over ``double`` slices.
+ *
+ * Mirrors ``bin_search_fl`` from ``Algorithms_Python/insert_sort.py`` and
+ * returns the insertion index that preserves ascending order in ``array``.
+ *
+ * @param array Pointer to sorted ``double`` storage.
+ * @param value Candidate value to insert.
+ * @param start Inclusive lower bound for the search.
+ * @param end Exclusive upper bound for the search.
+ * @signature size_t ac_bin_search_double(const double *array, double value,
+ *                                        size_t start, size_t end)
+ */
+size_t ac_bin_search_double(
+    const double *array,
+    double value,
+    size_t start,
+    size_t end
+);
+
+/**
+ * @brief Optimized insertion sort for ``double`` arrays.
+ *
+ * Mirrors ``insert_sort_opt`` from ``Algorithms_Python/insert_sort.py`` by
+ * using binary search to locate insertion positions before shifting elements.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_insertion_sort_opt_double(double *data, size_t size)
+ */
+void ac_insertion_sort_opt_double(double *data, size_t size);
+
+/**
  * @brief Bubble sort with adjacent swaps and early-exit optimization.
  *
  * The helper mirrors the translated Python educational routine: repeated

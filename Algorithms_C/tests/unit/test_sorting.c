@@ -9,6 +9,12 @@ static void assert_sorted(const int *array, size_t size) {
     }
 }
 
+static void assert_sorted_double(const double *array, size_t size) {
+    for (size_t i = 1; i < size; ++i) {
+        MU_ASSERT(array[i - 1] <= array[i]);
+    }
+}
+
 static void fill_random(int *array, size_t size) {
     for (size_t i = 0; i < size; ++i) {
         array[i] = rand() % 1000;
@@ -20,6 +26,27 @@ static void test_insertion_sort(void) {
     fill_random(data, 32);
     ac_insertion_sort(data, 32, sizeof(int), ac_compare_int);
     assert_sorted(data, 32);
+}
+
+static void test_insertion_sort_opt_double(void) {
+    double data[] = {3.2, -1.1, 4.5, 0.0, -1.1, 2.8};
+    ac_insertion_sort_opt_double(data, sizeof(data) / sizeof(data[0]));
+    assert_sorted_double(data, sizeof(data) / sizeof(data[0]));
+}
+
+static void test_insertion_sort_opt_double_invalid_arguments_are_noop(void) {
+    double data[] = {9.0, 1.0};
+    ac_insertion_sort_opt_double(NULL, 2);
+    ac_insertion_sort_opt_double(data, 0);
+    MU_ASSERT(data[0] == 9.0);
+    MU_ASSERT(data[1] == 1.0);
+}
+
+static void test_bin_search_double(void) {
+    double data[] = {-2.0, -1.0, 0.5, 3.0, 7.0};
+    MU_ASSERT(ac_bin_search_double(data, -1.5, 0, 5) == 1);
+    MU_ASSERT(ac_bin_search_double(data, 3.0, 0, 5) == 3);
+    MU_ASSERT(ac_bin_search_double(data, 8.0, 0, 5) == 5);
 }
 
 static void test_bubble_sort(void) {
@@ -183,6 +210,8 @@ static void test_comb_sort_invalid_arguments_are_noop(void) {
 int main(void) {
     srand(12345u);
     run_test(test_insertion_sort);
+    run_test(test_insertion_sort_opt_double);
+    run_test(test_bin_search_double);
     run_test(test_bubble_sort);
     run_test(test_selection_sort);
     run_test(test_shell_sort);
@@ -203,5 +232,6 @@ int main(void) {
     run_test(test_digit_sort_invalid_arguments_are_noop);
     run_test(test_count_sort_auto_invalid_arguments_are_noop);
     run_test(test_digit_sort_opt_invalid_arguments_are_noop);
+    run_test(test_insertion_sort_opt_double_invalid_arguments_are_noop);
     return summary();
 }

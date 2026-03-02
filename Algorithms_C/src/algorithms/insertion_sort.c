@@ -34,3 +34,40 @@ void ac_insertion_sort(
 
     free(buffer);
 }
+
+size_t ac_bin_search_double(
+    const double *array,
+    double value,
+    size_t start,
+    size_t end
+) {
+    if (array == NULL) {
+        return start;
+    }
+
+    while (start < end) {
+        size_t mid = start + ((end - start) / 2U);
+        if (array[mid] < value) {
+            start = mid + 1U;
+        } else {
+            end = mid;
+        }
+    }
+    return start;
+}
+
+void ac_insertion_sort_opt_double(double *data, size_t size) {
+    if (data == NULL || size < 2U) {
+        return;
+    }
+
+    for (size_t i = 1; i < size; ++i) {
+        double current = data[i];
+        size_t position = ac_bin_search_double(data, current, 0U, i);
+
+        for (size_t j = i; j > position; --j) {
+            data[j] = data[j - 1U];
+        }
+        data[position] = current;
+    }
+}
