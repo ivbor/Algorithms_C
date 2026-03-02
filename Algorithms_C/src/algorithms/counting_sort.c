@@ -37,3 +37,22 @@ void ac_counting_sort_int(
 
     free(counts);
 }
+
+void ac_count_sort_int_auto(int *data, size_t size) {
+    if (data == NULL || size == 0U) {
+        return;
+    }
+
+    int min_value = data[0];
+    int max_value = data[0];
+    for (size_t i = 1; i < size; ++i) {
+        if (data[i] < min_value) {
+            min_value = data[i];
+        }
+        if (data[i] > max_value) {
+            max_value = data[i];
+        }
+    }
+
+    ac_counting_sort_int(data, size, min_value, max_value);
+}
