@@ -1,8 +1,7 @@
-#include "algorithms_c/algorithms/sorting.h"
-
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include "algorithms_c/algorithms/sorting.h"
 
 void ac_digit_sort_int(int *data, size_t size, int base) {
     if (data == NULL || size < 2U || base < 2) {
@@ -30,7 +29,8 @@ void ac_digit_sort_int(int *data, size_t size, int base) {
     uint64_t *keys_output = (uint64_t *)malloc(size * sizeof(uint64_t));
     size_t *count = (size_t *)calloc((size_t)base, sizeof(size_t));
 
-    if (output == NULL || keys == NULL || keys_output == NULL || count == NULL) {
+    if (output == NULL || keys == NULL || keys_output == NULL ||
+        count == NULL) {
         free(output);
         free(keys);
         free(keys_output);

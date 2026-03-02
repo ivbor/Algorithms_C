@@ -88,7 +88,6 @@ static void test_counting_sort(void) {
     assert_sorted(data, 100);
 }
 
-
 static void test_digit_sort(void) {
     int data[] = {170, 45, 75, 90, 802, 24, 2, 66, -5, -300, 45};
     ac_digit_sort_int(data, sizeof(data) / sizeof(data[0]), 10);
