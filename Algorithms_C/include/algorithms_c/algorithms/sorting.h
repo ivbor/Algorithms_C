@@ -291,6 +291,29 @@ int ac_median_of_three_double(
 );
 
 /**
+ * @brief Partition a small ``double`` segment and return its middle index.
+ *
+ * Mirrors ``partition_small`` from ``Algorithms_Python/quick_sort.py``.
+ * The selected half-open range ``[left, right)`` is sorted in place, then the
+ * middle index ``(left + right) / 2`` is returned.
+ *
+ * @param data Array containing the segment to process.
+ * @param left Inclusive left index.
+ * @param right Exclusive right index.
+ * @param out_index Output pointer receiving the partition index.
+ * @return ``0`` on success or ``-1`` on invalid input.
+ * @signature int ac_partition_small_double(double *data, size_t left,
+ *                                          size_t right,
+ *                                          size_t *out_index)
+ */
+int ac_partition_small_double(
+    double *data,
+    size_t left,
+    size_t right,
+    size_t *out_index
+);
+
+/**
  * @brief Heap sort implemented via the documented ``ac_heap`` container.
  *
  * The helper mirrors the Python ``heap_sort`` routine: all elements are first

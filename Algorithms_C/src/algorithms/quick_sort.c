@@ -205,3 +205,18 @@ int ac_median_of_three_double(
     *out_value = data[mid];
     return 0;
 }
+
+int ac_partition_small_double(
+    double *data,
+    size_t left,
+    size_t right,
+    size_t *out_index
+) {
+    if (data == NULL || out_index == NULL || left >= right) {
+        return -1;
+    }
+
+    ac_insertion_sort_opt_double(data + left, right - left);
+    *out_index = (left + right) / 2U;
+    return 0;
+}
