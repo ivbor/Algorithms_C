@@ -92,6 +92,38 @@ void ac_merge_sort(
     free(buffer);
 }
 
+void ac_merge_double_arrays(
+    double *out,
+    const double *left,
+    size_t left_size,
+    const double *right,
+    size_t right_size
+) {
+    if (out == NULL || left == NULL || right == NULL) {
+        return;
+    }
+
+    size_t i = 0U;
+    size_t j = 0U;
+    size_t k = 0U;
+
+    while (i < left_size && j < right_size) {
+        if (left[i] <= right[j]) {
+            out[k++] = left[i++];
+        } else {
+            out[k++] = right[j++];
+        }
+    }
+
+    while (i < left_size) {
+        out[k++] = left[i++];
+    }
+
+    while (j < right_size) {
+        out[k++] = right[j++];
+    }
+}
+
 static int ac_compare_double_local_merge(const void *lhs, const void *rhs) {
     const double left = *(const double *)lhs;
     const double right = *(const double *)rhs;

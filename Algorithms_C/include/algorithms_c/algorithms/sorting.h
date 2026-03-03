@@ -158,6 +158,29 @@ void ac_merge_sort(
 );
 
 /**
+ * @brief Merge two sorted ``double`` ranges into a destination buffer.
+ *
+ * Mirrors the ``merge`` helper from ``Algorithms_Python/merge_sort.py``.
+ *
+ * @param out Destination array of size ``left_size + right_size``.
+ * @param left First sorted input range.
+ * @param left_size Number of elements in ``left``.
+ * @param right Second sorted input range.
+ * @param right_size Number of elements in ``right``.
+ * @signature void ac_merge_double_arrays(double *out, const double *left,
+ *                                        size_t left_size,
+ *                                        const double *right,
+ *                                        size_t right_size)
+ */
+void ac_merge_double_arrays(
+    double *out,
+    const double *left,
+    size_t left_size,
+    const double *right,
+    size_t right_size
+);
+
+/**
  * @brief Convenience merge-sort wrapper for ``double`` arrays.
  *
  * Mirrors the common ``merge_sort`` numeric usage in

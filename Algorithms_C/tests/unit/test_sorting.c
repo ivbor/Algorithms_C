@@ -99,6 +99,33 @@ static void test_selection_sort_handles_duplicates_and_negatives(void) {
     assert_sorted(data, sizeof(data) / sizeof(data[0]));
 }
 
+static void test_merge_double_arrays(void) {
+    double left[] = {-3.0, 0.0, 2.5};
+    double right[] = {-1.0, 2.5, 9.0};
+    double out[6];
+    ac_merge_double_arrays(out, left, 3, right, 3);
+    assert_sorted_double(out, 6);
+    MU_ASSERT(out[0] == -3.0);
+    MU_ASSERT(out[1] == -1.0);
+    MU_ASSERT(out[2] == 0.0);
+    MU_ASSERT(out[3] == 2.5);
+    MU_ASSERT(out[4] == 2.5);
+    MU_ASSERT(out[5] == 9.0);
+}
+
+static void test_merge_double_arrays_invalid_arguments_are_noop(void) {
+    double out[4] = {1.0, 2.0, 3.0, 4.0};
+    double left[] = {1.0, 3.0};
+    double right[] = {2.0, 4.0};
+    ac_merge_double_arrays(NULL, left, 2, right, 2);
+    ac_merge_double_arrays(out, NULL, 2, right, 2);
+    ac_merge_double_arrays(out, left, 2, NULL, 2);
+    MU_ASSERT(out[0] == 1.0);
+    MU_ASSERT(out[1] == 2.0);
+    MU_ASSERT(out[2] == 3.0);
+    MU_ASSERT(out[3] == 4.0);
+}
+
 static void test_merge_sort(void) {
     int data[128];
     fill_random(data, 128);
@@ -261,6 +288,7 @@ int main(void) {
     run_test(test_comb_sort);
     run_test(test_selection_sort_handles_duplicates_and_negatives);
     run_test(test_merge_sort);
+    run_test(test_merge_double_arrays);
     run_test(test_merge_sort_double);
     run_test(test_quick_sort);
     run_test(test_quick_sort_double);
@@ -281,5 +309,6 @@ int main(void) {
     run_test(test_insertion_sort_double_invalid_arguments_are_noop);
     run_test(test_quick_sort_double_invalid_arguments_are_noop);
     run_test(test_merge_sort_double_invalid_arguments_are_noop);
+    run_test(test_merge_double_arrays_invalid_arguments_are_noop);
     return summary();
 }
