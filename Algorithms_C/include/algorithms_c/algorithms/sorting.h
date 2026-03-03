@@ -218,6 +218,56 @@ void ac_quick_sort(
 void ac_quick_sort_double(double *data, size_t size);
 
 /**
+ * @brief Split a ``double`` array segment by pivot value.
+ *
+ * Mirrors ``split`` from ``Algorithms_Python/quick_sort.py``.
+ * Elements ``< pivot`` are moved first, followed by elements equal to pivot,
+ * both within the half-open interval ``[left, right)``.
+ *
+ * @param data Array to partition in place.
+ * @param left Inclusive left boundary of the partition segment.
+ * @param right Exclusive right boundary of the partition segment.
+ * @param pivot Pivot value used for partitioning.
+ * @param out_left Output index where the ``== pivot`` block starts.
+ * @param out_right Output index where the ``== pivot`` block ends.
+ * @return ``0`` on success or ``-1`` on invalid input.
+ * @signature int ac_split_double_by_pivot(double *data, size_t left,
+ *                                         size_t right, double pivot,
+ *                                         size_t *out_left,
+ *                                         size_t *out_right)
+ */
+int ac_split_double_by_pivot(
+    double *data,
+    size_t left,
+    size_t right,
+    double pivot,
+    size_t *out_left,
+    size_t *out_right
+);
+
+/**
+ * @brief Find value closest to the average on a ``double`` array segment.
+ *
+ * Mirrors ``clst_avg`` from ``Algorithms_Python/quick_sort.py`` for the
+ * half-open interval ``[left, right)``.
+ *
+ * @param data Input array.
+ * @param left Inclusive left boundary.
+ * @param right Exclusive right boundary.
+ * @param out_value Output value closest to the segment mean.
+ * @return ``0`` on success or ``-1`` on invalid input.
+ * @signature int ac_closest_to_average_double(const double *data, size_t left,
+ *                                             size_t right,
+ *                                             double *out_value)
+ */
+int ac_closest_to_average_double(
+    const double *data,
+    size_t left,
+    size_t right,
+    double *out_value
+);
+
+/**
  * @brief Heap sort implemented via the documented ``ac_heap`` container.
  *
  * The helper mirrors the Python ``heap_sort`` routine: all elements are first

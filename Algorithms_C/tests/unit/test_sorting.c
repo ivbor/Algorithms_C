@@ -168,6 +168,46 @@ static void test_quick_sort_double_invalid_arguments_are_noop(void) {
     MU_ASSERT(data[1] == 1.0);
 }
 
+static void test_split_double_by_pivot(void) {
+    double data[] = {3.0, 1.0, 2.0, 2.0, 4.0, 2.0};
+    size_t left = 0;
+    size_t right = 0;
+    MU_ASSERT(ac_split_double_by_pivot(data, 0, 6, 2.0, &left, &right) == 0);
+    for (size_t i = 0; i < left; ++i) {
+        MU_ASSERT(data[i] < 2.0);
+    }
+    for (size_t i = left; i < right; ++i) {
+        MU_ASSERT(data[i] == 2.0);
+    }
+    for (size_t i = right; i < 6; ++i) {
+        MU_ASSERT(data[i] > 2.0 || data[i] < 2.0);
+    }
+}
+
+static void test_split_double_by_pivot_invalid_arguments(void) {
+    double data[] = {1.0, 2.0};
+    size_t left = 0;
+    size_t right = 0;
+    MU_ASSERT(ac_split_double_by_pivot(NULL, 0, 2, 1.0, &left, &right) == -1);
+    MU_ASSERT(ac_split_double_by_pivot(data, 2, 1, 1.0, &left, &right) == -1);
+    MU_ASSERT(ac_split_double_by_pivot(data, 0, 2, 1.0, NULL, &right) == -1);
+}
+
+static void test_closest_to_average_double(void) {
+    double data[] = {1.0, 2.0, 10.0, 3.0};
+    double value = 0.0;
+    MU_ASSERT(ac_closest_to_average_double(data, 0, 4, &value) == 0);
+    MU_ASSERT(value == 3.0);
+}
+
+static void test_closest_to_average_double_invalid_arguments(void) {
+    double data[] = {1.0, 2.0};
+    double value = 0.0;
+    MU_ASSERT(ac_closest_to_average_double(NULL, 0, 2, &value) == -1);
+    MU_ASSERT(ac_closest_to_average_double(data, 1, 1, &value) == -1);
+    MU_ASSERT(ac_closest_to_average_double(data, 0, 2, NULL) == -1);
+}
+
 static void test_heap_sort(void) {
     int data[64];
     fill_random(data, 64);
@@ -292,6 +332,8 @@ int main(void) {
     run_test(test_merge_sort_double);
     run_test(test_quick_sort);
     run_test(test_quick_sort_double);
+    run_test(test_split_double_by_pivot);
+    run_test(test_closest_to_average_double);
     run_test(test_heap_sort);
     run_test(test_counting_sort);
     run_test(test_count_sort_auto);
@@ -309,6 +351,8 @@ int main(void) {
     run_test(test_insertion_sort_double_invalid_arguments_are_noop);
     run_test(test_quick_sort_double_invalid_arguments_are_noop);
     run_test(test_merge_sort_double_invalid_arguments_are_noop);
+    run_test(test_split_double_by_pivot_invalid_arguments);
+    run_test(test_closest_to_average_double_invalid_arguments);
     run_test(test_merge_double_arrays_invalid_arguments_are_noop);
     return summary();
 }
