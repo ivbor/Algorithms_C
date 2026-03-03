@@ -173,3 +173,35 @@ int ac_closest_to_average_double(
     *out_value = data[best];
     return 0;
 }
+
+int ac_median_of_three_double(
+    double *data,
+    size_t left,
+    size_t right,
+    double *out_value
+) {
+    if (data == NULL || out_value == NULL || left >= right) {
+        return -1;
+    }
+
+    size_t mid = left + ((right - left) / 2U);
+
+    if (data[left] > data[mid]) {
+        double tmp = data[left];
+        data[left] = data[mid];
+        data[mid] = tmp;
+    }
+    if (data[left] > data[right]) {
+        double tmp = data[left];
+        data[left] = data[right];
+        data[right] = tmp;
+    }
+    if (data[mid] > data[right]) {
+        double tmp = data[mid];
+        data[mid] = data[right];
+        data[right] = tmp;
+    }
+
+    *out_value = data[mid];
+    return 0;
+}

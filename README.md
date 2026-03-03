@@ -148,7 +148,7 @@ The initial translation pass currently includes:
     (mirrored by `ac_selection_sort` in `Algorithms_C/include/algorithms_c/algorithms/sorting.h`
     and `Algorithms_C/src/algorithms/selection_sort.c`).
   * Source structure translated in this step: `Algorithms_Python/quick_sort.py` numeric helpers
-    (mirrored by `ac_split_double_by_pivot`, `ac_closest_to_average_double`, and `ac_quick_sort_double`
+    (mirrored by `ac_split_double_by_pivot`, `ac_closest_to_average_double`, `ac_median_of_three_double`, and `ac_quick_sort_double`
     in `Algorithms_C/include/algorithms_c/algorithms/sorting.h` and `Algorithms_C/src/algorithms/quick_sort.c`).
   * Source structure translated in this step: `Algorithms_Python/merge_sort.py` numeric helpers
     (mirrored by `ac_merge_double_arrays` and `ac_merge_sort_double` in `Algorithms_C/include/algorithms_c/algorithms/sorting.h`

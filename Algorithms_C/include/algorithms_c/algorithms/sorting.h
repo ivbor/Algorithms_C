@@ -268,6 +268,29 @@ int ac_closest_to_average_double(
 );
 
 /**
+ * @brief Compute median-of-three pivot value on a ``double`` array segment.
+ *
+ * Mirrors ``median_of_three`` from ``Algorithms_Python/quick_sort.py``.
+ * The function may reorder the three inspected elements to satisfy
+ * ``data[left] <= data[mid] <= data[right]`` and returns ``data[mid]``.
+ *
+ * @param data Array containing the candidate pivot values.
+ * @param left Inclusive left index.
+ * @param right Inclusive right index.
+ * @param out_value Output pointer receiving the selected median value.
+ * @return ``0`` on success or ``-1`` on invalid input.
+ * @signature int ac_median_of_three_double(double *data, size_t left,
+ *                                          size_t right,
+ *                                          double *out_value)
+ */
+int ac_median_of_three_double(
+    double *data,
+    size_t left,
+    size_t right,
+    double *out_value
+);
+
+/**
  * @brief Heap sort implemented via the documented ``ac_heap`` container.
  *
  * The helper mirrors the Python ``heap_sort`` routine: all elements are first

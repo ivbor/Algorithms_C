@@ -208,6 +208,23 @@ static void test_closest_to_average_double_invalid_arguments(void) {
     MU_ASSERT(ac_closest_to_average_double(data, 0, 2, NULL) == -1);
 }
 
+static void test_median_of_three_double(void) {
+    double data[] = {9.0, 1.0, 5.0, 2.0, 7.0};
+    double pivot = 0.0;
+    MU_ASSERT(ac_median_of_three_double(data, 0, 4, &pivot) == 0);
+    MU_ASSERT(data[0] <= data[2]);
+    MU_ASSERT(data[2] <= data[4]);
+    MU_ASSERT(pivot == data[2]);
+}
+
+static void test_median_of_three_double_invalid_arguments(void) {
+    double data[] = {1.0, 2.0};
+    double pivot = 0.0;
+    MU_ASSERT(ac_median_of_three_double(NULL, 0, 1, &pivot) == -1);
+    MU_ASSERT(ac_median_of_three_double(data, 1, 1, &pivot) == -1);
+    MU_ASSERT(ac_median_of_three_double(data, 0, 1, NULL) == -1);
+}
+
 static void test_heap_sort(void) {
     int data[64];
     fill_random(data, 64);
@@ -334,6 +351,7 @@ int main(void) {
     run_test(test_quick_sort_double);
     run_test(test_split_double_by_pivot);
     run_test(test_closest_to_average_double);
+    run_test(test_median_of_three_double);
     run_test(test_heap_sort);
     run_test(test_counting_sort);
     run_test(test_count_sort_auto);
@@ -353,6 +371,7 @@ int main(void) {
     run_test(test_merge_sort_double_invalid_arguments_are_noop);
     run_test(test_split_double_by_pivot_invalid_arguments);
     run_test(test_closest_to_average_double_invalid_arguments);
+    run_test(test_median_of_three_double_invalid_arguments);
     run_test(test_merge_double_arrays_invalid_arguments_are_noop);
     return summary();
 }
