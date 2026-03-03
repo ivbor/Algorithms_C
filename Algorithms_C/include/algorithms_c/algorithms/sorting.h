@@ -31,6 +31,49 @@ void ac_insertion_sort(
 );
 
 /**
+ * @brief In-place insertion sort specialized for ``double`` arrays.
+ *
+ * Mirrors ``insert_sort`` from ``Algorithms_Python/insert_sort.py``.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_insertion_sort_double(double *data, size_t size)
+ */
+void ac_insertion_sort_double(double *data, size_t size);
+
+/**
+ * @brief Binary-search helper for insertion-sort over ``double`` slices.
+ *
+ * Mirrors ``bin_search_fl`` from ``Algorithms_Python/insert_sort.py`` and
+ * returns the insertion index that preserves ascending order in ``array``.
+ *
+ * @param array Pointer to sorted ``double`` storage.
+ * @param value Candidate value to insert.
+ * @param start Inclusive lower bound for the search.
+ * @param end Exclusive upper bound for the search.
+ * @signature size_t ac_bin_search_double(const double *array, double value,
+ *                                        size_t start, size_t end)
+ */
+size_t ac_bin_search_double(
+    const double *array,
+    double value,
+    size_t start,
+    size_t end
+);
+
+/**
+ * @brief Optimized insertion sort for ``double`` arrays.
+ *
+ * Mirrors ``insert_sort_opt`` from ``Algorithms_Python/insert_sort.py`` by
+ * using binary search to locate insertion positions before shifting elements.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_insertion_sort_opt_double(double *data, size_t size)
+ */
+void ac_insertion_sort_opt_double(double *data, size_t size);
+
+/**
  * @brief Bubble sort with adjacent swaps and early-exit optimization.
  *
  * The helper mirrors the translated Python educational routine: repeated
@@ -115,6 +158,41 @@ void ac_merge_sort(
 );
 
 /**
+ * @brief Merge two sorted ``double`` ranges into a destination buffer.
+ *
+ * Mirrors the ``merge`` helper from ``Algorithms_Python/merge_sort.py``.
+ *
+ * @param out Destination array of size ``left_size + right_size``.
+ * @param left First sorted input range.
+ * @param left_size Number of elements in ``left``.
+ * @param right Second sorted input range.
+ * @param right_size Number of elements in ``right``.
+ * @signature void ac_merge_double_arrays(double *out, const double *left,
+ *                                        size_t left_size,
+ *                                        const double *right,
+ *                                        size_t right_size)
+ */
+void ac_merge_double_arrays(
+    double *out,
+    const double *left,
+    size_t left_size,
+    const double *right,
+    size_t right_size
+);
+
+/**
+ * @brief Convenience merge-sort wrapper for ``double`` arrays.
+ *
+ * Mirrors the common ``merge_sort`` numeric usage in
+ * ``Algorithms_Python/merge_sort.py``.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_merge_sort_double(double *data, size_t size)
+ */
+void ac_merge_sort_double(double *data, size_t size);
+
+/**
  * @brief In-place quick sort with recursive partitioning.
  *
  * @signature void ac_quick_sort(void *data, size_t size, size_t element_size,
@@ -125,6 +203,114 @@ void ac_quick_sort(
     size_t size,
     size_t element_size,
     ac_compare_fn compare
+);
+
+/**
+ * @brief Convenience quick-sort wrapper for ``double`` arrays.
+ *
+ * Mirrors the common ``quick_sort`` usage pattern in
+ * ``Algorithms_Python/quick_sort.py`` for numeric lists.
+ *
+ * @param data ``double`` array to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_quick_sort_double(double *data, size_t size)
+ */
+void ac_quick_sort_double(double *data, size_t size);
+
+/**
+ * @brief Split a ``double`` array segment by pivot value.
+ *
+ * Mirrors ``split`` from ``Algorithms_Python/quick_sort.py``.
+ * Elements ``< pivot`` are moved first, followed by elements equal to pivot,
+ * both within the half-open interval ``[left, right)``.
+ *
+ * @param data Array to partition in place.
+ * @param left Inclusive left boundary of the partition segment.
+ * @param right Exclusive right boundary of the partition segment.
+ * @param pivot Pivot value used for partitioning.
+ * @param out_left Output index where the ``== pivot`` block starts.
+ * @param out_right Output index where the ``== pivot`` block ends.
+ * @return ``0`` on success or ``-1`` on invalid input.
+ * @signature int ac_split_double_by_pivot(double *data, size_t left,
+ *                                         size_t right, double pivot,
+ *                                         size_t *out_left,
+ *                                         size_t *out_right)
+ */
+int ac_split_double_by_pivot(
+    double *data,
+    size_t left,
+    size_t right,
+    double pivot,
+    size_t *out_left,
+    size_t *out_right
+);
+
+/**
+ * @brief Find value closest to the average on a ``double`` array segment.
+ *
+ * Mirrors ``clst_avg`` from ``Algorithms_Python/quick_sort.py`` for the
+ * half-open interval ``[left, right)``.
+ *
+ * @param data Input array.
+ * @param left Inclusive left boundary.
+ * @param right Exclusive right boundary.
+ * @param out_value Output value closest to the segment mean.
+ * @return ``0`` on success or ``-1`` on invalid input.
+ * @signature int ac_closest_to_average_double(const double *data, size_t left,
+ *                                             size_t right,
+ *                                             double *out_value)
+ */
+int ac_closest_to_average_double(
+    const double *data,
+    size_t left,
+    size_t right,
+    double *out_value
+);
+
+/**
+ * @brief Compute median-of-three pivot value on a ``double`` array segment.
+ *
+ * Mirrors ``median_of_three`` from ``Algorithms_Python/quick_sort.py``.
+ * The function may reorder the three inspected elements to satisfy
+ * ``data[left] <= data[mid] <= data[right]`` and returns ``data[mid]``.
+ *
+ * @param data Array containing the candidate pivot values.
+ * @param left Inclusive left index.
+ * @param right Inclusive right index.
+ * @param out_value Output pointer receiving the selected median value.
+ * @return ``0`` on success or ``-1`` on invalid input.
+ * @signature int ac_median_of_three_double(double *data, size_t left,
+ *                                          size_t right,
+ *                                          double *out_value)
+ */
+int ac_median_of_three_double(
+    double *data,
+    size_t left,
+    size_t right,
+    double *out_value
+);
+
+/**
+ * @brief Partition a small ``double`` segment and return its middle index.
+ *
+ * Mirrors ``partition_small`` from ``Algorithms_Python/quick_sort.py``.
+ * The selected half-open range ``[left, right)`` is sorted in place, then the
+ * middle index ``(left + right) / 2`` is returned.
+ *
+ * @param data Array containing the segment to process.
+ * @param left Inclusive left index.
+ * @param right Exclusive right index.
+ * @param out_index Output pointer receiving the partition index.
+ * @return ``0`` on success or ``-1`` on invalid input.
+ * @signature int ac_partition_small_double(double *data, size_t left,
+ *                                          size_t right,
+ *                                          size_t *out_index)
+ */
+int ac_partition_small_double(
+    double *data,
+    size_t left,
+    size_t right,
+    size_t *out_index
 );
 
 /**
@@ -162,6 +348,45 @@ void ac_heap_sort(
  *                                      int max_value)
  */
 void ac_counting_sort_int(int *data, size_t size, int min_value, int max_value);
+
+/**
+ * @brief Counting sort that infers min/max bounds from the input array.
+ *
+ * Mirrors ``Algorithms_Python/count_sort.py`` where bounds are computed from
+ * the data before counting frequencies.
+ *
+ * @param data Array of integers to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @signature void ac_count_sort_int_auto(int *data, size_t size)
+ */
+void ac_count_sort_int_auto(int *data, size_t size);
+
+/**
+ * @brief Optimized radix-style digit sort for signed integer arrays.
+ *
+ * Mirrors ``digit_sort_opt`` from ``Algorithms_Python/digit_sort.py`` using
+ * bucketed stable passes over each digit place.
+ *
+ * @param data Array of integers to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @param base Radix base for digit extraction; values below 2 are ignored.
+ * @signature void ac_digit_sort_opt_int(int *data, size_t size, int base)
+ */
+void ac_digit_sort_opt_int(int *data, size_t size, int base);
+
+/**
+ * @brief Radix-style digit sort for signed integer arrays.
+ *
+ * Mirrors ``Algorithms_Python/digit_sort.py`` by normalising values with the
+ * minimum element and sorting digits from least significant to most
+ * significant using stable counting passes.
+ *
+ * @param data Array of integers to sort in ascending order.
+ * @param size Number of elements in ``data``.
+ * @param base Radix base for digit extraction; values below 2 are ignored.
+ * @signature void ac_digit_sort_int(int *data, size_t size, int base)
+ */
+void ac_digit_sort_int(int *data, size_t size, int base);
 
 #ifdef __cplusplus
 }
